@@ -1,0 +1,27 @@
+{
+    "id": "0FB432D9",
+    "path": "~/GitHub/Hybrid_health_outcomes/code/analysis/analysis_linear_regressions_PCA.R",
+    "project_path": "code/analysis/analysis_linear_regressions_PCA.R",
+    "type": "r_source",
+    "hash": "2213531827",
+    "contents": "",
+    "dirty": false,
+    "created": 1710950484325.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "72,0",
+        "scrollLine": "62"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1710952646,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1710952646110,
+    "read_only": false,
+    "read_only_alternatives": []
+}

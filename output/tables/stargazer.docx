@@ -1,0 +1,82 @@
+
+Linear models - Predicting maximum weight loss
+=====================================================================================================
+                                                        Dependent variable:                          
+                               ----------------------------------------------------------------------
+                                                               WL_max                                
+                                         (1)                     (2)                    (3)          
+-----------------------------------------------------------------------------------------------------
+PC1                                     0.152                   0.292                 0.536**        
+                                       (0.234)                 (0.191)                (0.253)        
+                                                                                                     
+PC2                                   -0.697**                -1.041***              -1.270***       
+                                       (0.297)                 (0.284)                (0.374)        
+                                                                                                     
+current_infectionE_falciformis          1.370                  3.094**                               
+                                       (1.592)                 (1.492)                               
+                                                                                                     
+current_infectionE_ferrisi             -1.443                   1.108                                
+                                       (1.722)                 (1.289)                               
+                                                                                                     
+delta_ct_cewe_MminusE                 0.627***                0.754***                               
+                                       (0.128)                 (0.112)                               
+                                                                                                     
+mouse_strainBUSNA_PWD                   0.029                                                        
+                                       (4.616)                                                       
+                                                                                                     
+mouse_strainBUSNA_STRA                  0.250                                                        
+                                       (3.709)                                                       
+                                                                                                     
+mouse_strainNMRI                       -6.300                                                        
+                                       (5.136)                                                       
+                                                                                                     
+mouse_strainPWD_BUSNA                   0.776                                                        
+                                       (4.029)                                                       
+                                                                                                     
+mouse_strainPWD_PWD                    5.920*                                                        
+                                       (3.030)                                                       
+                                                                                                     
+mouse_strainPWD_SCHUNT                 -0.562                                                        
+                                       (4.012)                                                       
+                                                                                                     
+mouse_strainSCHUNT_PWD                 -2.899                                                        
+                                       (3.754)                                                       
+                                                                                                     
+mouse_strainSCHUNT_SCHUNT               2.684                                                        
+                                       (2.948)                                                       
+                                                                                                     
+mouse_strainSCHUNT_STRA                 5.204                                                        
+                                       (4.113)                                                       
+                                                                                                     
+mouse_strainSTRA_BUSNA                 -1.440                                                        
+                                       (3.856)                                                       
+                                                                                                     
+mouse_strainSTRA_SCHUNT                 0.735                                                        
+                                       (3.822)                                                       
+                                                                                                     
+mouse_strainSTRA_STRA                  -3.301                                                        
+                                       (3.793)                                                       
+                                                                                                     
+immunizationuninfected                 -2.818                                                        
+                                       (2.015)                                                       
+                                                                                                     
+immunizationheterologous                0.578                                                        
+                                       (1.788)                                                       
+                                                                                                     
+immunizationhomologous                 -0.395                                                        
+                                       (1.759)                                                       
+                                                                                                     
+weight_dpi0                            0.300**                                                       
+                                       (0.131)                                                       
+                                                                                                     
+Constant                                4.583                 11.242***               9.662***       
+                                       (4.348)                 (1.252)                (0.645)        
+                                                                                                     
+-----------------------------------------------------------------------------------------------------
+Observations                             128                     128                    136          
+R2                                      0.631                   0.545                  0.108         
+Adjusted R2                             0.558                   0.526                  0.094         
+Residual Std. Error               5.211 (df = 106)        5.397 (df = 122)        7.519 (df = 133)   
+F Statistic                    8.648*** (df = 21; 106) 29.224*** (df = 5; 122) 8.035*** (df = 2; 133)
+=====================================================================================================
+Note:                                                                     *p<0.1; **p<0.05; ***p<0.01
