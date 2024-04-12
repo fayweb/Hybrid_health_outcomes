@@ -139,5 +139,8 @@ color_mapping <- c("E. falciformis" = "salmon",
     ggsave(paste0(panels_fi, "/panel_immune_gene_expression_lab.jpeg"), 
            comb, width = 12, height = 6, dpi = 300)    
     
-  rm(coef_mmr, comb, density_imm, results, tidy_models, tidy_models_no_intercept)
+  rm(coef_mmr, comb, density_imm, results, tidy_models, 
+     tidy_models_no_intercept, biplot, coefs5, contr_PC1, contr_PC2, figure_panel,
+     mouse_id, pc1_current_infection, pc2_current_infection,
+     pc1_WL_current_infection, pc2_WL_current_infection, pca_individuals, vpg)
   

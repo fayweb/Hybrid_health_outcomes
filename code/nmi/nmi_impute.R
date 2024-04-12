@@ -133,5 +133,5 @@ hm <- hm_imp
 
 # remove unecessary data objects
 rm(complete_genes, gmf, gf, gl, gml, hm_imp, init, igf, result, 
-   genes_matrix, genes, gene_correlation, field, lab)
+   genes_matrix, genes, field, lab)
 

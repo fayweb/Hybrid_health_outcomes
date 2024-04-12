@@ -142,6 +142,7 @@ lab <- lab %>%
 
 Challenge <- lab
 
+
 #### create output file:
-write.csv(lab, paste0(dlab_final, "/lab_cleaned_data.csv"), row.names = FALSE)
+write.csv(Challenge, paste0(dlab_final, "/lab_cleaned_data.csv"), row.names = FALSE)
 

@@ -85,22 +85,30 @@ model_4 <- lm(WL_max ~ PC1 + PC2 + current_infection + delta_ct_cewe_MminusE +
 summary(model_4)
 plot_coefs(model_1, model_2, model_3, model_4)
 
+# remove gene information
+model_5 <- lm(WL_max ~  current_infection + delta_ct_cewe_MminusE +
+                  mouse_strain + immunization + 
+                  weight_dpi0, data = lab )
+
+summary(model_5)
+
 ## Please cite as:
 ##  Hlavac, Marek (2018). stargazer: Well-Formatted Regression and Summary Statistics Tables.
-stargazer(model_1, model_2, model_3,
+stargazer(model_1, model_2, model_3, model_5,
           type = "text",
           out = paste0(tables, "/stargazer.docx"), 
           title = "Linear models - Predicting maximum weight loss",
           align = TRUE)
 
-export_summs(model_1, model_2, model_3,
+export_summs(model_1, model_2, model_3,model_5,
              scale = TRUE, to.file = "docx", 
              file.name = paste0(tables, "/lab_model1_3.docx"))
 
 models <- list(
     "Model 1" = model_1,
     "Model 2" = model_2,
-    "Model 3" = model_3)
+    "Model 3" = model_3,
+    "Model 4" = model_5)
 
 modelsummary(models, stars = TRUE, gof_omit = "IC|Adj|F|RMSE|Log", 
              output = paste0(tables, "/lab_model1_3.docx"))
@@ -109,21 +117,21 @@ modelsummary(models = as.list(model_1, model_2, model_3),
              output = paste0(tables, "/lab_model1.docx"))
 
 
-model_5 <- lm(WL_max ~ PC1 * current_infection + PC2 *current_infection, 
+model_6 <- lm(WL_max ~ PC1 * current_infection + PC2 *current_infection, 
               data = lab)
 
-summary(model_5)
-plot_summs(model_5) -> coefs5
+summary(model_6)
+plot_summs(model_6) -> coefs6
 
-coefs5
+coefs6
 
 ggsave(filename = paste0(an_fi, "/plot_sums_mix_PCA.jpeg"),
-                         plot = coefs5, width = 6, height = 4)
+                         plot = coefs6, width = 6, height = 4)
 #see the ggefects
-effects <- ggpredict(model_5)
+effects <- ggpredict(model_6)
 
 pc1_current_infection <- 
-    ggpredict(model_5, terms = c("PC1")) %>% 
+    ggpredict(model_6, terms = c("PC1")) %>% 
     plot(colors = "darkorchid") +   # Use a refined shade of blue
     geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") + 
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
@@ -150,7 +158,7 @@ ggsave(filename = paste0(an_fi, "/pc1_current_infection.jpeg"),
        width = 6, height = 4, dpi = 1000)
 
 pc2_current_infection <- 
-    ggpredict(model_5, terms = c("PC2")) %>% 
+    ggpredict(model_6, terms = c("PC2")) %>% 
     plot(colors = "darkorchid") +   # Use a refined shade of blue
     geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") + 
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
@@ -176,12 +184,12 @@ ggsave(filename = paste0(an_fi, "/pc2_current_infection.jpeg"),
        width = 6, height = 4, dpi = 1000)
 
 
-plot_summs(model_5)
-modelsummary(model_5, stars = TRUE, gof_omit = "IC|Adj|F|RMSE|Log", 
+plot_summs(model_6)
+modelsummary(model_6, stars = TRUE, gof_omit = "IC|Adj|F|RMSE|Log", 
              output = paste0(tables, "/mixed_effects_pca.docx"))
 
 # Now create the scatter plot using this color mapping
-ggpredict(model_5, terms = c("PC1", "current_infection")) %>% 
+ggpredict(model_6, terms = c("PC1", "current_infection")) %>% 
     plot() +  
     geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") + 
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
@@ -210,7 +218,7 @@ ggsave(paste0(an_fi, "/pc1_WL_current_infection.jpeg"), pc1_WL_current_infection
 
 # Now create the scatter plot using this color mapping
 # Now create the scatter plot using this color mapping
-ggpredict(model_5, terms = c("PC2", "current_infection")) %>% 
+ggpredict(model_6, terms = c("PC2", "current_infection")) %>% 
     plot() +  
     geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") + 
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
@@ -236,6 +244,27 @@ pc2_WL_current_infection
 ggsave(paste0(tables, "/pc2_WL_current_infection.jpeg"),
        pc2_WL_current_infection, width = 8, height = 6, dpi = 1000)
 
-rm(residuals_1, residuals_df, residuals_vs_fitted, model_1, model_2,
-  model_3, model_4, model_5, models, p.mat, effects, data_df)
+####################
+################### Create the panel figure
+figure_panel <- ggarrange(pca_variables, biplot, 
+                            pc1_current_infection, pc2_current_infection,
+                            pc1_WL_current_infection, pc2_WL_current_infection,
+                            labels = c("A", "B", "C", "D", "E", "F"),
+                            ncol = 2, nrow = 3)
 
+# Adding the title "Figure 1" to the entire arrangement
+figure_panel <- annotate_figure(figure_panel, 
+                                  top = text_grob("Fig. 2", size = 14, 
+                                                  face = "bold"))
+
+
+ggsave(paste0(panels_fi, "/panel_regression_pca.jpeg"), 
+       figure_panel, width = 12, height = 10, dpi = 300)
+
+
+
+rm(residuals_1, residuals_df, residuals_vs_fitted, model_1, model_2,
+  model_3, model_4, model_5, models, effects, data_df)
+rm(circ, mouse, pca.vars, pca.vars.m, 
+   pca_var, var.contrib.matrix, res.pca, 
+   var.contrib, pca_variables)

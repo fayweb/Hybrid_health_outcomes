@@ -18,6 +18,9 @@ gene_correlation <- as.matrix(cor(gf,
 # matrix of the p-value of the correlatio
 p.mat <- cor.mtest(gene_correlation)
 
+jpeg(paste0(an_fi, "/cor_genes_field.jpeg"), 
+     width = 8, height = 6, units = "in", res = 300)
+
 corrplot(gene_correlation, 
          method = "circle",  #method of the plot, "color" would show colour gradient
          tl.col = "black", tl.srt=45, #colour of labels and rotation
@@ -30,7 +33,8 @@ corrplot(gene_correlation,
 #Add significance level to the correlogram
 #remove the values that are insignificant
 
+dev.off()
 
-
+rm(gene_correlation, p.mat)
 
 

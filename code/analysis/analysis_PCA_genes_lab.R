@@ -1,9 +1,4 @@
-# remove il_10
-#### vectors for selecting genes for analysis
-Genes_v   <- c("IFNy", "CXCR3", "IL.6", "IL.13", #"IL.10",
-               "IL1RN","CASP1", "CXCL9", "IDO1", "IRGM1", "MPO", 
-               "MUC2", "MUC5AC", "MYD88", "NCR1", "PRF1", "RETNLB", "SOCS1", 
-               "TICAM1", "TNF")
+
 
 lab <- hm %>%
     filter(origin == "Lab")
@@ -91,9 +86,10 @@ fviz_contrib(res.pca, choice = "var", axes = 1, top = 18,
 
 dev.off()
 
+
 fviz_contrib(res.pca, choice = "var", axes = 1, top = 18, 
              title = "Contribution of immune genes to the first dimension of the PCA", 
-             fill =  "seagreen2") -> contr_PC1
+             fill =  "seagreen2") -> contributions_pc1 
 # res.pca$var$contrib
 
 
@@ -111,7 +107,7 @@ dev.off()
 
 fviz_contrib(res.pca, choice = "var", axes = 2, top = 18, 
              title = "Contribution of immune genes to the second dimension of the PCA",
-             fill =  "seagreen2") -> contr_PC2
+             fill =  "seagreen2") -> contributions_pc2 
 
 fviz_contrib(res.pca, choice = "var", axes = 1:2, top = 18)
 
@@ -210,12 +206,10 @@ fviz_pca_biplot(res.pca,
                 legend.title = "Infection groups",
                 title = "") -> biplot
 
-biplot
+#biplot
 
 ggsave(filename = paste0(an_fi, "/biplot.jpeg"), plot = biplot, 
        width = 12, height = 6, dpi = 600)
 
-rm(circ, mouse, pca.vars, pca.vars.m, 
-   pca_var, var.contrib.matrix, res.pca, 
-   var.contrib, pca_variables)
+
 

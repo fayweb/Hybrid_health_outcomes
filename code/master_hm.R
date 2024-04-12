@@ -27,13 +27,14 @@ set.seed(13102023)
 pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor, visdat,
           corrplot, RColorBrewer, ggplot2, VIM, limma, latticeExtra, patchwork,
           FactoMineR, ggrepel, factoextra, reshape2, sjPlot, stargazer, jtools,
-          modelsummary, ggeffects, pheatmap)
+          modelsummary, ggeffects, pheatmap, ggpubr, ggridges, gt)
     ## Define within project file paths ----
         # code
 c <- "code"
 clab      <- paste0(c, "/lab/")
 cfield     <- paste0(c, "/field/")
 canalysis <- paste0(c, "/analysis/")
+cdesign <- paste0(c, "/design/") # experimental project design
 nmi   <- paste0(c, "/nmi/")
 
 
@@ -71,6 +72,7 @@ output <- paste0(one_drive, "/output")
   figures <- paste0(output, "/figures")
     fi <- paste0(figures, "/imputation")
     an_fi <- paste0(figures, "/analysis")
+    d_fi <- paste0(figures, "/design")
     panels_fi <- paste0(figures, "/panels")
   tables  <- paste0(output, "/tables")
   
@@ -89,19 +91,18 @@ if (1) source(file.path(c, "functions.R"))
 # ***********************************************************
 #----------------------------------------------------------*
 # 2.1: Import raw data & save as intermediate/processed
-# Requires:
-# Creates: lab_cleaned_data.csv
 #----------------------------------------------------------*
 if (1) source(file.path(clab, "lab_import.R"))
 #----------------------------------------------------------*
-# 2.2: Conduct cleaning (formatting) w/o changing data
+# 2.2: Conduct cleaning (formatting) 
+# Creates: Challenge
 #----------------------------------------------------------*
 if (1) source(file.path(clab, "lab_clean.R"))
 #----------------------------------------------------------*
 # 2.3: Visualize data
  #----------------------------------------------------------*
 if (1) source(file.path(clab, "lab_visualize.R"))
-
+# Creates: Correlation matrix between laboratory gene expression values
 # ***********************************************************
 # Part 3: Run field infection data cleaning                      ----
 # **********************************************************
@@ -124,7 +125,6 @@ if (1) source(file.path(cfield, "field_clean.R"))
  #----------------------------------------------------------*
  if (1) source(file.path(cfield, "field_import_amplicon_intensities.R"))
 
- 
  
 # ***********************************************************
 # Part 4:  MNI: Merge normalize impute                           ----
@@ -151,11 +151,28 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
 #----------------------------------------------------------*
  
  
+ ######### Decision: Removing IL.10 from gene selection due data largely missing
+ # remove il_10
+ #### vectors for selecting genes for analysis
+ Genes_v   <- c("IFNy", "CXCR3", "IL.6", "IL.13", #"IL.10",
+                "IL1RN","CASP1", "CXCL9", "IDO1", "IRGM1", "MPO", 
+                "MUC2", "MUC5AC", "MYD88", "NCR1", "PRF1", "RETNLB", "SOCS1", 
+                "TICAM1", "TNF")
+ 
+ # ***********************************************************
+ # Part 5: Experimental design                           ----
+ # ***********************************************************
+ #----------------------------------------------------------*
+ # Show the primary results of our experimental design
+ # How many rodents, distributions, strains, and parasite information
+ if (1) source(file.path(cdesign, "design_experimental.R"))
+ 
+ 
 # ***********************************************************
-# Part 5: Analysis                           ----
+# Part 6: Analysis                           ----
 # ***********************************************************
 #----------------------------------------------------------*
-# 5.1: PCA 
+# 6.1: PCA 
  # performing a pca analysis on the laboratory immune gene data
 # Requires: hm
 # Creates: lab
@@ -163,25 +180,23 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
  #  contr_PC1, contr_PC2
 #----------------------------------------------------------*
 if (1) source(file.path(canalysis, "analysis_PCA_genes_lab.R"))
- # 5.2: PCA 
+ # 6.2: PCA 
  # Regressions with pc axes 
  # Plots: pc1_current_infection, pc2_current_infection, coefs5
  #----------------------------------------------------------*
  if (1) source(file.path(canalysis, "analysis_linear_regressions_PCA.R"))
 #----------------------------------------------------------*
-# 5.2: Heatmap lab genes
+# 6.2: Heatmap lab genes
 # Requires: hm, lab
 #----------------------------------------------------------*
 if (1) source(file.path(canalysis, "heatmap_lab_genes.R"))
  #----------------------------------------------------------*
- # 5.3: PC
+ # 6.3: Multiple multivariate regression of genes vs weight loss in the lab
  # Requires: hm, lab
  #----------------------------------------------------------*
+ if (1) source(file.path(canalysis, "analysis_multiple_multivariate_regression.R"))
  
- 
- ################JUSST FINISHED ANALYSIS LINEAR REGRESSION
- ''' REMOVE EXTRA OBJECTGS
- ' PLOT PANELS
+
  
  
  
