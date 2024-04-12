@@ -450,41 +450,27 @@ s <-
            relative_weight == min(relative_weight)) 
 mean(s$dpi)
 
+## statistics primary infections 
+statistics_p <- Challenge %>%
+    filter(infection == "primary") %>%
+    group_by(Parasite_primary) %>%
+    summarise(
+        MeanWeightLoss = mean(WL_max),
+        MinWeightLoss = min(WL_max),
+        MaxWeightLoss = max(WL_max),
+        N = n()
+    )
 
-# How many mice died in the primary infections
-primary <- Challenge %>%
-    filter(infection == "primary", Parasite_primary == "E_falciformis")
-# max weight loss primary
-mean(primary$WL_max)
-
-# How many mice died in the primary infections
-primary <- Challenge %>%
-    filter(infection == "primary", Parasite_primary == "E_ferrisi")
-# max weight loss primary
-mean(primary$WL_max, na.rm = TRUE)
-
-# How many mice died in the primary infections
-primary <- Challenge %>%
-    filter(infection == "primary", Parasite_primary == "uninfected")
-# max weight loss primary
-mean(primary$WL_max)
-
-chale <- Challenge %>%
-    filter(infection == "challenge", Parasite_challenge == "E_falciformis")
-# max weight loss primary
-mean(chale$WL_max)
-
-# How many mice died in the primary infections
-chale <- Challenge %>%
-    filter(infection == "challenge", Parasite_challenge == "E_ferrisi")
-# max weight loss primary
-mean(chale$WL_max)
-
-# How many mice died in the primary infections
-chale <- Challenge %>%
-    filter(infection == "challenge", Parasite_challenge == "uninfected")
-# max weight loss primary
-mean(chale$WL_max)
+## statistics primary infections 
+statistics_c <- Challenge %>%
+    filter(infection == "challenge") %>%
+    group_by(Parasite_challenge) %>%
+    summarise(
+        MeanWeightLoss = mean(WL_max),
+        MinWeightLoss = min(WL_max),
+        MaxWeightLoss = max(WL_max),
+        N = n()
+    )
 
 
 
