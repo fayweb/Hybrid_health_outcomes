@@ -406,17 +406,55 @@ as.data.frame(Eim_strains) %>%
 #prim <- 
 #count(lab$Parasite_primary)
 
-model <- lm(WL_max ~ mouse_strain, data = lab)
-summary(model)
-
-model2 <- lm(WL_max ~ Parasite_primary, 
-             data = Challenge %>% filter(infection == "primary"))
-summary(model2)
-
 
 #########################################################################
+Challenge <- Challenge %>%
+    group_by(Mouse_ID, infection) %>%
+    mutate(weight_loss = 100 - min(relative_weight))
 
+## statistics primary infection
+Challenge %>%
+    filter(infection == "primary") %>%
+    group_by(Parasite_primary) %>%
+    summarise(
+        MeanWeightLoss = mean(weight_loss),
+        MinWeightLoss = min(weight_loss),
+        MaxWeightLoss = max(weight_loss),
+        N = n()
+    )
 
+## statistics challenge infection
+Challenge %>%
+    filter(infection == "challenge") %>%
+    group_by(Parasite_challenge) %>%
+    summarise(
+        MeanWeightLoss = mean(weight_loss),
+        MinWeightLoss = min(weight_loss),
+        MaxWeightLoss = max(weight_loss),
+        N = n()
+    )
+
+## statistics primary infection - getting the N
+lab %>%
+    filter(infection == "primary") %>%
+    group_by(Parasite_primary) %>%
+    summarise(
+        MeanWeightLoss = mean(WL_max),
+        MinWeightLoss = min(WL_max),
+        MaxWeightLoss = max(WL_max),
+        N = n()
+    )
+
+# - getting the N
+lab %>%
+    filter(infection == "challenge")%>%
+    group_by(Parasite_challenge) %>%
+    summarise(
+        MeanWeightLoss = mean(WL_max),
+        MinWeightLoss = min(WL_max),
+        MaxWeightLoss = max(WL_max),
+        N = n()
+    )
 
 # mean dpi at peak weight loss falciformis
 s <- 
@@ -450,46 +488,34 @@ s <-
            relative_weight == min(relative_weight)) 
 mean(s$dpi)
 
-## statistics primary infections 
-statistics_p <- Challenge %>%
+######################models
+###############
+
+model <- lm(WL_max ~ mouse_strain, data = lab)
+summary(model)
+
+Challenge$Parasite_primary <- factor(Challenge$Parasite_primary, levels = 
+                                         c("uninfected", "E_falciformis","E_ferrisi"))
+
+Challenge$Parasite_challenge <- factor(Challenge$Parasite_challenge, levels = 
+                                           c("uninfected", "E_falciformis","E_ferrisi"))
+# create a new combined variable 
+Challenge_p <- Challenge %>%
     filter(infection == "primary") %>%
-    group_by(Parasite_primary) %>%
-    summarise(
-        MeanWeightLoss = mean(WL_max),
-        MinWeightLoss = min(WL_max),
-        MaxWeightLoss = max(WL_max),
-        N = n()
-    )
+    mutate(Parasite = Parasite_primary)
 
-## statistics primary infections 
-statistics_c <- Challenge %>%
+Challenge_c <- Challenge %>%
     filter(infection == "challenge") %>%
-    group_by(Parasite_challenge) %>%
-    summarise(
-        MeanWeightLoss = mean(WL_max),
-        MinWeightLoss = min(WL_max),
-        MaxWeightLoss = max(WL_max),
-        N = n()
-    )
+    mutate(Parasite = Parasite_challenge)
+
+Challenge <- rbind(Challenge_p, Challenge_c)
+rm(Challenge_c, Challenge_p)
+
+model2 <- lm(weight_loss ~ infection * Parasite, data = Challenge)
+summary(model2)
 
 
 
-challenge <- Challenge %>%
-    filter(infection == "challenge")
-
-mean(Challenge$WL_max)
-
-intersection <- intersect(primary$Mouse_ID, challenge$Mouse_ID)
-
-
-s <- lab %>%
-    filter(death == "primary")
-
-
-#### analyze the differences in means in the strains
-lab %>% 
-    group_by(infection, current_infection) %>%
-    summarize(mean(WL_max))
 
 rm(chale, challenge, Eim_strains, eimeria_weight_chal, eimeria_weight_challenge,
    eimeria_weight_prim, h_w, m_s, map_hybrids, model, model2, mouse_WL, 
