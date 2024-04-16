@@ -142,6 +142,7 @@ color_mapping <- c("E. falciformis" = "salmon",
   rm(coef_mmr, comb, density_imm, results, tidy_models, 
      tidy_models_no_intercept, biplot, coefs5, contr_PC1, contr_PC2, 
      figure_panel, pc1_current_infection, pc2_current_infection,
-     pc1_WL_current_infection, pc2_WL_current_infection, pca_individuals, vpg)
+     pc1_WL_current_infection, pc2_WL_current_infection, pca_individuals, vpg,
+     coefs6, model_6, panel_figure5, plot1, plot2, plot3, plot4, residuals, Mouse_ID)
   
   

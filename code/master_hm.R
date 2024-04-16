@@ -24,11 +24,13 @@ library(pacman)
 set.seed(13102023)
 
         # Use p_load to install (if not already) and load the packages
-pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor, visdat,
-          corrplot, RColorBrewer, ggplot2, VIM, limma, latticeExtra, patchwork,
-          FactoMineR, ggrepel, factoextra, reshape2, sjPlot, stargazer, jtools,
-          modelsummary, ggeffects, pheatmap, ggpubr, ggridges, gt)
-    ## Define within project file paths ----
+pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor, 
+               visdat, corrplot, RColorBrewer, ggplot2, VIM, limma, 
+               latticeExtra, patchwork,FactoMineR, ggrepel, factoextra, 
+               reshape2, sjPlot, stargazer, jtools,modelsummary, ggeffects, 
+               pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities)
+    
+## Define within project file paths ----
         # code
 c <- "code"
 clab      <- paste0(c, "/lab/")
@@ -36,7 +38,7 @@ cfield     <- paste0(c, "/field/")
 canalysis <- paste0(c, "/analysis/")
 cdesign <- paste0(c, "/design/") # experimental project design
 nmi   <- paste0(c, "/nmi/")
-
+cmodels <- paste0(c, "/models/")
 
         # data
             # building dynamic paths
@@ -179,26 +181,36 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
  # Plots: biplot, pca_variables,
  #  contr_PC1, contr_PC2
 #----------------------------------------------------------*
-if (1) source(file.path(canalysis, "analysis_PCA_genes_lab.R"))
+if (0) source(file.path(canalysis, "analysis_PCA_genes_lab.R"))
  # 6.2: PCA 
  # Regressions with pc axes 
  # Plots: pc1_current_infection, pc2_current_infection, coefs5
  #----------------------------------------------------------*
- if (1) source(file.path(canalysis, "analysis_linear_regressions_PCA.R"))
+ if (0) source(file.path(canalysis, "analysis_linear_regressions_PCA.R"))
 #----------------------------------------------------------*
 # 6.2: Heatmap lab genes
 # Requires: hm, lab
 #----------------------------------------------------------*
-if (1) source(file.path(canalysis, "heatmap_lab_genes.R"))
+if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  #----------------------------------------------------------*
  # 6.3: Multiple multivariate regression of genes vs weight loss in the lab
  # Requires: hm, lab
  #----------------------------------------------------------*
- if (1) source(file.path(canalysis, "analysis_multiple_multivariate_regression.R"))
+ if (0) source(file.path(canalysis, "analysis_multiple_multivariate_regression.R"))
  
 
  
- 
+ # ***********************************************************
+ # Part 7: Analysis                           ----
+ # ***********************************************************
+ #----------------------------------------------------------*
+ #7: PCA 
+ # performing a pca analysis on the laboratory immune gene data
+ # Requires: hm
+ # Creates: lab
+ # Plots: biplot, pca_variables,
+ #  contr_PC1, contr_PC2
+ #----------------------------------------------------------*
  
 
 # ***********************************************************

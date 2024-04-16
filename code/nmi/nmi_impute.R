@@ -9,6 +9,7 @@
 # Part 1: Analyze nas ----
 # ***********************************************************
 # how many nas does the data set have?
+# select genes
 sapply(genes, function(x) sum(is.na(x)))
 
 # in the laboratory data set?
@@ -28,15 +29,15 @@ init <- mice(genes, maxit = 0)
 meth <- init$method
 
 ######################### Quality control plots 
-jpeg(paste0(fi, "/aggregation_plot.jpeg"), width = 8, height = 6, units = "in", res = 300)
+#jpeg(paste0(fi, "/aggregation_plot.jpeg"), width = 8, height = 6, units = "in", res = 300)
 
 # Aggregation plot 
-aggr(genes, col=c('navyblue','red'), 
-                  numbers=TRUE, sortVars=TRUE, 
-                  labels=names(genes), cex.axis=.7, 
-                  gap=3, ylab=c("Histogram of missing data","Pattern"))
+#aggr(genes, col=c('navyblue','red'), 
+ #                 numbers=TRUE, sortVars=TRUE, 
+  #                labels=names(genes), cex.axis=.7, 
+   #               gap=3, ylab=c("Histogram of missing data","Pattern"))
 
-dev.off()
+#dev.off()
 
 # Creating the margin plots
 jpeg(paste0(fi, "/margin_plots.jpeg"), 

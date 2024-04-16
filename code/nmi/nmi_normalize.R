@@ -1,8 +1,8 @@
 #Normalization
-
+Genes_v
 
 # select genes
-genes <- hm[, Genes_v]
+genes <- hm[, c(Genes_v, "PPIB", "GAPDH")]
 
 genes_matrix <- as.matrix(genes)
 
