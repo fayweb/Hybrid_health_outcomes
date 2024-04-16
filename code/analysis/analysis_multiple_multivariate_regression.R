@@ -61,7 +61,6 @@ ggplot(tidy_models_no_intercept, aes(x = model, y = estimate, color = term)) +
     theme_classic() +
     theme(axis.text.y = element_text(angle = 45, hjust = 1)) +
     labs(x = "Gene", y = "Coefficients estimate (Difference to uninfected)") +
-#, title = "Coefficient Estimates by Gene Expression") +
     theme(legend.title = element_blank(),
           legend.position = "none") -> coef_mmr
 
@@ -106,11 +105,12 @@ color_mapping <- c("E. falciformis" = "salmon",
         labs(x = "Expression Level", y = "Density") +
         theme_minimal() +
         scale_fill_manual(values = color_mapping)  +
-        theme(legend.title = element_blank())+
+        theme(legend.title = element_blank(), 
+              legend.position = c(0.85, 0.06))+
         labs(y = "Density", 
              x = "Gene expression level") -> density_imm
     
- #   density_imm
+#density_imm
     
  ggsave(filename = paste0(an_fi, "/density_immune_genes.jpeg"),
            plot = density_imm, width = 10, height = 8, dpi = 300)
@@ -119,7 +119,7 @@ color_mapping <- c("E. falciformis" = "salmon",
 #######################
     # combine
     comb <- (density_imm | coef_mmr) +
-        plot_layout(guides = 'collect') + # Collect all legends into a single legend
+      #  plot_layout(guides = 'collect') + # Collect all legends into a single legend
         plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
     
     # Add a figure title
@@ -140,7 +140,8 @@ color_mapping <- c("E. falciformis" = "salmon",
            comb, width = 12, height = 6, dpi = 300)    
     
   rm(coef_mmr, comb, density_imm, results, tidy_models, 
-     tidy_models_no_intercept, biplot, coefs5, contr_PC1, contr_PC2, figure_panel,
-     mouse_id, pc1_current_infection, pc2_current_infection,
+     tidy_models_no_intercept, biplot, coefs5, contr_PC1, contr_PC2, 
+     figure_panel, pc1_current_infection, pc2_current_infection,
      pc1_WL_current_infection, pc2_WL_current_infection, pca_individuals, vpg)
+  
   
