@@ -165,7 +165,7 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
  #----------------------------------------------------------*
  # Show the primary results of our experimental design
  # How many rodents, distributions, strains, and parasite information
- if (1) source(file.path(cdesign, "design_experimental.R"))
+ if (0) source(file.path(cdesign, "design_experimental.R"))
  
  
 # ***********************************************************

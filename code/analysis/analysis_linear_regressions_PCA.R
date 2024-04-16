@@ -76,11 +76,9 @@ model_3 <- lm(WL_max ~ PC1 + PC2 , data = lab)
 summary(model_3)
 
 
-plot_coefs(model_1, model_2, model_3)
-
-
 model_4 <- lm(WL_max ~ PC1 + PC2 + current_infection + delta_ct_cewe_MminusE + 
                   weight_dpi0, data = lab)
+
 
 summary(model_4)
 plot_coefs(model_1, model_2, model_3, model_4)
@@ -184,7 +182,7 @@ ggsave(filename = paste0(an_fi, "/pc2_current_infection.jpeg"),
        width = 6, height = 4, dpi = 1000)
 
 
-plot_summs(model_6)
+plot_summs(model_6) -> coef_interaction
 modelsummary(model_6, stars = TRUE, gof_omit = "IC|Adj|F|RMSE|Log", 
              output = paste0(tables, "/mixed_effects_pca.docx"))
 
@@ -261,10 +259,30 @@ figure_panel <- annotate_figure(figure_panel,
 ggsave(paste0(panels_fi, "/panel_regression_pca.jpeg"), 
        figure_panel, width = 12, height = 10, dpi = 300)
 
+################### Create the simplified figure# combine
+panel_figure5 <- 
+    (pc1_current_infection | pc2_current_infection ) /
+    (pc1_WL_current_infection | pc2_WL_current_infection) /
+    free(coef_interaction) +
+    plot_layout(guides = 'collect') + # Collect all legends into a single legend
+    plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
+
+# Add a figure title
+panel_figure5 <- panel_figure5 + 
+    plot_annotation(title = 'Fig. 5', 
+                    theme = theme(plot.title = element_text(size = 20, hjust = 0))) +
+    plot_layout(heights = c(1, 1,1), 
+                widths = c(1,1,1))
+
+# Save the panel figure
+ggsave(paste0(panels_fi, "/panel_regression_pca_interaction.jpeg"), 
+       panel_figure5, width = 13, height = 12, dpi = 300)
+
 
 
 rm(residuals_1, residuals_df, residuals_vs_fitted, model_1, model_2,
   model_3, model_4, model_5, models, effects, data_df)
 rm(circ, mouse, pca.vars, pca.vars.m, 
    pca_var, var.contrib.matrix, res.pca, 
-   var.contrib, pca_variables)
+   var.contrib, pca_variables, coef6, coef_interaction, contributions_pc1,
+   contributions_pc2)
