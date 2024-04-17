@@ -204,14 +204,19 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  # Part 7: Analysis                           ----
  # ***********************************************************
  #----------------------------------------------------------*
- #7: Random forest 
- # Training and testing a random forest that predicts weight los
+ #7.1: Random forest 
+ # Training and testing a random forest that predicts weight loss
  # on experimental infections with Eimeria spp. 
  # Requires: hm
  # Creates random forest model: WL_predict_gene.RData
  #----------------------------------------------------------*
- if (0) source(file.path(canalysis, "analysis_random_forest_training.R"))
-
+ if (1) source(file.path(canalysis, "analysis_random_forest_training.R"))
+ #7.2: Aplication of random forest on field samples
+ 
+ 
+ 
+ 
+ 
 # ***********************************************************
 # Part end: Save information key information about project    ----
 # ***********************************************************

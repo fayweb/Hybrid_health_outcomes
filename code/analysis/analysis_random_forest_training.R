@@ -51,7 +51,7 @@ WL_predict_gene <- randomForest(WL_max ~., data = train.data,
 
 # ntree = number of trees     
 # save the model 
-save(WL_predict_gene, file =  paste0(cmodels, "WL_predict_gene.RData"))
+saveRDS(WL_predict_gene, file =  paste0(cmodels, "WL_predict_gene.RDS"))
 print(WL_predict_gene)
 
 predict_WL_cv <- rf.crossValidation(x = WL_predict_gene, xdata = train.data, 
