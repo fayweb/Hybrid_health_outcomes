@@ -204,14 +204,13 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  # Part 7: Analysis                           ----
  # ***********************************************************
  #----------------------------------------------------------*
- #7: PCA 
- # performing a pca analysis on the laboratory immune gene data
+ #7: Random forest 
+ # Training and testing a random forest that predicts weight los
+ # on experimental infections with Eimeria spp. 
  # Requires: hm
- # Creates: lab
- # Plots: biplot, pca_variables,
- #  contr_PC1, contr_PC2
+ # Creates random forest model: WL_predict_gene.RData
  #----------------------------------------------------------*
- 
+ if (0) source(file.path(canalysis, "analysis_random_forest_training.R"))
 
 # ***********************************************************
 # Part end: Save information key information about project    ----

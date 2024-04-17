@@ -2,8 +2,12 @@
 # Part 7: Analysis                           ----
 # ***********************************************************
 #----------------------------------------------------------*
-#7: Training a random forest on the expression of 19 genes measured
-# in experimental infections with Eimeria spp. 
+#7: Random forest 
+# Training and testing a random forest that predicts weight los
+# on experimental infections with Eimeria spp. 
+# Requires: hm
+# Creates random forest model: WL_predict_gene.RData
+#----------------------------------------------------------*
 
 lab <- hm %>%
     filter(origin == "Lab")
@@ -55,13 +59,12 @@ predict_WL_cv <- rf.crossValidation(x = WL_predict_gene, xdata = train.data,
 
 predict_WL_cv$fit.var.exp
 
-par(mfrow=c(2,2))
-
+par(mar=c(1,1,1,1))
 
 ##################
 ##################
 ########## Plots
-dev.off()
+
 root_mean <- plot(predict_WL_cv)
 
 # Root Mean Squared Error (observed vs. predicted) from each Bootstrap 
@@ -115,8 +118,8 @@ var_imp <- var_imp %>%
         theme_minimal() + # A clean, minimal theme
         theme(axis.text.x = element_text(angle = 45, hjust = 1), # Adjust text angle for x-axis labels if needed
               legend.title = element_blank()) + # Remove the legend title if desired
-        scale_fill_viridis_c(option = "magma", direction = -1) # Apply a Viridis color scale with the 'magma' option
-
+        scale_fill_viridis_c(option = "magma", direction = -1) + # Apply a Viridis color scale with the 'magma' option
+        theme(legend.position = c(0.8, 0.4))
  importance_plot
 ## S3 method for class 'randomForest'
 plot(WL_predict_gene, type = "l", main=deparse(substitute(x)))
@@ -142,8 +145,6 @@ result <- test.data
 result <- cbind(result, predictions)
 
 # what is the correlation between predicted and actual data?
-cor(result$WL_max, result$predictions, 
-    method = c("pearson", "kendall", "spearman"))
 
 cor.test(result$WL_max, result$predictions)
 
@@ -215,9 +216,10 @@ ggpredict(model, terms = c("WL_max", "current_infection")) %>%
         axis.title.y = element_text(size = 12),
         axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12),
-        legend.title = element_text(size = 12),
+        legend.title = element_blank(),
         legend.text = element_text(size = 12)
-    ) -> lm_weight_loss_predictions
+    ) +
+    theme(legend.position = c(0.2, 0.2)) -> lm_weight_loss_predictions
 
 lm_weight_loss_predictions
 
@@ -280,7 +282,8 @@ test_lab %>%
                                   E_ferrisi = "forestgreen", 
                                   uninfected = "deepskyblue")) +
     scale_size_continuous(range = c(2, 10)) +
-    guides(size = "none") -> predictions_random_for_lab
+    guides(size = "none") +
+    theme(legend.position = c(0.8, 0.2))-> predictions_random_for_lab
     
 predictions_random_for_lab
     
@@ -292,7 +295,7 @@ ggsave(plot = predictions_random_for_lab,
 
 
 combi_plot <- (importance_plot | predictions_random_for_lab) +
-    plot_layout(guides = 'collect') + # Collect all legends into a single legend
+    #plot_layout(guides = 'collect') + # Collect all legends into a single legend
     plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
 
 combi_plot
