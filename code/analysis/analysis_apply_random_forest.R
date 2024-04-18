@@ -1,9 +1,7 @@
-# ***********************************************************
-# Part 7: Analysis                           ----
-# ***********************************************************
-#----------------------------------------------------------*
-#7.2: application of random forest trained on laboratory data
-# set, on field samples
+#7.2: Aplication of random forest on field samples
+# requires hm and random forest model
+# Creates Field with updated new variable of predicted weight loss for each mouse
+# removed one mouse due to missing genotyping
 
 # filter for the field mice
 Field <- hm %>%

@@ -28,7 +28,8 @@ pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor,
                visdat, corrplot, RColorBrewer, ggplot2, VIM, limma, 
                latticeExtra, patchwork,FactoMineR, ggrepel, factoextra, 
                reshape2, sjPlot, stargazer, jtools,modelsummary, ggeffects, 
-               pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities)
+               pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities,
+               parasiteLoad, fitdistrplus)
     
 ## Define within project file paths ----
         # code
@@ -84,6 +85,8 @@ output <- paste0(one_drive, "/output")
                  "IL1RN","CASP1", "CXCL9", "IDO1", "IRGM1", "MPO", 
                  "MUC2", "MUC5AC", "MYD88", "NCR1", "PRF1", "RETNLB", "SOCS1", 
                  "TICAM1", "TNF")
+ 
+ EqPCR.cols      <- c("delta_ct_cewe_MminusE", "MC.Eimeria", "Ct.Eimeria")
 
     ## Define functions ----
 if (1) source(file.path(c, "functions.R"))
@@ -198,7 +201,6 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  #----------------------------------------------------------*
  if (0) source(file.path(canalysis, "analysis_multiple_multivariate_regression.R"))
  
-
  
  # ***********************************************************
  # Part 7: Analysis                           ----
@@ -210,10 +212,17 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  # Requires: hm
  # Creates random forest model: WL_predict_gene.RData
  #----------------------------------------------------------*
- if (1) source(file.path(canalysis, "analysis_random_forest_training.R"))
+ if (0) source(file.path(canalysis, "analysis_random_forest_training.R"))
  #7.2: Aplication of random forest on field samples
- 
- 
+ # requires hm and random forest model
+ # Creates Field with updated new variable of predicted weight loss for each mouse
+ # removed one mouse due to missing genotyping
+ if (1) source(file.path(canalysis, "analysis_apply_random_forest.R"))
+ # 7.3: We want to analyze the distribution of the predicted outcome variable
+ # "WL_max" (predicted weight loss dependent on the immune gene expression values)
+ # the distribution type is required for the downstream analysis
+ # It seems that our predicted weight loss variale fits a normal distribution
+ if (1) source(file.path(canalysis, " analysis_fit_distribution.R"))
  
  
  
