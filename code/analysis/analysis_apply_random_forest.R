@@ -13,6 +13,7 @@ Field <- hm %>%
 
 # select the gene columns
 gene <-  Field %>%
+    ungroup() %>%
     dplyr::select(c(Mouse_ID, all_of(Genes_v)))
 
 # data frame with only the genes
@@ -33,9 +34,9 @@ predicted_WL <- predict(weight_loss_predict, genes)
 result_field <- genes
 
 #add the new variable of predictions to the result object
-result_field <- cbind(result_field, predicted_WL)
+result_field <- cbind(result_field, as.data.frame(predicted_WL))
 
 # add it to the field data 
-Field <- cbind(Field, predicted_WL)
+Field <- cbind(Field,  as.data.frame(predicted_WL))
 
-rm(gene,genes)
+rm(gene,genes, result_field, weight_loss_predict)
