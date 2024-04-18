@@ -29,7 +29,7 @@ pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor,
                latticeExtra, patchwork,FactoMineR, ggrepel, factoextra, 
                reshape2, sjPlot, stargazer, jtools,modelsummary, ggeffects, 
                pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities,
-               parasiteLoad, fitdistrplus)
+               parasiteLoad, fitdistrplus, optimx, leaflet, magick)
     
 ## Define within project file paths ----
         # code
@@ -222,7 +222,26 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  # "WL_max" (predicted weight loss dependent on the immune gene expression values)
  # the distribution type is required for the downstream analysis
  # It seems that our predicted weight loss variale fits a normal distribution
- if (1) source(file.path(canalysis, " analysis_fit_distribution.R"))
+ if (0) source(file.path(canalysis, "analysis_fit_distribution.R"))
+ # 7.4: Here we test the hybrid impact on predicted weight loss and further test 
+ # requires script: "analysis_apply_random_forest.R"
+ # the effect of sex and infection status with Eimeria 
+ # I have further tested to see if the presence of various parasites independent 
+ # of eimeria have an impact on the predicted weight loss in combination with 
+ # hybridicity 
+ # # requires script: "analysis_apply_random_forest.R"
+ if (0) source(file.path(canalysis, "analysis_hybrid_impact_sex_infection.R"))
+ # 7.5: Exploring the relationships between variables and the predicted weight 
+ # loss of field mice
+ # Is there a relationship with the infection intensities with Eimeria spp.?
+ # Is there a relationship between bmi and predicted weight loss?
+ # We find a weak relationship of bmi and predicted weight loss
+ if (0) source(file.path(canalysis, "analysis_bmi_predicted_WL.R"))
+ # 7.6: Could we derive tolerance out of the predicted health impact and 
+ # infection intenstities for each mouse? 
+ # If so, can we test the hybridicity on this derives tolerance variable?
+ # No evidence I can do that
+ if (0) source(file.path(canalysis, "analysis_tolerance.R"))
  
  
  

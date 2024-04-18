@@ -36,37 +36,6 @@ weibull_ <- fitdist(x, "weibull")
 gamma_ <- fitdist(x, "gamma")
 
 
-# Define function to be used to test, get the log lik and aic
-tryDistrib <- function(x, distrib){
-  # deals with fitdistr error:
-  fit <- 
-      tryCatch(MASS::fitdistr(x, distrib), error=function(err) "fit failed")
-  return(list(fit = fit,
-              loglik = tryCatch(fit$loglik, error=function(err) "no loglik computed"), 
-              AIC = tryCatch(fit$aic, error=function(err) "no aic computed")))
-}
-
-
-findGoodDist <- function(x, distribs, distribs2){
-    l =lapply(distribs, function(i) tryDistrib(x, i))
-    names(l) <- distribs
-    print(l)
-    listDistr <- lapply(distribs2, function(i){
-        if (i %in% "t"){
-            fitdistrplus::fitdist(x, i, start = list(df =2))
-        } else {
-            fitdistrplus::fitdist(x,i)
-        }}
-    ) 
-    par(mfrow=c(2,2))
-    denscomp(listDistr, legendtext=distribs2)
-    cdfcomp(listDistr, legendtext=distribs2)
-    qqcomp(listDistr, legendtext=distribs2)
-    ppcomp(listDistr, legendtext=distribs2)
-    par(mfrow=c(1,1))
-}
-
-
 ## Now fit the distributions to the predicted weight loss data
 tryDistrib(x, "normal") # -729.2451
 tryDistrib(x, "binomial") # failed
