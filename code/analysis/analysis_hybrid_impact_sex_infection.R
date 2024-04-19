@@ -612,3 +612,4 @@ infection_plots <-
 
 ggsave(infection_plots, filename = paste0(panels_fi, "/infection_panel.jpeg"),
        width = 12, height = 24, dpi = 1000)
+

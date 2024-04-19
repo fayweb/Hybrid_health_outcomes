@@ -37,10 +37,10 @@ gamma_ <- fitdist(x, "gamma")
 
 
 ## Now fit the distributions to the predicted weight loss data
-tryDistrib(x, "normal") # -729.2451
+tryDistrib(x, "normal") # -778.5967
 tryDistrib(x, "binomial") # failed
 tryDistrib(x, "student") # failed
-tryDistrib(x, "weibull") # -740.7075
+tryDistrib(x, "weibull") # -784.4636
 tryDistrib(x, "weibullshifted") # failed
 # Seems like the normal distribution is a better fit in this case
 
@@ -59,3 +59,4 @@ summary(weibull_)
 
 
 rm(normal_, weibull_, gamma_, )
+

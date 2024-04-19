@@ -25,7 +25,7 @@ parasiteLoad::getParamBounds("normal", data = Field_tol, response = "tolerance")
 
 x <- Field_tol$tolerance
 
-tryDistrib(x, "normal") #-208.0489
+tryDistrib(x, "normal") #-206.8664
 tryDistrib(x, "binomial")
 tryDistrib(x, "student")
 tryDistrib(x, "weibull")
@@ -41,17 +41,17 @@ fitWL_tol <- parasiteLoad::analyse(data = Field_tol,
                                    group = "Sex")
 
 
-plot_tolerance_Sex <- 
-    bananaPlot(mod = fitWL_tol$H3,
-               data = Field_tol,
-               response = "tolerance",
-               group = "Sex") +
-    scale_fill_manual(values = c("blueviolet", "limegreen")) +
-    scale_color_manual(values = c("blueviolet", "limegreen")) +
-    theme_bw() 
+##plot_tolerance_Sex <- 
+#    bananaPlot(mod = fitWL_tol$H3,
+ #              data = Field_tol,
+  #             response = "tolerance",
+   #            group = "Sex") +
+    #scale_fill_manual(values = c("blueviolet", "limegreen")) +
+    #scale_color_manual(values = c("blueviolet", "limegreen")) +
+    #theme_bw() 
 
 
-plot_tolerance_Sex
+#plot_tolerance_Sex
 
 # Create HI bar
 HIgradientBar <- ggplot(data.frame(hi = seq(0,1,0.0001)),

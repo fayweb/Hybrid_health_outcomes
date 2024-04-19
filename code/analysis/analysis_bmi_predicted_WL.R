@@ -86,7 +86,9 @@ ggplot(data = Field, aes(x = BMI, y = predicted_WL)) +
         plot.title = element_text(hjust = 0.5),  # Center the title
         axis.text = element_text(color = "black"),  # Ensure text is readable
         legend.position = "none"  # Hide the legend if unnecessary
-    )
+    ) -> bmi_plot
+
+bmi_plot
 
 bmi <- lm(predicted_WL ~ BMI, data = Field)
 

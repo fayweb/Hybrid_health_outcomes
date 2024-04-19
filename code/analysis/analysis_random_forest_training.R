@@ -44,7 +44,6 @@ test.data <- gene_W[-training.samples, ]
 ## ----predicting_weight_loss_model---
 set.seed(333)
 
-
 #train the model
 WL_predict_gene <- randomForest(WL_max ~., data = train.data, 
                                     proximity = TRUE, ntree = 26) 
@@ -96,7 +95,7 @@ oob_error_rate <- 1 - sum(diag(WL_predict_gene$confusion)) / sum(WL_predict_gene
 ### Visualize variable importance ---
 #Call importance() function on the model model to check how the attributes used 
 # as predictors affect our WL_predict_gene
-ImpData <- as.data.frame(importance(WL_predict_gene))
+ImpData <- as.data.frame(randomForest::importance(WL_predict_gene))
 ImpData$Var.Names <- row.names(ImpData)
 varImp(WL_predict_gene)
 var_imp <- as.data.frame(varImp(WL_predict_gene))
@@ -132,7 +131,7 @@ ggsave(filename = paste0(an_fi, "/variable_imporance_random.jpeg"),
 
 
 # Get variable importance from the WL_predict_gene fit
-ImpData <- as.data.frame(importance(WL_predict_gene))
+ImpData <- as.data.frame(randomForest::importance(WL_predict_gene))
 
 #The predict() function in R is used to predict the values based on the 
 # input data.

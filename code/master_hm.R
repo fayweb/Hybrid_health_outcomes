@@ -242,9 +242,14 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  # If so, can we test the hybridicity on this derives tolerance variable?
  # No evidence I can do that
  if (0) source(file.path(canalysis, "analysis_tolerance.R"))
+ # 7.7: Testing impact of infection status with Eimeria spp. on wild mice
+ # Do we predict higher weight loss for mice that are infected with Eimeria spp? 
+ # Is there any evidence for an association between infection status, 
+ #hybridicity and their impact on weight loss? 
+ if (0) source(file.path(canalysis, 
+                         "analysis_predicted_WL_infection_with_Eimeria.R"))
  
- 
- analysis predicted infection 
+
  analysis help next
  
 # ***********************************************************

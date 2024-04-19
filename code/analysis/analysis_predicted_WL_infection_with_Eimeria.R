@@ -1,8 +1,10 @@
+# 7.7: Testing impact of infection status with Eimeria spp. on wild mice
+# Do we predict higher weight loss for mice that are infected with Eimeria spp? 
+# Is there any evidence for an association between infection status, hybridicity
+# and their impact on weight loss? 
 
-
-## hybrid index + infectopm
+# make infection status a facotr
 Field$MC.Eimeria <- factor(Field$MC.Eimeria, levels = c("FALSE", "TRUE"))
-
 
 ################## Linearizing the HI
 # calculating the expected heterozygocity
@@ -10,7 +12,7 @@ Field <- Field %>%
     mutate(HE = 2*HI*(1-HI), #linearize HI
            tolerance = predicted_WL / delta_ct_cewe_MminusE) 
 
-model1 <- lm(predicted_WL ~ MC.Eimeria *delta_ct_cewe_MminusE * HE + 
+model1 <- lm(predicted_WL ~ MC.Eimeria + MC.Eimeria *delta_ct_cewe_MminusE * HE + 
                  HI + HE, Field)
 summary(model1)
 
@@ -24,21 +26,15 @@ ggsave(filename = paste0(an_fi, "/coefficient_plot_model1.jpeg"), plot = plot1,
 
 
 
-## hybrid index + infectopm
+## hybrid index + expected heterozygocity
 model2 <- lm(predicted_WL ~  HI + HE, Field)
 summary(model2)
-plot_summs(model2,  plot.distributions = TRUE, robust = TRUE, scale = TRUE,
-           colors = "mediumblue")  -> plot_2
 
-plot_2
-
-ggsave(filename = paste0(an_fi, "/coefficient_plot_HE.jpeg"), plot = plot_2, 
-       width = 5, height = 4, dpi = 300)
-
+# infection status with eimeria
 model3 <- lm(predicted_WL ~  MC.Eimeria, Field)
 summary(model3)
 
-plot_summs(model1, model2, model3, robust = TRUE, 
+plot_summs(model1, model2, robust = TRUE, 
            scale = TRUE) -> model1_2
 model1_2
 
@@ -50,7 +46,7 @@ ggsave(filename = paste0(an_fi, "figures/coefficient_plot_model1_2_3.jpeg"),
 ############################################
 
 # Define colors
-colors <- c("TRUE" = "forestgreen", "FALSE" = "purple")
+colors <- c("TRUE" = "purple", "FALSE" = "steelblue")
 
 
 Field %>%
@@ -90,11 +86,12 @@ ggplot(aes(y = MC.Eimeria, x = predicted_WL, fill = MC.Eimeria)) +
     theme_minimal() +
     labs(y = "Infection status with Eimerai spp.", 
          x = "Predicted weight loss" , 
-         fill = "Infection status with Eimeria spp.") -> raincloud_plots__eimeria
+         fill = "Infection status with Eimeria spp.") +
+    theme(legend.position = "top") -> raincloud_plots__eimeria
 
 raincloud_plots__eimeria
 
-ggsave(plot = raincloud_plots__eimeria, filename = "figures/raincloud_eimeria.jpeg", 
+ggsave(plot = raincloud_plots__eimeria, filename = paste0(an_fi, "/raincloud_eimeria.jpeg"), 
        width = 6, 
        height = 4, dpi = 1000)
 
@@ -102,7 +99,7 @@ ggsave(plot = raincloud_plots__eimeria, filename = "figures/raincloud_eimeria.jp
 # Combine the plots
 panel <- 
     (raincloud_plots__eimeria | model1_2) +
-    plot_layout(guides = 'collect') + # Collect all legends into a single legend
+   # plot_layout(guides = 'collect') + # Collect all legends into a single legend
     plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
 
 # Add a figure title
@@ -114,7 +111,7 @@ panel <- panel +
 print(panel)
 
 # Save the panel figure
-ggsave('figure_panels/infected_hybrids.jpeg', 
+ggsave(paste0(panels_fi, '/infected_hybrids.jpeg'), 
        panel, width = 12, height = 5, dpi = 300)
 
 
