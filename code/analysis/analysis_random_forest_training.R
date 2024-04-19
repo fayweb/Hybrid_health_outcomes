@@ -47,7 +47,7 @@ set.seed(333)
 
 #train the model
 WL_predict_gene <- randomForest(WL_max ~., data = train.data, 
-                                    proximity = TRUE, ntree = 501) 
+                                    proximity = TRUE, ntree = 26) 
 
 # ntree = number of trees     
 # save the model 
@@ -366,8 +366,61 @@ figure_panel_2 <- annotate_figure(figure_panel_2,
 print(figure_panel_2)
 
 
-ggsave(paste0(panels_fi, "/panel_random_forest_lab_alternative.jpeg"), figure_panel_2, 
+ggsave(paste0(panels_fi, "/panel_random_forest_lab_alternative.jpeg"), 
+       figure_panel_2, 
        width = 18, height = 18, dpi = 300)
 
+
+########################################################################
+## Decision to re-train the random forest to the complete data set before 
+# application to wild samples
+set.seed(232)
+
+#train the model
+WL_predict_gene <- randomForest(WL_max ~., data = gene_W, 
+                                proximity = TRUE, ntree = 308) 
+
+# ntree = number of trees     
+# save the model 
+saveRDS(WL_predict_gene, file =  paste0(cmodels, "WL_predict_gene.RDS"))
+print(WL_predict_gene)
+
+predict_WL_cv <- rf.crossValidation(x = WL_predict_gene, xdata = gene_W, 
+                                    p = 0.10, n = 99, ntree = 501)
+
+predict_WL_cv$fit.var.exp
+
+par(mar=c(1,1,1,1))
+
+##################
+##################
+########## Plots
+
+root_mean <- plot(predict_WL_cv)
+
+# Root Mean Squared Error (observed vs. predicted) from each Bootstrap 
+# iteration (cross-validation)
+mean_error <- plot(predict_WL_cv, stat = "mse")
+
+#Percent variance explained from specified fit model
+model_var <- plot(predict_WL_cv, stat = "var.exp")
+
+#Mean Absolute Error from each Bootstrapped model
+abs_error <- plot(predict_WL_cv, stat = "mae")
+
+
+#d# ---------------------------------------------------------------------------------------------------
+error_random  <- plot(WL_predict_gene)
+
+## ---------------------------------------------------------------------------------------------------
+# number of trees with lowest MSE
+which.min(WL_predict_gene$mse)
+
+# RMSE of this optimal random forest
+sqrt(WL_predict_gene$mse[which.min(WL_predict_gene$mse)])
+
+WL_predict_gene$mtry
+oob_error_rate <- WL_predict_gene$mse[WL_predict_gene$ntree]
+oob_error_rate <- 1 - sum(diag(WL_predict_gene$confusion)) / sum(WL_predict_gene$confusion)
 
 
