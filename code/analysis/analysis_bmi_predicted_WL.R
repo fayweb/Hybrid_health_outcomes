@@ -8,7 +8,7 @@
 # infected samples
 Field_infected <- Field %>%
   drop_na(delta_ct_cewe_MminusE) %>%
-    filter(MC.Eimeria == TRUE)
+    filter(infection_status == TRUE)
 
 ggplot(data = Field_infected, aes(x = delta_ct_cewe_MminusE, y = predicted_WL)) +
     geom_point() +

@@ -8,6 +8,8 @@ field <- field %>%
         eimeriaSpecies == "" ~ "NA",
         TRUE ~ eimeriaSpecies))
 
+field$Mouse_ID <- gsub("_", "", field$Mouse_ID)
+
 #### create output file:
 write.csv(field, paste0(dfield_final, "/field_cleaned_data.csv"), row.names = FALSE)
 

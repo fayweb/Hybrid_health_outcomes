@@ -294,7 +294,8 @@ ggsave(plot = predictions_random_for_lab,
 
 
 combi_plot <- (importance_plot | predictions_random_for_lab) +
-    #plot_layout(guides = 'collect') + # Collect all legends into a single legend
+    #plot_layout(guides = 'collect') + # Collect all legends into a 
+    #single legend
     plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
 
 combi_plot
@@ -302,14 +303,16 @@ combi_plot
 # Add a figure title
 combi_plot <- combi_plot + 
     plot_annotation(title = 'Fig. 6', 
-                    theme = theme(plot.title = element_text(size = 13, hjust = 0)))
+                    theme = theme(plot.title = element_text(size = 13, 
+                                                            hjust = 0)))
 
 # Display the panel figure
 print(combi_plot)
 
 
 ggsave(plot = combi_plot, 
-       filename = paste0(panels_fi, "/variableimp_rand_results_lab.jpeg"), width = 14, 
+       filename = paste0(panels_fi, "/variableimp_rand_results_lab.jpeg"), 
+       width = 14, 
        height = 5, dpi = 1000)
 
 # Calculate the linear model
@@ -318,7 +321,9 @@ lm_fit <- lm(WL_max ~ predictions, data = test_lab)
 # Extract coefficients for the model formula
 intercept <- round(coef(lm_fit)[1], 2)
 slope <- round(coef(lm_fit)[2], 2)
-formula_text <- paste0("WL_max = ", intercept, " ", ifelse(slope >= 0, "+ ", "- "), abs(slope), " * predictions")
+formula_text <- paste0("WL_max = ", intercept, " ", 
+                       ifelse(slope >= 0, "+ ", "- "), 
+                       abs(slope), " * predictions")
 
 # Calculate correlation
 cor_value <- round(cor(test_lab$WL_max, test_lab$predictions), 2)
@@ -336,10 +341,15 @@ test_lab   %>%
     theme(
         plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
         legend.position = "none") +
-    annotate("text", x = min(test_lab$predictions), y = max(test_lab$WL_max), 
-             label = formula_text, hjust = 0, vjust = 4, size = 4, color = "blue") +
-    annotate("text", x = min(test_lab$predictions), y = max(test_lab$WL_max), 
-             label = cor_text, hjust = 0, vjust = 1.5, size = 4, color = "blue") -> linear_plot
+    annotate("text", 
+             x = min(test_lab$predictions), y = max(test_lab$WL_max), 
+             label = formula_text, hjust = 0, 
+             vjust = 4, 
+             size = 4, color = "blue") +
+    annotate("text", x = min(test_lab$predictions), 
+             y = max(test_lab$WL_max), 
+             label = cor_text, hjust = 0, vjust = 1.5, 
+             size = 4, color = "blue") -> linear_plot
 
 linear_plot
 

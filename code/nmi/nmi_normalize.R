@@ -1,5 +1,3 @@
-#Normalization
-Genes_v
 
 # select genes
 genes <- hm[, c(Genes_v, "PPIB", "GAPDH")]

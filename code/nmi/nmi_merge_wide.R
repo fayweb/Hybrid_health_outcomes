@@ -19,6 +19,7 @@ death_challenge <- lab %>%
     filter(death == "challenge", infection == "challenge")
 
 lab <- rbind(death_prim, death_challenge)
+lab$MC.Eimeria <- as.factor(lab$MC.Eimeria)
 
 rm(death_prim, death_challenge)
 

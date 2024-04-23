@@ -124,9 +124,10 @@ Mouse_ID <- hm$Mouse_ID
 result <- data.frame(Mouse_ID, complete_genes)
 
 hm_imp <- hm %>%
-    dplyr::select(-all_of(Genes_v)) %>%
+    dplyr::select(-c(all_of(Genes_v), GAPDH, PPIB)) %>%
     left_join(result, by = "Mouse_ID")
 
+outersect(colnames(hm_imp), colnames(hm))
 
 write.csv(hm_imp, paste0(danal_final, "/imputed_clean_data.csv"), row.names = FALSE)
 

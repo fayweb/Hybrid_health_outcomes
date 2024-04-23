@@ -18,7 +18,8 @@ lab$mouse_strain <- gsub(pattern = "_", " ", lab$mouse_strain)
 # order factor levels
 lab$mouse_strain <- factor(lab$mouse_strain, 
                            levels = names(
-                               sort(tapply(lab$WL_max, lab$mouse_strain, median))))
+                               sort(tapply(lab$WL_max, lab$mouse_strain, 
+                                           median))))
 
 #Numbers of each mouse strain
 
@@ -71,14 +72,18 @@ ggsave(filename =  paste0(d_fi,"/densityplot_HI.jpeg"),
 # Base world map
 world_map <- map_data("world")
 
-lon_range <- range(Field$Longitude) + c(-0.1, 0.1)  # Expanding the range a bit for padding
-lat_range <- range(Field$Latitude) + c(-0.1, 0.1)   # Expanding the range a bit for padding
+lon_range <- range(Field$Longitude) + c(-0.1, 0.1)  # Expanding the range a 
+#bit for padding
+lat_range <- range(Field$Latitude) + c(-0.1, 0.1)   # Expanding the range a 
+#bit for padding
 
 # Plot with zoom
 map_hybrids <-
     ggplot() +
-    geom_polygon(data = world_map, aes(x = long, y = lat, group = group), fill = "gray90", color = "white") +
-    geom_point(data = Field, aes(x = Longitude, y = Latitude, color = HI), size = 3) +
+    geom_polygon(data = world_map, aes(x = long, y = lat, group = group), 
+                 fill = "gray90", color = "white") +
+    geom_point(data = Field, aes(x = Longitude, y = Latitude, color = HI), 
+               size = 3) +
     scale_color_gradient(low = "blue", high = "red") +
     labs(#title = "Mouse HI Values Across Locations", 
         x = "Longitude", y = "Latitude") +
@@ -98,9 +103,12 @@ ggsave(filename = paste0(d_fi,"/map_HI.jpeg"),
 ggplot(lab %>%
            filter(infection == "challenge"), 
        aes(x = WL_max, y = mouse_strain, fill = mouse_strain)) + 
-    geom_density_ridges(jittered_points = TRUE, position = position_points_jitter(height = 0), 
-                        scale = 0.9, alpha = 0.6, point_shape = 21, point_size = 2, point_alpha = 1) +
-    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5, position = position_nudge(x = 0.2)) +
+    geom_density_ridges(jittered_points = TRUE, position = 
+                            position_points_jitter(height = 0), 
+                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        point_size = 2, point_alpha = 1) +
+    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5,
+                 position = position_nudge(x = 0.2)) +
     coord_flip() +
     theme_minimal() +
     theme(legend.position = "none",
@@ -118,9 +126,12 @@ model <- lm(max_WL ~ mouse_strain * infection, lab)
 summary(model)
 
 ggplot(lab, aes(x = WL_max, y = mouse_strain, fill = mouse_strain)) + 
-    geom_density_ridges(jittered_points = TRUE, position = position_points_jitter(height = 0), 
-                        scale = 0.9, alpha = 0.6, point_shape = 21, point_size = 2, point_alpha = 1) +
-    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5, position = position_nudge(x = 0.2)) +
+    geom_density_ridges(jittered_points = TRUE, position = 
+                            position_points_jitter(height = 0), 
+                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        point_size = 2, point_alpha = 1) +
+    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5, 
+                 position = position_nudge(x = 0.2)) +
     coord_flip() +
     theme_minimal() +
     theme(legend.position = "none",
@@ -141,7 +152,8 @@ color_mapping <- c("E_falciformis" = "salmon",
                    "E_ferrisi" = "forestgreen", 
                    "uninfected" = "skyblue")
 
-lab$current_infection <- gsub(pattern = "_", replacement = ". ", lab$current_infection)
+lab$current_infection <- gsub(pattern = "_", replacement = ". ", 
+                              lab$current_infection)
 
 
 
@@ -149,9 +161,12 @@ ggplot(Challenge %>%
            filter(infection == "challenge") %>%
            group_by(Mouse_ID), 
        aes(x = WL_max, y = Parasite_challenge, fill = Parasite_challenge)) + 
-    geom_density_ridges(jittered_points = TRUE, position = position_points_jitter(height = 0), 
-                        scale = 0.9, alpha = 0.6, point_shape = 21, point_size = 2, point_alpha = 1) +
-    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5, position = position_nudge(x = 0.2)) +
+    geom_density_ridges(jittered_points = TRUE, position = 
+                            position_points_jitter(height = 0), 
+                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        point_size = 2, point_alpha = 1) +
+    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5, 
+                 position = position_nudge(x = 0.2)) +
     # coord_flip() +
     theme_minimal() +
     scale_fill_manual(values = color_mapping) +
@@ -164,16 +179,20 @@ ggplot(Challenge %>%
 
 eimeria_weight_chal
 
-ggsave(filename = paste0(d_fi,"/eimeria_strains_weight_c.jpeg"), plot = eimeria_weight_chal, 
+ggsave(filename = paste0(d_fi,"/eimeria_strains_weight_c.jpeg"), 
+       plot = eimeria_weight_chal, 
        width = 8, height = 6, dpi = 1000)
 
 ggplot(Challenge %>%
            filter(infection == "primary") %>%
            group_by(Mouse_ID), 
        aes(x = WL_max, y = Parasite_primary, fill = Parasite_primary)) + 
-    geom_density_ridges(jittered_points = TRUE, position = position_points_jitter(height = 0), 
-                        scale = 0.9, alpha = 0.6, point_shape = 21, point_size = 2, point_alpha = 1) +
-    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5, position = position_nudge(x = 0.2)) +
+    geom_density_ridges(jittered_points = TRUE, 
+                        position = position_points_jitter(height = 0), 
+                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        point_size = 2, point_alpha = 1) +
+    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5,
+                 position = position_nudge(x = 0.2)) +
     # coord_flip() +
     theme_minimal() +
     scale_fill_manual(values = color_mapping) +
@@ -189,13 +208,17 @@ ggsave(filename = paste0(d_fi,"/eimeria_strains_weight_p.jpeg"),
        width = 8, height = 6, dpi = 1000)
 
 # prim vs challenge
-lab$current_infection <- gsub(pattern = "_", replacement = ". ", lab$current_infection)
+lab$current_infection <- gsub(pattern = "_", replacement = ". ", 
+                              lab$current_infection)
 
 ggplot(lab, 
        aes(x = WL_max, y = current_infection, fill = current_infection)) + 
-    geom_density_ridges(jittered_points = TRUE, position = position_points_jitter(height = 0), 
-                        scale = 0.9, alpha = 0.6, point_shape = 21, point_size = 2, point_alpha = 1) +
-    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5, position = position_nudge(x = 0.2)) +
+    geom_density_ridges(jittered_points = TRUE, 
+                        position = position_points_jitter(height = 0), 
+                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        point_size = 2, point_alpha = 1) +
+    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5, 
+                 position = position_nudge(x = 0.2)) +
     # coord_flip() +
     theme_minimal() +
     theme(legend.position = "none",
@@ -230,9 +253,12 @@ Challenge %>%
                fill = Parasite_challenge)) +
     geom_jitter(width = 0.2, height = 0, alpha = 0.4, 
                 shape = 21, stroke = 0.5, size = 3) + # Adjusted for outlines
-    geom_smooth(aes(fill = Parasite_challenge), method = "loess", se = TRUE, alpha = 0.2) + # Add smooth line with confidence intervals
+    geom_smooth(aes(fill = Parasite_challenge), 
+                method = "loess", se = TRUE, alpha = 0.2) + 
+    #Add smooth line with confidence intervals
     scale_color_manual(values = color_mapping) + # Apply custom color mapping
-    scale_fill_manual(values = color_mapping) + # Ensure fills match colors for confidence intervals
+    scale_fill_manual(values = color_mapping) + 
+    # Ensure fills match colors for confidence intervals
     labs(#title = "Relative Weight by Days Post Infection",
         x = "Days Post Infection (dpi)",
         y = "Relative weight, challenge infections",
@@ -255,9 +281,12 @@ Challenge %>%
                fill = Parasite_primary)) +
     geom_jitter(width = 0.2, height = 0, alpha = 0.4, 
                 shape = 21, stroke = 0.5, size = 3) + # Adjusted for outlines
-    geom_smooth(aes(fill = Parasite_primary), method = "loess", se = TRUE, alpha = 0.2) + # Add smooth line with confidence intervals
+    geom_smooth(aes(fill = Parasite_primary), 
+                method = "loess", se = TRUE, alpha = 0.2) + 
+    # Add smooth line with confidence intervals
     scale_color_manual(values = color_mapping) + # Apply custom color mapping
-    scale_fill_manual(values = color_mapping) + # Ensure fills match colors for confidence intervals
+    scale_fill_manual(values = color_mapping) + 
+    # Ensure fills match colors for confidence intervals
     labs(#title = "Relative Weight by Days Post Infection",
         x = "Days Post Infection (dpi)",
         y = "Relative weight, primary infections",
@@ -281,9 +310,11 @@ Challenge %>%
     geom_jitter(width = 0.2, height = 0, alpha = 0.6, 
                 shape = 21, stroke = 0.5, size = 3) + # Adjusted for outlines
     geom_smooth(aes(fill = Parasite_challenge), 
-                method = "loess", se = TRUE, alpha = 0.2) + # Add smooth line with confidence intervals
+                method = "loess", se = TRUE, alpha = 0.2) + 
+    # Add smooth line with confidence intervals
     scale_color_manual(values = color_mapping) + # Apply custom color mapping
-    scale_fill_manual(values = color_mapping) + # Ensure fills match colors for confidence intervals
+    scale_fill_manual(values = color_mapping) + 
+    # Ensure fills match colors for confidence intervals
     labs(#title = "Oocysts per Gram by Days Post Infection",
         x = "Days Post Infection (dpi)",
         y = "Oocysts per Gram, challenge infections",
@@ -308,9 +339,11 @@ Challenge %>%
     geom_jitter(width = 0.2, height = 0, alpha = 0.6, 
                 shape = 21, stroke = 0.5, size = 3) + # Adjusted for outlines
     geom_smooth(aes(fill = Parasite_primary), 
-                method = "loess", se = TRUE, alpha = 0.2) + # Add smooth line with confidence intervals
+                method = "loess", se = TRUE, alpha = 0.2) + 
+    # Add smooth line with confidence intervals
     scale_color_manual(values = color_mapping) + # Apply custom color mapping
-    scale_fill_manual(values = color_mapping) + # Ensure fills match colors for confidence intervals
+    scale_fill_manual(values = color_mapping) + 
+    # Ensure fills match colors for confidence intervals
     labs(#title = "Oocysts per Gram by Days Post Infection",
         x = "Days Post Infection (dpi)",
         y = "Oocysts per Gram, primary infections",
@@ -343,10 +376,12 @@ panel_figure <- #(ooc_primary | ooc_challenge) / # oocysts
 # Add a figure title
 panel_figure <- panel_figure + 
     plot_annotation(title = 'Fig. 1', 
-                    theme = theme(plot.title = element_text(size = 20, hjust = 0)))
+                    theme = theme(plot.title = element_text(size = 20,
+                                                            hjust = 0)))
 
 # Control sizes of each plot within the panel
-# This is a generic example. You'll need to adjust the widths, heights, and layout design based on your specific needs.
+# This is a generic example. You'll need to adjust the widths,
+#heights, and layout design based on your specific needs.
 panel_figure <- panel_figure + 
     plot_layout(heights = c(1, 1, 1), 
                 widths = c(1, 1, 1)) # Adjust according to your layout needs
@@ -371,7 +406,8 @@ panel_hybr <-
 # Add a figure title
 panel_hybr <- panel_hybr + 
     plot_annotation(title = 'Fig. 7', 
-                    theme = theme(plot.title = element_text(size = 13, hjust = 0)))
+                    theme = theme(plot.title = 
+                                      element_text(size = 13, hjust = 0)))
 
 # Display the panel figure
 print(panel_hybr)
@@ -388,9 +424,12 @@ Eim_strains <-
     lab %>%
     group_by(infection_history) %>%
     dplyr::count() %>%
-    mutate(infection_history = str_replace(infection_history, "falciformis", "E. falciformis"),
-           infection_history = str_replace(infection_history, "ferrisi", "E. ferrisi"),
-           infection_history = str_replace(infection_history, "uninfected", "Uninfected"),
+    mutate(infection_history = str_replace(infection_history, 
+                                           "falciformis", "E. falciformis"),
+           infection_history = str_replace(infection_history, 
+                                           "ferrisi", "E. ferrisi"),
+           infection_history = str_replace(infection_history, 
+                                           "uninfected", "Uninfected"),
            infection_history = str_replace(infection_history, "_", " X "))
 
 Eim_strains                
@@ -399,7 +438,8 @@ as.data.frame(Eim_strains) %>%
     dplyr::rename("Infection history" = infection_history, 
                   "Number of mice" = n) %>%
     gt() %>%
-    tab_header(title = md("Infection history of the mice used in experimental laboratory infections")) 
+    tab_header(title = 
+                   md("Infection history of the mice used in experimental laboratory infections")) 
 
 
 # prim 
@@ -494,11 +534,16 @@ mean(s$dpi)
 model <- lm(WL_max ~ mouse_strain, data = lab)
 summary(model)
 
-Challenge$Parasite_primary <- factor(Challenge$Parasite_primary, levels = 
-                                         c("uninfected", "E_falciformis","E_ferrisi"))
+Challenge$Parasite_primary <- 
+    factor(Challenge$Parasite_primary, levels = 
+                                         c("uninfected", 
+                                           "E_falciformis",
+                                           "E_ferrisi"))
 
 Challenge$Parasite_challenge <- factor(Challenge$Parasite_challenge, levels = 
-                                           c("uninfected", "E_falciformis","E_ferrisi"))
+                                           c("uninfected", 
+                                             "E_falciformis",
+                                             "E_ferrisi"))
 # create a new combined variable 
 Challenge_p <- Challenge %>%
     filter(infection == "primary") %>%

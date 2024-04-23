@@ -10,7 +10,9 @@ length(outersect(colnames(Challenge), colnames(field)))
 # 148 dissimilar columns
 
 #expected columns:
-37 + 148 #185
+37 + 153 #190
+
+Challenge$MC.Eimeria <- as.factor(Challenge$MC.Eimeria)
 
 # now join the two data sets
 hm <- full_join(Challenge, field, 

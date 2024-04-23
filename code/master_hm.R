@@ -29,7 +29,8 @@ pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor,
                latticeExtra, patchwork,FactoMineR, ggrepel, factoextra, 
                reshape2, sjPlot, stargazer, jtools,modelsummary, ggeffects, 
                pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities,
-               parasiteLoad, fitdistrplus, optimx, leaflet, magick, ggdist)
+               parasiteLoad, fitdistrplus, optimx, leaflet, magick, ggdist,
+               ggbeeswarm)
     
 ## Define within project file paths ----
         # code
@@ -250,7 +251,7 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
                          "analysis_predicted_WL_infection_with_Eimeria.R"))
  
 
- analysis help next
+ #analysis help next
  
 # ***********************************************************
 # Part end: Save information key information about project    ----

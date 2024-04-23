@@ -133,6 +133,7 @@ Field_mc <- Field %>%
 
 Field_mc <- Field_mc %>%
     mutate(MC.Eimeria = if_else(MC.Eimeria == "TRUE", "infected", "uninfected"))
+
 Field_mc$MC.Eimeria <- as.factor(Field_mc$MC.Eimeria)
 fitWL_mc <- parasiteLoad::analyse(data = Field_mc,
                                   response = "predicted_WL",
@@ -173,6 +174,14 @@ ggsave(plot = plot_WL_mc_combined,
        filename = paste0(an_fi, "/hybrid_meltingcurve.jpeg"),  
        width = 6, height = 6, dpi = 1000)
 
+Field <- Field %>%
+    mutate(HE = 2*HI*(1-HI)) 
+
+ggplot(Field, aes(x = HE, predicted_WL, color = Sex)) +
+    geom_smooth(method = lm, se = TRUE) 
+
+ggplot(Field, aes(x = HE, predicted_WL, color = infection_status)) +
+    geom_smooth(method = lm, se = TRUE) 
 
 ######################
 # Combine the plots without any space between them and add labels 
@@ -199,6 +208,92 @@ ggsave(plot = map_plot,
        width = 10, 
        height = 5, 
        dpi = 1000)
+
+#############################
+########################
+###################
+################ combining amplicon data
+### Testing diffences between infected and uninfected hybrid mice
+
+# Melting Curve analysis
+Field_mc <- Field %>%
+    drop_na(infection_status)
+
+
+Field_mc <- Field_mc %>%
+    mutate(infection_status = if_else(infection_status == "TRUE", "infected", "uninfected"))
+
+Field_mc$infection_status <- as.factor(Field_mc$infection_status)
+
+fitWL_mc <- parasiteLoad::analyse(data = Field_mc,
+                                  response = "predicted_WL",
+                                  model = "normal",
+                                  group = "infection_status")
+
+
+plot_WL_mc <- 
+    bananaPlot(mod = fitWL_mc$H3,
+               data = Field_mc,
+               response = "predicted_WL",
+               group = "infection_status",
+               cols = c("white", "white")) +
+    scale_fill_manual(values = c("purple", "cornflowerblue"), 
+                      name = "Eimeria spp.") +
+    scale_color_manual(values = c("purple", "cornflowerblue"),
+                       name = "Eimeria spp.") +
+    theme_bw()  +
+    theme(legend.position = c(0.5, 0.05),
+          legend.direction = "horizontal",
+          axis.title.x=element_blank(),
+          axis.text.x=element_blank(),
+          axis.ticks.x=element_blank()) +
+    labs(y = "Predicted weight loss")
+
+plot_WL_mc
+
+# Create the combined plot with the gradient bar as the "axis"
+plot_WL_mc_combined <-  (plot_WL_mc / HIgradientBar) + 
+    plot_layout(heights = c(1, 0.1)) # Adjust the relative heights as needed
+
+
+# Display the combined plot
+plot_WL_mc_combined
+
+
+ggsave(plot = plot_WL_mc_combined, 
+       filename = paste0(an_fi, "/hybrid_meltingcurve.jpeg"),  
+       width = 6, height = 6, dpi = 1000)
+
+
+######################
+# Combine the plots without any space between them and add labels 
+#only to the first row
+map_plot <- (combined_plot | plot_WL_mc_combined) + 
+    plot_layout(tag_level = 'new') +  # 
+    plot_annotation(tag_levels = list(c('A', '', 'B', '')))
+# +  # Add labels (A, B)
+
+# Add a figure title
+map_plot <- map_plot + 
+    plot_annotation(title = 'Fig. 8', 
+                    theme = theme(plot.title = element_text(size = 13, 
+                                                            hjust = 0),
+                                  legend.position = "none"))
+
+# Display the panel figure
+print(map_plot)
+
+# Save the plot
+# Note: Corrected the paste0 function usage for filename specification
+ggsave(plot = map_plot, 
+       filename = paste0(panels_fi, "/banana_map_immune_signature.jpeg"), 
+       width = 10, 
+       height = 5, 
+       dpi = 1000)
+
+
+
+
 
 
 ##################################################       
@@ -263,7 +358,6 @@ fitWL_ooc<- parasiteLoad::analyse(data = Field_ooc_eim,
                                   response = "predicted_WL",
                                   model = "normal",
                                   group = "oocysts_present")
-
 
 plot_WL_ooc <- 
     bananaPlot(mod = fitWL_ooc$H3,

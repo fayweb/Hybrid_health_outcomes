@@ -36,7 +36,7 @@ ggplot(Field, aes(x = HE, OPG)) +
     geom_point() +
     geom_line()
 
-model <- lm(formula = predicted_WL ~  HE * Sex, data = Field)
+model <- lm(formula = predicted_WL ~  HI + HE + HI * HE * Sex, data = Field)
 summary(model)
 
 df <- Field %>%
@@ -47,6 +47,12 @@ model_tolerance <- lm(predicted_WL ~ delta_ct_cewe_MminusE,
                       data = df)
 
 summary(model_tolerance)
+
+df %>%
+    ggplot(aes(x = delta_ct_cewe_MminusE, y = predicted_WL)) +
+    geom_abline()
+
+cor.test(df$predicted_WL, df$delta_ct_cewe_MminusE)
 
 model <- lm(tolerance ~ HI + HE * Sex, df)
 summary(model)
