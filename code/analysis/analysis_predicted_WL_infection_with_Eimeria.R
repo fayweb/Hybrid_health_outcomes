@@ -19,6 +19,8 @@ ggplot(Field, aes(x = HI, HE)) +
 model1 <- lm(predicted_WL ~ MC.Eimeria + MC.Eimeria * delta_ct_cewe_MminusE * 
                  HE + HI, Field)
 summary(model1)
+summ(model1)
+modelsummary(model1)
 
 plot_summs(model1, plot.distributions = TRUE, robust = TRUE, scale = TRUE,
            colors = "coral") -> plot1
@@ -32,14 +34,17 @@ ggsave(filename = paste0(an_fi, "/coefficient_plot_model1.jpeg"), plot = plot1,
 ## hybrid index + expected heterozygocity
 model2 <- lm(predicted_WL ~  HI + HE, Field)
 summary(model2)
-
+modelsummary(model2)
 # infection status with eimeria
-model3 <- lm(predicted_WL ~  MC.Eimeria, Field)
+model3 <- lm(predicted_WL ~  MC.Eimeria * delta_ct_cewe_MminusE, Field)
 summary(model3)
+modelsummary(model3)
 
-plot_summs(model1, model2, plot.distributions = TRUE, robust = TRUE, 
+
+
+plot_summs(model1, model2, model3, plot.distributions = TRUE, robust = TRUE, 
           scale = TRUE, 
-          colors = c("darkgrey", "coral"))  -> model1_2
+          colors = c("darkgrey", "coral", "seagreen"))  -> model1_2
 model1_2
 
 ggsave(filename = paste0(an_fi, "/coefficient_plot_model1_2.jpeg"), 
@@ -60,7 +65,7 @@ Field$species_Eimeria <- factor(Field$species_Eimeria,
 
 species <- lm(predicted_WL ~ species_Eimeria, data = Field)
 summary(species)
-
+modelsummary(species)
 # Create predicted values using ggpredict
 preds <- ggpredict(species, terms = "species_Eimeria")
 
@@ -119,6 +124,7 @@ modelA <- lm(predicted_WL ~ MC.Eimeria + infected_Aspiculuris
              + infected_syphasia + infected_crypto, data = Field_par)
 
 summary(modelA)
+modelsummary(modelA)
 
 plot_summs(modelA, plot.distributions = TRUE, robust = TRUE, scale = TRUE,
            colors = "skyblue") -> coef_A
@@ -203,3 +209,4 @@ print(panel)
 # Save the panel figure
 ggsave(paste0(panels_fi, '/infected_hybrids.jpeg'), 
        panel, width = 16, height =8, dpi = 300)
+
