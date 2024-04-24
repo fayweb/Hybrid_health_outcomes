@@ -1,0 +1,323 @@
+---
+title: "Weight_problems"
+author: "Fay"
+date: "2024-04-24"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r message=FALSE, echo=FALSE, warning=FALSE}
+# ***********************************************************
+# Title: Predicting the health outcomes of infections in hybrid mice
+
+# Purpose: This script defines all the settings and executes
+#         all the code (.R, .md) to reproduce the analysis
+#         of the project
+#
+# Authors: Fay Webster
+# ID variables:
+# ***********************************************************
+# Part 1: Set standard settings & install packages            ----
+# ***********************************************************
+  # Install packages/load libraries to keep R environment stable
+    # install
+        # pacman for simplified bulk pkg import
+        # renv for pkg consistency over time
+#install.packages("pacman")
+# increase maximum overlaps
+options(ggrepel.max.overlaps = Inf)
+
+library(pacman)
+    ## Standard settings ----
+        # seed
+set.seed(13102023)
+
+        # Use p_load to install (if not already) and load the packages
+pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor, 
+               visdat, corrplot, RColorBrewer, ggplot2, VIM, limma, 
+               latticeExtra, patchwork,FactoMineR, ggrepel, factoextra, 
+               reshape2, sjPlot, stargazer, jtools,modelsummary, ggeffects, 
+               pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities,
+               parasiteLoad, fitdistrplus, optimx, leaflet, magick, ggdist,
+               ggbeeswarm)
+    
+
+hm <- read.csv("data/analysis/final/imputed_clean_data.csv")
+Challenge <- read.csv("data/lab/final/lab_cleaned_data.csv")
+
+ 
+ 
+ ######### Decision: Removing IL.10 from gene selection due data largely missing
+ # remove il_10
+ #### vectors for selecting genes for analysis
+ Genes_v   <- c("IFNy", "CXCR3", "IL.6", "IL.13", #"IL.10",
+                "IL1RN","CASP1", "CXCL9", "IDO1", "IRGM1", "MPO", 
+                "MUC2", "MUC5AC", "MYD88", "NCR1", "PRF1", "RETNLB", "SOCS1", 
+                "TICAM1", "TNF")
+ 
+ # Select laboratory data 
+# Select genes
+lab <- hm %>%
+    dplyr::filter(origin == "Lab")
+
+Field <- hm %>%
+    dplyr::filter(origin == "Field")
+# Then, define the color for each level of infection
+color_mapping <- c("E_falciformis" = "salmon", 
+                   "E_ferrisi" = "forestgreen", 
+                   "uninfected" = "skyblue")
+```
+
+
+How many mice went through primary infections?
+```{r}
+Challenge %>%
+           filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID,
+                  dpi == max_dpi) %>%
+    summarise(n())
+```
+How many mice died in the primary infections?
+```{r}
+Challenge %>%
+           filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID,
+                  death == "primary", dpi == max_dpi) %>%
+    summarise(n())
+```
+How many mice were in the challenge infections?
+```{r}
+Challenge %>%
+           filter(infection == "challenge", Mouse_ID %in% lab$Mouse_ID,
+                  dpi == max_dpi, death == "challenge") %>%
+    summarise(n()) 
+
+```
+Something is fishy here. Do we have duplicates? Yes, I forgot to remove the spleen 
+measurements. Luke used the spleen for gene expression for some mice. 
+We use here the mesenterial lymphnodes. (?)
+```{r}
+Challenge %>%
+           filter(infection == "challenge", Mouse_ID %in% lab$Mouse_ID,
+                  dpi == max_dpi, death == "challenge", Position == "mLN") %>%
+    summarize(n())
+```
+
+
+Original in article of primary infections: 
+I include mice that died in primary infections, but also the mice that went on 
+to be challenged.
+
+```{r}
+ggplot(Challenge %>%
+           filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID) %>%
+           group_by(Mouse_ID), 
+       aes(x = WL_max, y = Parasite_primary, fill = Parasite_primary)) + 
+    geom_density_ridges(jittered_points = TRUE, 
+                        position = position_points_jitter(height = 0), 
+                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        point_size = 2, point_alpha = 1) +
+    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5,
+                 position = position_nudge(x = 0.2)) +
+    # coord_flip() +
+    theme_minimal() +
+    scale_fill_manual(values = color_mapping) +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.3)) +
+    xlab("Maximum relative weight loss") +
+    ylab("Parasite strain - primary infections")
+```
+What happens, if I remove the mice that were challenged. 
+Here, including just the mice that died in the primary infections.
+```{r}
+ggplot(Challenge %>%
+           filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID,
+                  death == "primary") %>%
+           group_by(Mouse_ID), 
+       aes(x = WL_max, y = Parasite_primary, fill = Parasite_primary)) + 
+    geom_density_ridges(jittered_points = TRUE, 
+                        position = position_points_jitter(height = 0), 
+                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        point_size = 2, point_alpha = 1) +
+    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5,
+                 position = position_nudge(x = 0.2)) +
+    # coord_flip() +
+    theme_minimal() +
+    scale_fill_manual(values = color_mapping) +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.3)) +
+    xlab("Maximum relative weight loss") +
+    ylab("Parasite strain - primary infections")
+```
+Where are the uninfected mice? Did we just have infected mice? I remember 
+reaching the same conclusion before. 
+
+How many mice died on each day in the primary infections?
+```{r}
+Challenge %>%
+           filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID,
+                  death == "primary", dpi == max_dpi) %>%
+    group_by(max_dpi) %>%
+    summarise(n())
+    
+Challenge %>%
+           filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID,
+                  death == "primary", dpi == max_dpi) %>%
+    ggplot(aes(x = max_dpi)) +
+    geom_histogram()
+
+```
+
+
+What about the challenge infections?
+How many mice died on each day in the primary infections?
+```{r}
+Challenge %>%
+           filter(infection == "challenge", Mouse_ID %in% lab$Mouse_ID,
+                  death == "challenge", dpi == max_dpi, Position == "mLN") %>%
+    group_by(max_dpi) %>%
+    summarise(n())
+    
+Challenge %>%
+           filter(infection == "challenge", Mouse_ID %in% lab$Mouse_ID,
+                  death == "challenge", dpi == max_dpi, Position == "mLN") %>%
+    ggplot(aes(x = max_dpi)) +
+    geom_histogram()
+
+```
+
+# Challenge infections remains the same
+
+
+```{r}
+
+ggplot(lab %>%
+           filter(infection == "challenge") %>%
+           group_by(Mouse_ID), 
+       aes(x = WL_max, y = Parasite_challenge, fill = Parasite_challenge)) + 
+    geom_density_ridges(jittered_points = TRUE, position = 
+                            position_points_jitter(height = 0), 
+                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        point_size = 2, point_alpha = 1) +
+    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5, 
+                 position = position_nudge(x = 0.2)) +
+    # coord_flip() +
+    theme_minimal() +
+    scale_fill_manual(values = color_mapping) +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.3)) +
+    xlab("Maximum relative weight loss") +
+    ylab("Parasite strain - challenge infections") 
+```
+
+So what about the weight loss per dpi. 
+Here is what I originally plotted: 
+```{r}
+#relative weight loss per day - primary
+Challenge %>%
+    filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID) %>%
+    ggplot(aes(x = dpi, y = relative_weight, color = Parasite_primary, 
+               fill = Parasite_primary)) +
+    geom_jitter(width = 0.2, height = 0, alpha = 0.4, 
+                shape = 21, stroke = 0.5, size = 3) + # Adjusted for outlines
+    geom_smooth(aes(fill = Parasite_primary), 
+                method = "loess", se = TRUE, alpha = 0.2) + 
+    # Add smooth line with confidence intervals
+    scale_color_manual(values = color_mapping) + # Apply custom color mapping
+    scale_fill_manual(values = color_mapping) + 
+    # Ensure fills match colors for confidence intervals
+    labs(#title = "Relative Weight by Days Post Infection",
+        x = "Days Post Infection (dpi)",
+        y = "Relative weight, primary infections",
+        color = "Infection group",
+        fill = "Infection group") + # Added for consistency with the legend
+    theme_minimal() + # Use a minimal theme for a cleaner look
+    theme(legend.position = "right", # Adjust legend position
+          plot.title = element_text(hjust = 0.5), # Center the plot title
+          legend.title.align = 0.5) 
+
+```
+Should I include ONLY the 20 mice that were solely subjected to primary infections?
+```{r}
+#relative weight loss per day - primary
+Challenge %>%
+    filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID, death == "primary") %>%
+    ggplot(aes(x = dpi, y = relative_weight, color = Parasite_primary, 
+               fill = Parasite_primary)) +
+    geom_jitter(width = 0.2, height = 0, alpha = 0.4, 
+                shape = 21, stroke = 0.5, size = 3) + # Adjusted for outlines
+    geom_smooth(aes(fill = Parasite_primary), 
+                method = "loess", se = TRUE, alpha = 0.2) + 
+    # Add smooth line with confidence intervals
+    scale_color_manual(values = color_mapping) + # Apply custom color mapping
+    scale_fill_manual(values = color_mapping) + 
+    # Ensure fills match colors for confidence intervals
+    labs(#title = "Relative Weight by Days Post Infection",
+        x = "Days Post Infection (dpi)",
+        y = "Relative weight, primary infections",
+        color = "Infection group",
+        fill = "Infection group") + # Added for consistency with the legend
+    theme_minimal() + # Use a minimal theme for a cleaner look
+    theme(legend.position = "right", # Adjust legend position
+          plot.title = element_text(hjust = 0.5), # Center the plot title
+          legend.title.align = 0.5) 
+
+```
+Why do the ferrisi mice loose more weight? They probably died on day 6 naturally?
+Many mice fall under the 80% relative weight. 
+
+Back to the challenge infections: 
+```{r}
+#relative weight loss per day - challenge
+Challenge %>%
+    filter(infection == "challenge", Mouse_ID %in% lab$Mouse_ID) %>%
+    ggplot(aes(x = dpi, y = relative_weight, color = Parasite_challenge, 
+               fill = Parasite_challenge)) +
+    geom_jitter(width = 0.2, height = 0, alpha = 0.4, 
+                shape = 21, stroke = 0.5, size = 3) + # Adjusted for outlines
+    geom_smooth(aes(fill = Parasite_challenge), 
+                method = "loess", se = TRUE, alpha = 0.2) + 
+    #Add smooth line with confidence intervals
+    scale_color_manual(values = color_mapping) + # Apply custom color mapping
+    scale_fill_manual(values = color_mapping) + 
+    # Ensure fills match colors for confidence intervals
+    labs(#title = "Relative Weight by Days Post Infection",
+        x = "Days Post Infection (dpi)",
+        y = "Relative weight, challenge infections",
+        color = "Infection group",
+        fill = "Infection group") + # Added for consistency with the legend
+    theme_minimal() + # Use a minimal theme for a cleaner look
+    theme(legend.position = "right", # Adjust legend position
+          plot.title = element_text(hjust = 0.5), # Center the plot title
+          legend.title.align = 0.5)
+```
+Falciformis mice falling under 80%, but only on day 8.
+
+Mouse strains: 
+```{r}
+# transform mouse strain into factor
+lab$mouse_strain <- as.factor(lab$mouse_strain)
+
+lab$mouse_strain <- gsub(pattern = "_", " ", lab$mouse_strain)
+
+#Numbers of each mouse strain
+ggplot(lab, aes(x = WL_max, y = mouse_strain, fill = mouse_strain)) + 
+    geom_density_ridges(jittered_points = TRUE, position = 
+                            position_points_jitter(height = 0), 
+                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        point_size = 2, point_alpha = 1) +
+    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5, 
+                 position = position_nudge(x = 0.2)) +
+    coord_flip() +
+    theme_minimal() +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 70, vjust = 0.5, hjust=0.3)) +
+    xlab("Maximum relative weight loss") +
+    ylab("Mouse Strain") +
+    facet_grid(~infection)
+```
+
+
+

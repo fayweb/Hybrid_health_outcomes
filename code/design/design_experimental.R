@@ -157,7 +157,7 @@ lab$current_infection <- gsub(pattern = "_", replacement = ". ",
 
 
 
-ggplot(Challenge %>%
+ggplot(lab %>%
            filter(infection == "challenge") %>%
            group_by(Mouse_ID), 
        aes(x = WL_max, y = Parasite_challenge, fill = Parasite_challenge)) + 
@@ -183,8 +183,9 @@ ggsave(filename = paste0(d_fi,"/eimeria_strains_weight_c.jpeg"),
        plot = eimeria_weight_chal, 
        width = 8, height = 6, dpi = 1000)
 
-ggplot(Challenge %>%
-           filter(infection == "primary") %>%
+ggplot(lab %>%
+           filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID) %>%
+           #filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID) %>%
            group_by(Mouse_ID), 
        aes(x = WL_max, y = Parasite_primary, fill = Parasite_primary)) + 
     geom_density_ridges(jittered_points = TRUE, 
@@ -233,6 +234,39 @@ eimeria_weight_challenge
 ggsave(filename = paste0(d_fi,"/eimeria_strains_weight_challenge.jpeg"),
        plot = eimeria_weight_challenge, 
        width = 8, height = 10, dpi = 1000)
+
+#########################################
+# Let's add both challenge and primary together 
+lab %>%
+    mutate(Parasite = 
+               case_when(
+                   infection == "primary" ~ Parasite_primary,
+                   infection == "challenge" ~ Parasite_challenge
+               )) -> x
+
+
+
+ggplot(aes(x = WL_max, y = Parasite, fill = Parasite)) + 
+    geom_density_ridges(jittered_points = TRUE, 
+                        position = position_points_jitter(height = 0), 
+                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        point_size = 2, point_alpha = 1) +
+    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5,
+                 position = position_nudge(x = 0.2)) +
+    # coord_flip() +
+    theme_minimal() +
+    scale_fill_manual(values = color_mapping) +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.3)) +
+    xlab("Maximum relative weight loss") +
+    ylab("Parasite strain") 
+#-> eimeria_weight
+
+eimeria_weight_prim
+
+ggsave(filename = paste0(d_fi,"/eimeria_strains_weight_p.jpeg"),
+       plot = eimeria_weight_prim, 
+       width = 8, height = 6, dpi = 1000)
 
 
 ###### is the difference between parasite strains significant?
