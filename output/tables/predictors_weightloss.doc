@@ -5,77 +5,77 @@ Linear models - Predicting maximum weight loss
                                ---------------------------
                                          WL_max           
 ----------------------------------------------------------
-PC1                                       0.152           
+PC1                                       0.124           
                                          (0.234)          
                                                           
-PC2                                     -0.697**          
-                                         (0.297)          
+PC2                                     -0.705**          
+                                         (0.300)          
                                                           
-current_infectionE_falciformis            1.370           
-                                         (1.592)          
+current_infectionE_falciformis            1.365           
+                                         (1.590)          
                                                           
-current_infectionE_ferrisi               -1.443           
-                                         (1.722)          
+current_infectionE_ferrisi               -1.414           
+                                         (1.723)          
                                                           
-delta_ct_cewe_MminusE                   0.627***          
+delta_ct_cewe_MminusE                   0.632***          
                                          (0.128)          
                                                           
-mouse_strainBUSNA_PWD                     0.029           
-                                         (4.616)          
+mouse_strainBUSNA_PWD                     0.143           
+                                         (4.619)          
                                                           
-mouse_strainBUSNA_STRA                    0.250           
-                                         (3.709)          
+mouse_strainBUSNA_STRA                    0.338           
+                                         (3.705)          
                                                           
-mouse_strainNMRI                         -6.300           
+mouse_strainNMRI                         -6.435           
                                          (5.136)          
                                                           
-mouse_strainPWD_BUSNA                     0.776           
-                                         (4.029)          
+mouse_strainPWD_BUSNA                     1.145           
+                                         (4.035)          
                                                           
-mouse_strainPWD_PWD                      5.920*           
-                                         (3.030)          
+mouse_strainPWD_PWD                      5.962*           
+                                         (3.026)          
                                                           
-mouse_strainPWD_SCHUNT                   -0.562           
-                                         (4.012)          
+mouse_strainPWD_SCHUNT                   -0.387           
+                                         (4.013)          
                                                           
-mouse_strainSCHUNT_PWD                   -2.899           
-                                         (3.754)          
+mouse_strainSCHUNT_PWD                   -2.810           
+                                         (3.758)          
                                                           
 mouse_strainSCHUNT_SCHUNT                 2.684           
-                                         (2.948)          
+                                         (2.949)          
                                                           
-mouse_strainSCHUNT_STRA                   5.204           
-                                         (4.113)          
+mouse_strainSCHUNT_STRA                   5.206           
+                                         (4.135)          
                                                           
-mouse_strainSTRA_BUSNA                   -1.440           
-                                         (3.856)          
+mouse_strainSTRA_BUSNA                   -1.456           
+                                         (3.849)          
                                                           
-mouse_strainSTRA_SCHUNT                   0.735           
-                                         (3.822)          
+mouse_strainSTRA_SCHUNT                   0.807           
+                                         (3.827)          
                                                           
-mouse_strainSTRA_STRA                    -3.301           
-                                         (3.793)          
+mouse_strainSTRA_STRA                    -3.101           
+                                         (3.794)          
                                                           
-immunizationuninfected                   -2.818           
-                                         (2.015)          
+immunizationuninfected                   -2.769           
+                                         (2.016)          
                                                           
-immunizationheterologous                  0.578           
-                                         (1.788)          
+immunizationheterologous                  0.596           
+                                         (1.789)          
                                                           
-immunizationhomologous                   -0.395           
+immunizationhomologous                   -0.358           
                                          (1.759)          
                                                           
-weight_dpi0                              0.300**          
+weight_dpi0                              0.303**          
                                          (0.131)          
                                                           
-Constant                                  4.583           
-                                         (4.348)          
+Constant                                  4.490           
+                                         (4.344)          
                                                           
 ----------------------------------------------------------
 Observations                               128            
 R2                                        0.631           
 Adjusted R2                               0.558           
-Residual Std. Error                 5.211 (df = 106)      
-F Statistic                      8.648*** (df = 21; 106)  
+Residual Std. Error                 5.214 (df = 106)      
+F Statistic                      8.634*** (df = 21; 106)  
 ==========================================================
 Note:                          *p<0.1; **p<0.05; ***p<0.01

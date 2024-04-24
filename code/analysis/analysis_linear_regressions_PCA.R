@@ -81,7 +81,7 @@ model_4 <- lm(WL_max ~ PC1 + PC2 + current_infection + delta_ct_cewe_MminusE +
 
 
 summary(model_4)
-plot_coefs(model_1, model_2, model_3, model_4)
+plot_coefs(model_1, model_2, model_3)
 
 # remove gene information
 model_5 <- lm(WL_max ~  current_infection + delta_ct_cewe_MminusE +
@@ -92,27 +92,49 @@ summary(model_5)
 
 ## Please cite as:
 ##  Hlavac, Marek (2018). stargazer: Well-Formatted Regression and Summary Statistics Tables.
-stargazer(model_1, model_2, model_3, model_5,
+stargazer(model_1, model_5, model_3,
           type = "text",
           out = paste0(tables, "/stargazer.docx"), 
           title = "Linear models - Predicting maximum weight loss",
           align = TRUE)
 
-export_summs(model_1, model_2, model_3,model_5,
+export_summs(model_1, model_5, model_3,
              scale = TRUE, to.file = "docx", 
              file.name = paste0(tables, "/lab_model1_3.docx"))
 
 models <- list(
     "Model 1" = model_1,
-    "Model 2" = model_2,
-    "Model 3" = model_3,
-    "Model 4" = model_5)
+    #"Model 2" = model_2,
+    "Model 2" = model_5,
+    "Model 3" = model_3)
 
-modelsummary(models, stars = TRUE, gof_omit = "IC|Adj|F|RMSE|Log", 
+summ(model_1)
+modelsummary(models = models) -> s_models
+str(s_models)
+
+
+modelsummary(models, stars = TRUE, #gof_omit = "IC|Adj|F|RMSE|Log", 
              output = paste0(tables, "/lab_model1_3.docx"))
 
-modelsummary(models = as.list(model_1, model_2, model_3), 
+modelsummary(models = as.list(model_1, model_5, model_3), 
              output = paste0(tables, "/lab_model1.docx"))
+
+summ(model_1)
+modelsummary(models = c(model_1, model_5, model_3))
+
+plot_summs(model_1, model_5, model_5, 
+           colors = "CUD", rescale.distributions = TRUE, 
+           plot.distributions = FALSE, point.size = 3, 
+           robust = TRUE,
+           model.names = c("Complex model", "Without PC1 and PC2", 
+                           "Solely PC1 and PC2")) -> coefs1_3
+
+coefs1_3
+
+ggsave(filename = paste0(an_fi, "/plot_sums_complex_pca.jpeg"),
+       plot = coefs1_3, width = 6, height = 4)
+
+
 
 
 model_6 <- lm(WL_max ~ PC1 * current_infection + PC2 *current_infection, 
