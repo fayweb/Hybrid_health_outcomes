@@ -19,7 +19,7 @@ dependent_vars <- c("IFNy", "CXCR3", "IL.6", "IL.13",# "IL.10",
                     "TICAM1", "TNF")
 
 # Assuming 'lab' is your dataframe
-lab$current_infection <- factor(lab$current_infection, levels = c("uninfected", "E_falciformis", "E_ferrisi"))
+#lab$current_infection <- factor(lab$current_infection, levels = c("uninfected", "E_falciformis", "E_ferrisi"))
 
 # Perform regressions
 results <- lapply(dependent_vars, function(var) {
@@ -44,12 +44,11 @@ tidy_models_no_intercept <- tidy_models[!grepl("intercept", tidy_models$term, ig
 
 tidy_models_no_intercept <- as.data.frame(tidy_models_no_intercept) %>%
     mutate(term = case_when(
-        term == "current_infectionE_falciformis" ~ "E. falciformis",
-        term == "current_infectionE_ferrisi" ~ "E. ferrisi",
+        term == "current_infectionE. falciformis" ~ "E. falciformis",
+        term == "current_infectionE. ferrisi" ~ "E. ferrisi",
     ))
 
-# Define custom colors for the independent variables
-custom_colors <- c("E. falciformis" = "salmon", "E. ferrisi" = "forestgreen")
+
 
 # Create the coefficient plot
 ggplot(tidy_models_no_intercept, aes(x = model, y = estimate, color = term)) +
@@ -57,14 +56,14 @@ ggplot(tidy_models_no_intercept, aes(x = model, y = estimate, color = term)) +
     geom_point(position = position_dodge(width = 0.5)) +
     geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2, position = position_dodge(width = 0.5)) +
     geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
-    scale_color_manual(values = custom_colors) +
+    scale_color_manual(values = c("E. falciformis" = "salmon", "E. ferrisi" = "forestgreen")) +
     theme_classic() +
     theme(axis.text.y = element_text(angle = 45, hjust = 1)) +
     labs(x = "Gene", y = "Coefficients estimate (Difference to uninfected)") +
     theme(legend.title = element_blank(),
           legend.position = "none") -> coef_mmr
 
-#print(coef_mmr)
+print(coef_mmr)
 
 ggsave(filename = paste0(an_fi, "/coef_plot_lab_genes.jpeg"),
        plot = coef_mmr, width = 6, height = 4, dpi = 300)
@@ -74,16 +73,7 @@ ggsave(filename = paste0(an_fi, "/coef_plot_lab_genes.jpeg"),
 ####################################################
     ####################################################
 ############################# gene expression distribution
-    
-
-lab$current_infection <- gsub(pattern = "_", replacement = ". ", lab$current_infection)
-
-    
-color_mapping <- c("E. falciformis" = "salmon", 
-                       "E. ferrisi" = "forestgreen", 
-                       "uninfected" = "skyblue")
-    
-    lab %>%
+lab %>%
         pivot_longer(cols = all_of(dependent_vars), 
                      names_to = "Genes", values_to = "Expression") %>%
         ggplot(aes(x = Expression, fill = current_infection)) +
@@ -104,13 +94,14 @@ color_mapping <- c("E. falciformis" = "salmon",
         facet_wrap(~Genes,  scales = 'free', ncol = 4) +
         labs(x = "Expression Level", y = "Density") +
         theme_minimal() +
-        scale_fill_manual(values = color_mapping)  +
+        scale_fill_manual(values = color_mapping, labels = labels)  +
         theme(legend.title = element_blank(), 
-              legend.position = c(0.85, 0.06))+
+              legend.position = c(0.85, 0.06),
+              legend.text = element_markdown())+
         labs(y = "Density", 
              x = "Gene expression level") -> density_imm
     
-#density_imm
+density_imm
     
  ggsave(filename = paste0(an_fi, "/density_immune_genes.jpeg"),
            plot = density_imm, width = 10, height = 8, dpi = 300)

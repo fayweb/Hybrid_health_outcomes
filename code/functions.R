@@ -68,3 +68,28 @@ findGoodDist <- function(x, distribs, distribs2){
     ppcomp(listDistr, legendtext=distribs2)
     par(mfrow=c(1,1))
 }
+
+# Function to italicize y-axis and legend labels
+italics_y <- function(ggplot_object, labels) {
+    
+    ggplot_object +
+        scale_y_discrete(labels = labels) +
+        scale_fill_manual(values = color_mapping, labels = labels) +
+        theme(
+            axis.text.y = element_markdown(),  # Apply markdown to y-axis text
+            legend.text = element_markdown()   # Apply markdown to legend text
+        )
+}
+
+
+# Function to italicize x-axis and legend labels
+italics_x <- function(ggplot_object, labels) {
+    
+    ggplot_object +
+        scale_x_discrete(labels = labels) +
+        scale_fill_manual(values = color_mapping, labels = labels) +
+        theme(
+            axis.text.x = element_markdown(),  # Apply markdown to y-axis text
+            legend.text = element_markdown()   # Apply markdown to legend text
+        )
+}

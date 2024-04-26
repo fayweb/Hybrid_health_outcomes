@@ -1,4 +1,14 @@
-
+# ***********************************************************
+# Part 6: Analysis                           ----
+# ***********************************************************
+#----------------------------------------------------------*
+# 6.1: PCA 
+# performing a pca analysis on the laboratory immune gene data
+# Requires: hm
+# Creates: lab
+# Plots: biplot, pca_variables,
+#  contr_PC1, contr_PC2
+#----------------------------------------------------------*
 
 lab <- hm %>%
     filter(origin == "Lab")
@@ -39,7 +49,6 @@ dimdesc(res.pca)
 
 # Convert mouse_id to a data frame
 mouse <- data.frame(Mouse_ID = lab[,1])
-mouse_id <- data.frame(Mouse_ID = lab[,1])
 
 # Add the new column pc1 to the mouse_id data frame
 mouse$PC1 <- res.pca$ind$coord[, 1]
@@ -129,30 +138,26 @@ vpg <- vpg %>%
 
 lab$cos2 <- lab$PC1^2 + lab$PC2^2
 
-# Then, define the color for each level of infection
-color_mapping <- c("E_falciformis" = "salmon", 
-                   "E_ferrisi" = "forestgreen", 
-                   "uninfected" = "cornflowerblue")
-
 # PCA graph of individuals
 pca_individuals <-
     ggplot(lab, aes(x = PC1, y = PC2, color = current_infection)) +
     geom_hline(yintercept = 0, linetype = "dashed", color = "black") + 
     geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
-    geom_point(size = 5, alpha = 0.5, color = "black",  shape = 21, aes(fill = current_infection)) +
-    labs(x = "PC1 (34.37%)", y = "PC2 (16.03%)",# title = "PCA graph of individuals",
-         colour = "Current infection") +
+    geom_point(size = 5, alpha = 0.5, color = "black", 
+                   shape = 21, aes(fill = current_infection))   +
+    scale_fill_manual(values = color_mapping, labels = labels) +
+        labs(x = "PC1 (34.37%)", y = "PC2 (16.03%)",# title = "PCA graph of individuals",
+         fill = "Treatment group") +
     theme_minimal() +
     theme(#plot.title = element_text(size = 12, face = "bold"),
         axis.title = element_text(size = 12),
         axis.text = element_text(size = 12),
         legend.title = element_text(size = 14),
-        legend.text = element_text(size = 12),
-        legend.position = "right") +
-    scale_color_manual(values = color_mapping)# +
+        legend.position = "right",
+        legend.text = element_markdown()) 
 #guides(color = guide_legend(override.aes = list(size = 4))) 
 
-#pca_individuals
+pca_individuals
 
 ggsave(filename = paste0(an_fi, "/pca_individuals.jpeg"),
        plot = pca_individuals, 
@@ -169,7 +174,7 @@ gradient_colors <- c("#B00B69", "#A55EA7", "#1D1CC9")
 
 # Define the breaks and labels for the color legend
 breaks <- c(0, 50, 100, 150)
-labels <- c("0", "50", "100", "150")
+labels_2 <- c("0", "50", "100", "150")
 
 # Plotting the factor map 
 pca_variables <-
@@ -178,7 +183,7 @@ pca_variables <-
     geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") + 
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
     geom_point(size = 3) +
-    geom_label_repel(aes(label = Variable), size = 2, box.padding = 0.5, max.overlaps = Inf) +
+    geom_label_repel(aes(label = Variable), size = 3, box.padding = 0.5, max.overlaps = Inf) +
     coord_equal() +
     xlab("PC1 (34.37%)") +
     ylab("PC2 (16.03%") +
@@ -187,29 +192,52 @@ pca_variables <-
     scale_color_gradient(low = "blue", high = "orange")+
     labs(color = "Squared distance to origin")
 
-#pca_variables
+pca_variables
 
 ggsave(filename = paste0(an_fi, "/pca_variables.jpeg"), 
        plot = pca_variables, 
        width = 5, height = 6, dpi = 300)
+
 ###############################################
-
-
 ##################
-############### residual plot
-fviz_pca_biplot(res.pca, 
-                col.ind = lab$current_infection, palette = c("E_falciformis" = "salmon", 
-                                                             "E_ferrisi" = "forestgreen", 
-                                                             "uninfected" = "cornflowerblue"),
-                addEllipses = TRUE, label = "var",
-                col.var = "black", repel = TRUE,
+############### biplot
+biplot <- fviz_pca_biplot(res.pca, 
+                col.ind = lab$current_infection,
+                pointsize = 2,
+                addEllipses = TRUE, 
+                label = "var",
+                col.var = "black", 
+                repel = TRUE,
                 legend.title = "Infection groups",
-                title = "") -> biplot
+                title = "") +
+    scale_color_manual(values = color_mapping, labels = labels) +
+    scale_fill_manual(values = color_mapping, labels = labels) +
+    scale_shape_manual(values = c(15, 16, 17), labels = labels) +
+    labs(color = "Infection groups", shape = "Infection groups") +
+    theme(legend.text = element_markdown())
 
-#biplot
+
+biplot
+
 
 ggsave(filename = paste0(an_fi, "/biplot.jpeg"), plot = biplot, 
        width = 12, height = 6, dpi = 600)
 
+### Create the panel figure
+PCA_panel <-
+    (pca_variables | biplot ) +
+    plot_layout(guides = 'collect') + # Collect all legends into a single legend
+    plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
+
+# Add a figure title
+PCA_panel <- PCA_panel + 
+    plot_annotation(title = 'Fig. 3', 
+                    theme = theme(plot.title = element_text(size = 20, hjust = 0)))
+
+
+
+# Save the panel figure
+ggsave(paste0(panels_fi, "/panel_pca.jpeg"), 
+       PCA_panel, width = 16, height = 8, dpi = 300)
 
 

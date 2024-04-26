@@ -30,7 +30,7 @@ pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor,
                reshape2, sjPlot, stargazer, jtools,modelsummary, ggeffects, 
                pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities,
                parasiteLoad, fitdistrplus, optimx, leaflet, magick, ggdist,
-               ggbeeswarm)
+               ggbeeswarm, ggtext)
     
 ## Define within project file paths ----
         # code
@@ -155,15 +155,13 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
 # 4.4 Imputation of missing data 
 # Creates output: hm
 #----------------------------------------------------------*
+ if (1) source(file.path(nmi, "Clean_after_impute.R"))
+ # 4.5 Cleaning after imputing  
+ # Correct the parasite labels for legend
+ # Add custom colours for parasites throughout the scripts
+ # Creates factor levels for parasite strains
+ #----------------------------------------------------------*
  
- 
- ######### Decision: Removing IL.10 from gene selection due data largely missing
- # remove il_10
- #### vectors for selecting genes for analysis
- Genes_v   <- c("IFNy", "CXCR3", "IL.6", "IL.13", #"IL.10",
-                "IL1RN","CASP1", "CXCL9", "IDO1", "IRGM1", "MPO", 
-                "MUC2", "MUC5AC", "MYD88", "NCR1", "PRF1", "RETNLB", "SOCS1", 
-                "TICAM1", "TNF")
  
  # ***********************************************************
  # Part 5: Experimental design                           ----
