@@ -195,10 +195,6 @@ model <- lm(predictions ~ WL_max * current_infection, data = test_lab)
 summary(model)
 
 #### Plotting
-# Then, define the color for each level of infection
-color_mapping <- c("E_falciformis" = "salmon", 
-                   "E_ferrisi" = "forestgreen", 
-                   "uninfected" = "cornflowerblue")
 
 ggpredict(model, terms = c("WL_max", "current_infection")) %>% 
     plot(colors = "darkorchid") +
@@ -207,8 +203,8 @@ ggpredict(model, terms = c("WL_max", "current_infection")) %>%
     xlab("Observed maximum weight loss during infections") +
     ylab("Predicted maximum weight loss during infections") +
     theme_minimal() +
-    scale_color_manual(values = color_mapping) +
-    scale_fill_manual(values = color_mapping) +
+    scale_color_manual(values = color_mapping, labels = labels) +
+    scale_fill_manual(values = color_mapping, labels = labels) +
     theme(
         plot.title = element_text(size = 16, hjust = 0.5),
         axis.title.x = element_text(size = 12),
@@ -216,9 +212,8 @@ ggpredict(model, terms = c("WL_max", "current_infection")) %>%
         axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12),
         legend.title = element_blank(),
-        legend.text = element_text(size = 12)
-    ) +
-    theme(legend.position = c(0.2, 0.2)) -> lm_weight_loss_predictions
+        legend.position = c(0.2, 0.2),
+        legend.text = element_markdown()) -> lm_weight_loss_predictions
 
 lm_weight_loss_predictions
 
@@ -262,7 +257,7 @@ test_lab %>%
         y = "Observed: Maximum weight loss",
       #  title = "Relationship between Predicted and Observed Weight Loss",
         #subtitle = "Grouped by Current Infection and Sized by Delta CT Value",
-        color = "Treatment group",
+        color = "Infection group",
        # size = "Caecal infection intensities, Delta Ct value",
         #shape = "Delta Ct treshold"
     ) +
@@ -277,12 +272,11 @@ test_lab %>%
         panel.grid.major = element_line(color = "gray90"),
         panel.grid.minor = element_blank()
     ) +
-    scale_color_manual(values = c(E_falciformis = "salmon", 
-                                  E_ferrisi = "forestgreen", 
-                                  uninfected = "deepskyblue")) +
+    scale_color_manual(values = color_mapping, labels = labels) +
     scale_size_continuous(range = c(2, 10)) +
     guides(size = "none") +
-    theme(legend.position = c(0.8, 0.2))-> predictions_random_for_lab
+    theme(legend.position = c(0.8, 0.2),
+          legend.text = element_markdown())-> predictions_random_for_lab
     
 predictions_random_for_lab
     

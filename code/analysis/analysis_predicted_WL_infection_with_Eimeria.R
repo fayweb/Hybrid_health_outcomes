@@ -55,45 +55,43 @@ ggsave(filename = paste0(an_fi, "/coefficient_plot_model1_2.jpeg"),
 #############################################
 ############################################
 ############################################
-## How does the predicted weight loss differ betwen infected species?
-Field$species_Eimeria <- factor(Field$species_Eimeria, 
-                                levels = 
-                                    c("uninfected",
-                                      "E_ferrisi",
-                                      "E_falciformis"))
-
-
+## How does the predicted weight loss differ betwen infected species
 species <- lm(predicted_WL ~ species_Eimeria, data = Field)
 summary(species)
 modelsummary(species)
+
+
 # Create predicted values using ggpredict
 preds <- ggpredict(species, terms = "species_Eimeria")
 
+
 # Plot the predicted values
 ggplot(preds, aes(x = x, y = predicted, color = x)) +
-    geom_point(aes(shape = x), size = 3) +
-    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.1, 
-                  size = 0.7) +
-    geom_line(aes(group = group, color = "black"))+#aes(group = group), size = 1) +
-    scale_color_manual(values = c(E_falciformis = "salmon", 
-                                  E_ferrisi = "forestgreen", 
-                                  uninfected = "deepskyblue")) +
-    #scale_shape_manual(values = c(16, 17, 18)) +
-    labs(#title = "Predicted Weight Loss Across Eimeria Species",
+    geom_point(#aes(shape = x), 
+        size = 3) +
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.1, size = 0.7) +
+    geom_line(aes(group = group, color = "black")) +
+    scale_color_manual(values = color_mapping_f, labels = labels_f) +
+    labs(
          x = "Eimeria spp. subspecies",
          y = "Predicted Weight Loss",
          color = "Species",
-         shape = "Species") +
+         shape = "Species"
+    ) +
     theme_minimal() +
-    theme(legend.position = "blank",
-          legend.title = element_blank(),
+    theme(
+          legend.position = "right",
           plot.title = element_text(hjust = 0.5, size = 14),
           axis.text = element_text(size = 12),
-          axis.title = element_text(size = 13)) +
-    guides(color = guide_legend(override.aes = list(shape = 16))) -> predictions
+          axis.title = element_text(size = 13),
+          axis.text.x = element_markdown(),
+          legend.text = element_markdown()
+    ) -> predictions
 
 
 predictions
+
+
 
 # Save the plot to a file
 ggsave(paste0(an_fi, "/predicted_weight_loss_species.jpeg"),

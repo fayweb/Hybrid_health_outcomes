@@ -46,12 +46,12 @@ Challenge$Parasite_challenge <- gsub(pattern = "uninfected", "Uninfected control
 
 hm$species_Eimeria <- gsub(pattern = "_", ". ",  hm$species_Eimeria)
 
-hm$species_Eimeria <- gsub(pattern = "uninfected", "Uninfected controls",
+hm$species_Eimeria <- gsub(pattern = "uninfected", "Uninfected",
                            hm$species_Eimeria)
 
 hm$eimeriaSpecies <- gsub(pattern = "_", ". ",  hm$eimeriaSpecies)
 
-hm$eimeriaSpecies <- gsub(pattern = "uninfected", "Uninfected controls",
+hm$eimeriaSpecies <- gsub(pattern = "uninfected", "Uninfected",
                           hm$eimeriaSpecies)
 
 # Then, define the color for each level of infection
@@ -60,6 +60,16 @@ color_mapping <- c("Uninfected controls" = "skyblue",
                    "E. falciformis" = "salmon")
 
 factor_levels <- c("Uninfected controls",
+                   "E. ferrisi",
+                   "E. falciformis")
+
+## repeat for field infections
+# Then, define the color for each level of infection
+color_mapping_f <- c("Uninfected" = "skyblue",
+                   "E. ferrisi" = "forestgreen",
+                   "E. falciformis" = "salmon")
+
+factor_levels_f <- c("Uninfected",
                    "E. ferrisi",
                    "E. falciformis")
 
@@ -79,15 +89,18 @@ hm$current_infection <-
 
 hm$eimeriaSpecies <- 
     factor(hm$eimeriaSpecies, 
-           levels = factor_levels)
+           levels = factor_levels_f)
 
 hm$species_Eimeria <- 
     factor(hm$species_Eimeria, 
-           levels = factor_levels)
+           levels = factor_levels_f)
 
 # Change the species to italics in plot legends
 labels = c("Uninfected controls",
              "*E. ferrisi*",
              "*E. falciformis*")
 
+labels_f = c("Uninfected",
+                    "*E. ferrisi*",
+                    "*E. falciformis*")
 

@@ -15,21 +15,6 @@
                 "type": 1,
                 "is_package_breakpoint": false,
                 "package_name": ""
-            },
-            {
-                "id": 1,
-                "path": "~/GitHub/Hybrid_health_outcomes/code/analysis/analysis_predicted_WL_infection_with_Eimeria.R",
-                "line_number": 55,
-                "function_steps": "",
-                "function_name": "toplevel",
-                "state": 1,
-                "editor_state": 1,
-                "editor_line_number": 55,
-                "is_pending_debug_completion": false,
-                "needs_updated_steps": true,
-                "type": 1,
-                "is_package_breakpoint": false,
-                "package_name": ""
             }
         ]
     }
