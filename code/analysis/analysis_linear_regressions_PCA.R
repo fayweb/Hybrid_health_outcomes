@@ -1,12 +1,7 @@
-###PC1 PC2 linear regression
-lab$current_infection <- factor(lab$current_infection, 
-                                levels = c("uninfected", "E_falciformis", "E_ferrisi"))
-
-lab$mouse_strain <- as.factor(lab$mouse_strain)
-lab$immunization <- factor(lab$immunization, levels = 
-                               c("naive", "uninfected",
-                                 "heterologous", "homologous"))
-
+# 6.2: PCA 
+# Regressions with pc axes 
+# Plots: pc1_current_infection, pc2_current_infection, coefs5
+#----------------------------------------------------------*
 model_1 <- lm(WL_max ~ PC1 + PC2 +
                   current_infection + delta_ct_cewe_MminusE +
                   mouse_strain + immunization + 
@@ -141,6 +136,19 @@ model_6 <- lm(WL_max ~ PC1 * current_infection + PC2 *current_infection,
               data = lab)
 
 summary(model_6)
+## Please cite as:
+##  Hlavac, Marek (2018). stargazer: Well-Formatted Regression and Summary Statistics Tables.
+stargazer(model_6,
+          type = "text",
+          out = paste0(tables, "/PCinteractionsParasite.txt"), 
+          title = "Linear models - Predicting maximum weight loss",
+          align = TRUE)
+
+export_summs(model_6,
+             scale = TRUE, to.file = "docx", 
+             file.name = paste0(tables, "/PCinteractionsParasite.docx"))
+
+
 plot_summs(model_6) -> coefs6
 
 coefs6
@@ -218,8 +226,9 @@ ggpredict(model_6, terms = c("PC1", "current_infection")) %>%
     xlab("Principal Component 1 (PC1)") +
     ylab("Predicted values of weight loss") +
     theme_minimal() +
-    scale_color_manual(values = color_mapping) +
-    scale_fill_manual(values = color_mapping) +
+    labs(color = "Infection group") +
+    scale_color_manual(values = color_mapping, labels = labels) +
+    scale_fill_manual(values = color_mapping, labels = labels) +
     theme(
         plot.title = element_text(size = 16, hjust = 0.5),
         axis.title.x = element_text(size = 12),
@@ -227,8 +236,7 @@ ggpredict(model_6, terms = c("PC1", "current_infection")) %>%
         axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12),
         legend.title = element_text(size = 12),
-        legend.text = element_text(size = 12)
-    ) -> pc1_WL_current_infection
+        legend.text = element_markdown()) -> pc1_WL_current_infection
 
 pc1_WL_current_infection
 
@@ -247,8 +255,9 @@ ggpredict(model_6, terms = c("PC2", "current_infection")) %>%
     xlab("Principal Component 2 (PC2)") +
     ylab("Predicted values of weight loss") +
     theme_minimal() +
-    scale_color_manual(values = color_mapping) +
-    scale_fill_manual(values = color_mapping) +
+    scale_color_manual(values = color_mapping, labels = labels) +
+    scale_fill_manual(values = color_mapping, labels = labels) +
+    labs(color = "Infection group") +
     theme(
         plot.title = element_text(size = 16, hjust = 0.5),
         axis.title.x = element_text(size = 12),
@@ -256,8 +265,7 @@ ggpredict(model_6, terms = c("PC2", "current_infection")) %>%
         axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12),
         legend.title = element_text(size = 12),
-        legend.text = element_text(size = 12)
-    ) -> pc2_WL_current_infection
+        legend.text = element_markdown()) -> pc2_WL_current_infection
 
 pc2_WL_current_infection
 

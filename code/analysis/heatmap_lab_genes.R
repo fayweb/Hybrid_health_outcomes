@@ -1,9 +1,12 @@
 # Heatmap
 ### repeating the heatmap on the now imputed data
-
-# turn the data frame into a matrix and transpose it. We want to have each cell 
+genes <- hm %>%
+    filter(origin == "Lab") %>%
+    ungroup() %>%
+    dplyr::select(Mouse_ID, all_of(Genes_v))
+# turn the data frame into a matrixMouse_ID# turn the data frame into a matrix and transpose it. We want to have each cell 
 # type as a row name 
-gene <- t(as.matrix(data.frame(mouse_id,genes)))
+gene <- t(as.matrix(genes))
 
 # turn the first row into column names
 gene %>%
@@ -60,7 +63,7 @@ heatmap_eim <-
          scale = "row",
          clustering_distance_rows = "euclidean",
          clustering_distance_cols = "euclidean",
-         annotation_colors = list(current_infection = parasite_colors, 
+         annotation_colors = list(current_infection = color_mapping, 
                                   MC.Eimeria = c("TRUE" = "red",
                                                  "FALSE" = "blue"))) # use annotation_colors
 
@@ -71,3 +74,4 @@ ggsave(filename = paste0(an_fi, "/heatmap_lab_genes.jpeg"),
        width = 8, height = 4, dpi =1000)
 
 rm(annotation_df, gene, genes, heatmap_data, heatmap_eim, mouse_id)
+
