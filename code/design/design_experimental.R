@@ -139,6 +139,9 @@ ggsave(filename = paste0(d_fi,"/strains_weight.jpeg"), plot = strains_weight,
 model <- lm(max_WL ~ mouse_strain * infection, lab)
 summary(model)
 
+
+lab$infection <- factor(lab$infection, levels = c("primary", "challenge"))
+
 ggplot(lab, aes(x = WL_max, y = mouse_strain, fill = mouse_strain)) + 
     geom_density_ridges(jittered_points = TRUE, position = 
                             position_points_jitter(height = 0), 
@@ -231,12 +234,10 @@ ggplot(lab,
           axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.3)) +
     xlab("Maximum relative weight loss") +
     ylab("Parasite strain") +
-    scale_fill_manual(values = color_mapping) +
-    facet_wrap(~ infection, nrow = 2) -> eimeria_weight_challenge
+    facet_wrap(~ infection) -> eimeria_weight_challenge
 
-eimeria_weight_challenge
 
-#italics_y(eimeria_weight_challenge, labels) -> eimeria_weight_challenge
+italics_y(eimeria_weight_challenge, labels) -> eimeria_weight_challenge
 
 ggsave(filename = paste0(d_fi,"/eimeria_strains_weight_challenge.jpeg"),
        plot = eimeria_weight_challenge, 
@@ -257,7 +258,7 @@ lab  %>%
     theme(legend.position = "none",
           axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.3)) +
     xlab("Maximum relative weight loss") +
-    ylab("Parasite strain") -> eimeria_weight
+    ylab("Parasite strain")  -> eimeria_weight
 
 eimeria_weight
 
@@ -281,7 +282,7 @@ summary(mouse_WL)
 ###################################################
 #relative weight loss per day - challenge
 Challenge %>%
-    filter(infection == "challenge") %>%
+    filter(infection == "challenge", Mouse_ID %in% lab$Mouse_ID) %>%
     ggplot(aes(x = dpi, y = relative_weight, color = Parasite_challenge, 
                fill = Parasite_challenge)) +
     geom_jitter(width = 0.2, height = 0, alpha = 0.4, 
@@ -289,8 +290,8 @@ Challenge %>%
     geom_smooth(aes(fill = Parasite_challenge), 
                 method = "loess", se = TRUE, alpha = 0.2) + 
     #Add smooth line with confidence intervals
-    scale_color_manual(values = color_mapping, labels = labels) + # Apply custom color mapping
-    scale_fill_manual(values = color_mapping, labels = labels) + 
+    scale_color_manual(values = color_mapping,labels = labels) + # Apply custom color mapping
+    scale_fill_manual(values = color_mapping, , labels = labels) + 
     # Ensure fills match colors for confidence intervals
     labs(#title = "Relative Weight by Days Post Infection",
         x = "Days Post Infection (dpi)",
@@ -309,8 +310,10 @@ ggsave(filename = paste0(d_fi,"/relative_WL_challenge.jpeg"), plot = Rwc,
        width = 8, height = 10, dpi = 1000)
 
 #relative weight loss per day - primary
+#################### combined plot weight loss per day
+#relative weight loss per day - primary
 Challenge %>%
-    filter(infection == "primary") %>%
+    filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID, death == "primary") %>%
     ggplot(aes(x = dpi, y = relative_weight, color = Parasite_primary, 
                fill = Parasite_primary)) +
     geom_jitter(width = 0.2, height = 0, alpha = 0.4, 
@@ -318,8 +321,8 @@ Challenge %>%
     geom_smooth(aes(fill = Parasite_primary), 
                 method = "loess", se = TRUE, alpha = 0.2) + 
     # Add smooth line with confidence intervals
-    scale_color_manual(values = color_mapping, labels = labels) + # Apply custom color mapping
-    scale_fill_manual(values = color_mapping,labels = labels) + 
+    scale_color_manual(values = color_mapping) + # Apply custom color mapping
+    scale_fill_manual(values = color_mapping) + 
     # Ensure fills match colors for confidence intervals
     labs(#title = "Relative Weight by Days Post Infection",
         x = "Days Post Infection (dpi)",
@@ -327,15 +330,18 @@ Challenge %>%
         color = "Infection group",
         fill = "Infection group") + # Added for consistency with the legend
     theme_minimal() + # Use a minimal theme for a cleaner look
-    theme(legend.position = "right", # Adjust legend position
+    theme(legend.position = "none", # Adjust legend position
           plot.title = element_text(hjust = 0.5), # Center the plot title
-          legend.title.align = 0.5, 
-          legend.text = element_markdown()) -> Rwp
+          legend.title.align = 0.5) -> Rwp
 
 Rwp
 
 ggsave(filename = paste0(d_fi,"/relative_WL_primary.jpeg"), plot = Rwp, 
        width = 8, height = 10, dpi = 1000)
+
+
+
+
 
 # Adjusted ggplot2 code for OoC variable
 Challenge %>%
@@ -403,11 +409,12 @@ ooc_primary + ooc_challenge + Rwp + Rwc +
 
 
 # Combine the plots
-panel_figure <- #(ooc_primary | ooc_challenge) / # oocysts
+#(ooc_primary | ooc_challenge) / # oocysts
+panel_figure <- 
     (Rwp | Rwc) /
-    (strains_weight) / #| m_s  ) /
-    (eimeria_weight_prim | eimeria_weight_chal) +
-    plot_layout(guides = 'collect') + # Collect all legends into a single legend
+    (strains_weight_challenge ) / 
+    (eimeria_weight_challenge) +
+ #   plot_layout(guides = 'collect') + # Collect all legends into a single legend
     plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
 
 # Add a figure title
@@ -419,9 +426,9 @@ panel_figure <- panel_figure +
 # Control sizes of each plot within the panel
 # This is a generic example. You'll need to adjust the widths,
 #heights, and layout design based on your specific needs.
-panel_figure <- panel_figure + 
-    plot_layout(heights = c(1, 1, 1), 
-                widths = c(1, 1, 1)) # Adjust according to your layout needs
+#panel_figure <- panel_figure + 
+ #   plot_layout(heights = c(1, 1, 1), 
+  #              widths = c(1, 1, 1)) # Adjust according to your layout needs
 
 # Display the panel figure
 print(panel_figure)

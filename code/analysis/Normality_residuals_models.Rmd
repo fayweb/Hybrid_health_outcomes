@@ -1,0 +1,59 @@
+---
+title: "Normality_residuals_models"
+author: "Fay"
+date: "2024-04-30"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r echo = FALSE, message = FALSE, warning=FALSE, include = FALSE}
+source(file = "~/GitHub/Hybrid_health_outcomes/code/master_hm.R")
+```
+
+Testing the residuals of the model predicting weight loss.
+Grouping with the variable "Sex"
+```{r apply_predictions, warning=FALSE}
+Field$Sex <- as.factor(Field$Sex)
+
+fitWL_Sex <- parasiteLoad::analyse(data = Field,
+                                   response = "predicted_WL",
+                                   model = "normal",
+                                   group = "Sex")
+
+# Define or ensure MeanLoad is correctly defined
+MeanLoad <- function(L1, alpha, HI) {
+    # Placeholder formula: adjust based on actual functional form
+    return(L1 + alpha * HI)  # Adjust this formula as necessary
+}
+
+# Calculate predicted mean using MeanLoad for H0
+predicted_mean_H0 <- MeanLoad(L1 = 9.3545283, alpha = -0.2786233, HI = Field$HI)  
+
+# Assuming normal distribution 
+predicted_values_H0 <- rnorm(length(predicted_mean_H0), 
+                             mean = predicted_mean_H0, sd = 2.4458989)
+
+# Calculate residuals
+observed_values <- Field$predicted_WL 
+residuals_H0 <- observed_values - predicted_values_H0
+
+# Histogram of residuals
+hist(residuals_H0, main="Histogram of Residuals for H0", xlab="Residuals")
+
+# Shapiro-Wilk test for normality
+shapiro.test(residuals_H0)
+
+# Plotting residuals against fitted values
+plot(predicted_values_H0, residuals_H0, main="Residual vs. Fitted Plot for H0",
+     xlab="Fitted Values", ylab="Residuals")
+
+# Generating a Q-Q plot for normality check
+qqnorm(residuals_H0, main="Q-Q Plot for Normality Check of H0 Residuals")
+
+```
+
+

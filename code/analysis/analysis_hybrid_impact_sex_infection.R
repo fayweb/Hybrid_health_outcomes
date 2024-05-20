@@ -24,7 +24,7 @@ fitWL_Sex <- parasiteLoad::analyse(data = Field,
                                    response = "predicted_WL",
                                    model = "normal",
                                    group = "Sex")
-
+     
 
 plot_WL_Sex<- bananaPlot(mod = fitWL_Sex$H3,
                          data = Field,
@@ -39,6 +39,7 @@ plot_WL_Sex<- bananaPlot(mod = fitWL_Sex$H3,
     labs(y = "Predicted weight loss") 
 
 plot_WL_Sex
+
 
 ### create the hybrid bar
 # Adjust the gradient bar plot to include axis labels and remove space
