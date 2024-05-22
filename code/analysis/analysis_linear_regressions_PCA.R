@@ -154,7 +154,7 @@ plot_summs(model_6) -> coefs6
 coefs6
 
 ggsave(filename = paste0(an_fi, "/plot_sums_mix_PCA.jpeg"),
-                         plot = coefs6, width = 6, height = 4)
+       plot = coefs6, width = 6, height = 4)
 #see the ggefects
 effects <- ggpredict(model_6)
 
@@ -241,7 +241,7 @@ ggpredict(model_6, terms = c("PC1", "current_infection")) %>%
 pc1_WL_current_infection
 
 ggsave(paste0(an_fi, "/pc1_WL_current_infection.jpeg"), pc1_WL_current_infection, 
-              width = 8, height = 6, dpi = 1000)
+       width = 8, height = 6, dpi = 1000)
 
 
 # Now create the scatter plot using this color mapping
@@ -275,15 +275,15 @@ ggsave(paste0(tables, "/pc2_WL_current_infection.jpeg"),
 ####################
 ################### Create the panel figure
 figure_panel <- ggarrange(pca_variables, biplot, 
-                            pc1_current_infection, pc2_current_infection,
-                            pc1_WL_current_infection, pc2_WL_current_infection,
-                            labels = c("A", "B", "C", "D", "E", "F"),
-                            ncol = 2, nrow = 3)
+                          pc1_current_infection, pc2_current_infection,
+                          pc1_WL_current_infection, pc2_WL_current_infection,
+                          labels = c("A", "B", "C", "D", "E", "F"),
+                          ncol = 2, nrow = 3)
 
 # Adding the title "Figure 1" to the entire arrangement
 figure_panel <- annotate_figure(figure_panel, 
-                                  top = text_grob("Fig. 2", size = 14, 
-                                                  face = "bold"))
+                                top = text_grob("Fig. 2", size = 14, 
+                                                face = "bold"))
 
 
 ggsave(paste0(panels_fi, "/panel_regression_pca.jpeg"), 
@@ -291,28 +291,44 @@ ggsave(paste0(panels_fi, "/panel_regression_pca.jpeg"),
 
 ################### Create the simplified figure# combine
 panel_figure5 <- 
-    (pc1_current_infection | pc2_current_infection ) /
+    #(pc1_current_infection | pc2_current_infection ) /
     (pc1_WL_current_infection | pc2_WL_current_infection) /
-    free(coef_interaction) +
+    free(coefs6) +
     plot_layout(guides = 'collect') + # Collect all legends into a single legend
     plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
 
 # Add a figure title
 panel_figure5 <- panel_figure5 + 
     plot_annotation(title = 'Fig. 5', 
-                    theme = theme(plot.title = element_text(size = 20, hjust = 0))) +
-    plot_layout(heights = c(1, 1,1), 
-                widths = c(1,1,1))
+                    theme = theme(plot.title = element_text(size = 20, hjust = 0)))# +
+    #plot_layout(heights = c(1, 1,1), 
+     #           widths = c(1,1,1))
 
 # Save the panel figure
 ggsave(paste0(panels_fi, "/panel_regression_pca_interaction.jpeg"), 
-       panel_figure5, width = 13, height = 12, dpi = 300)
+       panel_figure5, width = 11, height = 8, dpi = 300)
+
+### Create the panel figure
+PCA_panel <-
+    (biplot | coefs1_3 ) +
+    plot_layout(guides = 'collect') + # Collect all legends into a single legend
+    plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
+
+# Add a figure title
+PCA_panel <- PCA_panel + 
+    plot_annotation(title = 'Fig. 3', 
+                    theme = theme(plot.title = element_text(size = 20, hjust = 0)))
 
 
+
+# Save the panel figure
+ggsave(paste0(panels_fi, "/panel_pca.jpeg"), 
+       PCA_panel, width = 18, height = 8, dpi = 300)
 
 rm(residuals_1, residuals_df, residuals_vs_fitted, model_1, model_2,
-  model_3, model_4, model_5, models, effects, data_df)
+   model_3, model_4, model_5, models, effects, data_df)
 rm(circ, mouse, pca.vars, pca.vars.m, 
    pca_var, var.contrib.matrix, res.pca, 
    var.contrib, pca_variables, coef6, coef_interaction, contributions_pc1,
    contributions_pc2)
+

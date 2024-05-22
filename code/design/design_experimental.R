@@ -24,8 +24,7 @@ lab$Parasite_challenge <-
 # Define colors
 colors <- c("TRUE" = "firebrick3", "FALSE" = "steelblue")
 
-# transform mouse strain into factor
-lab$mouse_strain <- as.factor(lab$mouse_strain)
+
 
 lab$mouse_strain <- gsub(pattern = "_", " ", lab$mouse_strain)
 
@@ -416,7 +415,7 @@ ooc_primary + ooc_challenge + Rwp + Rwc +
 panel_figure <- 
     (Rwp | Rwc) /
     (strains_weight_challenge ) / 
-    (eimeria_weight_challenge) +
+    (eimeria_weight) +
  #   plot_layout(guides = 'collect') + # Collect all legends into a single legend
     plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
 

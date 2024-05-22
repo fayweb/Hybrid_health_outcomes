@@ -104,3 +104,36 @@ labels_f = c("Uninfected",
                     "*E. ferrisi*",
                     "*E. falciformis*")
 
+
+### Create factors in mouse strains
+# transform mouse strain into factor
+hm$mouse_strain <- as.factor(hm$mouse_strain)
+
+# Set NMRI as the reference level for mouse_strain
+hm$mouse_strain <- relevel(hm$mouse_strain, ref = "NMRI")
+
+
+# create lab
+lab <- hm %>% 
+    filter(origin == "Lab")
+
+# update the immunization to truly reflect the uninfected mice
+hm <- hm %>%
+    mutate(immunization = case_when(
+        Parasite_primary == "Uninfected controls" & Parasite_challenge == 
+            "Uninfected controls" ~ "Uninfected controls",
+        TRUE ~ coalesce(immunization, NA_character_)
+    ))
+
+x <- x %>%
+    mutate(immunization = case_when(
+        Parasite_primary == "Uninfected controls" & Parasite_challenge == 
+            "Uninfected controls" ~ "Uninfected controls",
+        TRUE ~ coalesce(immunization, NA_character_)
+    ))
+
+
+## set the factor levels for the immunization variable
+hm$immunization <- as.factor(hm$immunization)
+hm$immunization <- relevel(hm$immunization, ref = "Uninfected controls")
+

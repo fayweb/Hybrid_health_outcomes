@@ -183,7 +183,7 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
  # Plots: biplot, pca_variables,
  #  contr_PC1, contr_PC2
 #----------------------------------------------------------*
-if (0) source(file.path(canalysis, "analysis_PCA_genes_lab.R"))
+if (1) source(file.path(canalysis, "analysis_PCA_genes_lab.R"))
  # 6.2: PCA 
  # Regressions with pc axes 
  # Plots: pc1_current_infection, pc2_current_infection, coefs5
@@ -191,7 +191,7 @@ if (0) source(file.path(canalysis, "analysis_PCA_genes_lab.R"))
  if (0) source(file.path(canalysis, "analysis_linear_regressions_PCA.R"))
 #----------------------------------------------------------*
 # 6.2: Heatmap lab genes
-# Requires: hm, lab
+# Requires: previous script!!!
 #----------------------------------------------------------*
 if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  #----------------------------------------------------------*
