@@ -85,6 +85,7 @@ How many mice died in the primary infections?
 Challenge %>%
            filter(infection == "primary", Mouse_ID %in% lab$Mouse_ID,
                   death == "primary", dpi == max_dpi) %>%
+    group_by(primary_infection) %>%
     summarise(n())
 ```
 How many mice were in the challenge infections?
@@ -102,7 +103,16 @@ We use here the mesenterial lymphnodes. (?)
 Challenge %>%
            filter(infection == "challenge", Mouse_ID %in% lab$Mouse_ID,
                   dpi == max_dpi, death == "challenge", Position == "mLN") %>%
+    group_by(Parasite_challenge) %>%
     summarize(n())
+
+lab %>%
+           filter(infection == "challenge",
+                  dpi == max_dpi, death == "challenge", Position == "mLN") %>%
+    group_by(Parasite_challenge, dpi) %>%
+    summarize(n())
+
+
 ```
 
 

@@ -114,6 +114,9 @@ ggsave(filename = paste0(d_fi,"/map_HI.jpeg"),
 ###################################################
 ####################################################
 ###################################################
+# Set NMRI as the reference level for mouse_strain
+lab$mouse_strain <- relevel(lab$mouse_strain, ref = "NMRI")
+
 ggplot(lab %>%
            filter(infection == "challenge"), 
        aes(x = WL_max, y = mouse_strain, fill = mouse_strain)) + 
