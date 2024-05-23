@@ -54,10 +54,10 @@ saveRDS(WL_predict_gene, file =  paste0(cmodels, "WL_predict_gene.RDS"))
 print(WL_predict_gene)
 
 predict_WL_cv <- rf.crossValidation(x = WL_predict_gene, xdata = train.data, 
-                                    p = 0.10, n = 99, ntree = 501)
+                                    p = 0.10, n = 99, ntree = 26)
 
 predict_WL_cv$fit.var.exp
-
+predict_WL_cv$fit.mse
 par(mar=c(1,1,1,1))
 
 ##################
@@ -189,13 +189,14 @@ lm_short
 ggsave(filename = paste0(an_fi, "/correlation_pred_obs_random.jpeg"),
        width = 6, height = 5, dpi = 300)
 
-
+#######################################
+##############################################
+#####################################
 
 model <- lm(predictions ~ WL_max * current_infection, data = test_lab)    
 summary(model)
 
 #### Plotting
-
 ggpredict(model, terms = c("WL_max", "current_infection")) %>% 
     plot(colors = "darkorchid") +
     labs(title = NULL) +  # This removes the title
@@ -220,7 +221,47 @@ lm_weight_loss_predictions
 ggsave(filename = paste0(an_fi, "/obs_pred_treatment_groups_random.jpeg"),
        width = 6, height = 5, dpi = 300)
 
-model <- lm(predictions ~ WL_max * delta_ct_cewe_MminusE , data = test_lab)
+############################
+##############uusing only the current infection to predict predicted weight 
+# loss
+model_c <- lm(predictions ~ current_infection, data = test_lab)    
+summary(model_c)
+preds <- ggpredict(model_c, terms = "current_infection")
+
+#### Plotting
+ggplot(preds, aes(x = x, y = predicted, color = x)) +
+    geom_point(#aes(shape = x), 
+        size = 3) +
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.1, size = 0.7) +
+    geom_line(aes(group = group, color = "black")) +
+    scale_color_manual(values = color_mapping, labels = labels) +
+    labs(
+        x = "Infection group",
+        y = "Predicted maximum weight loss",
+        color = "current_infection",
+        shape = "current_infection"
+    ) +
+    theme_minimal() +
+    theme(
+        legend.position = "none",
+        plot.title = element_text(hjust = 0.5, size = 14),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 13),
+        axis.text.x = element_markdown(),
+        legend.text = element_markdown()
+    ) -> lm_weight_loss_predictions_c
+
+lm_weight_loss_predictions_c
+
+ggsave(filename = paste0(an_fi, "/random_foreest_lab_predictions_eimeria.jpeg"),
+       width = 6, height = 5, dpi = 300)
+
+
+#######################################
+#####################################
+########################################
+model <- lm(predictions ~ WL_max * delta_ct_cewe_MminusE , data = test_lab %>%
+                filter(MC.Eimeria == "TRUE"))
 summary(model)
 
 ggpredict(model, terms = c("WL_max", "delta_ct_cewe_MminusE"), interactive=TRUE) %>% 
@@ -228,7 +269,7 @@ ggpredict(model, terms = c("WL_max", "delta_ct_cewe_MminusE"), interactive=TRUE)
     labs(title = NULL) +  # This removes the title
     # ggtitle("Effect of PC2 on Predicted Weight Loss") +
     xlab("Observed maximum weight loss during infections") +
-    ylab("Predicted maximum weight loss during infections") +
+    ylab("Predicted maximum weight loss") +
     theme_minimal() +
    scale_color_manual(values = c("darkred", "gold", "violet")) +
     scale_fill_manual(values = c("darkred", "gold", "violet")) +
@@ -247,6 +288,60 @@ ggsave(filename = paste0(an_fi, "/deltact_random.jpeg"),
        width = 6, height = 5, dpi = 300)
 
 
+#######################################
+#####################################
+########################################
+model_d <- lm(predictions ~  delta_ct_cewe_MminusE , data = test_lab %>%
+                filter(MC.Eimeria == "TRUE"))
+summary(model_d)
+
+ggpredict(model_d, terms = c("delta_ct_cewe_MminusE"), interactive=TRUE) %>% 
+    plot(color = "purple") +
+    labs(title = NULL) +  # This removes the title
+    # ggtitle("Effect of PC2 on Predicted Weight Loss") +
+    xlab("Infection intensity with Eimeria delta Ct") +
+    ylab("Predicted maximum weight loss") +
+    theme_minimal() +
+    theme(
+        plot.title = element_text(size = 16, hjust = 0.5),
+        axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size = 12),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        legend.title = element_text(size = 12),
+        legend.text = element_text(size = 12))-> lm_short
+
+lm_short
+
+
+preds <- ggpredict(model_d, terms = "delta_ct_cewe_MminusE")
+
+#### Plotting
+ggplot(preds, aes(x = x, y = predicted, color = x)) +
+   # geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.1, size = 0.7) +
+    geom_abline() +
+   # scale_color_manual(values = color_mapping, labels = labels) +
+    labs(
+        x = "Infection group",
+        y = "Predicted Weight Loss",
+        color = "current_infection",
+        shape = "current_infection"
+    ) +
+    theme_minimal() +
+    theme(
+        legend.position = "none",
+        plot.title = element_text(hjust = 0.5, size = 14),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 13),
+        axis.text.x = element_markdown(),
+        legend.text = element_markdown()
+    )
+
+ggsave(filename = paste0(an_fi, "/deltact_random.jpeg"),
+       width = 6, height = 5, dpi = 300)
+
+
+summary(model_d)
 ### plotting
 test_lab %>%
     ggplot(aes(x = predictions, y = WL_max, color = current_infection)) +
@@ -287,7 +382,8 @@ ggsave(plot = predictions_random_for_lab,
        dpi = 1000)
 
 
-combi_plot <- (importance_plot | predictions_random_for_lab) +
+combi_plot <- (importance_plot | predictions_random_for_lab) /
+    (lm_weight_loss_predictions_c | lm_short) +
     #plot_layout(guides = 'collect') + # Collect all legends into a 
     #single legend
     plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
@@ -306,8 +402,8 @@ print(combi_plot)
 
 ggsave(plot = combi_plot, 
        filename = paste0(panels_fi, "/variableimp_rand_results_lab.jpeg"), 
-       width = 14, 
-       height = 5, dpi = 1000)
+       width = 12, 
+       height = 8, dpi = 1000)
 
 # Calculate the linear model
 lm_fit <- lm(WL_max ~ predictions, data = test_lab)
@@ -389,10 +485,10 @@ saveRDS(WL_predict_gene, file =  paste0(cmodels, "WL_predict_gene.RDS"))
 print(WL_predict_gene)
 
 predict_WL_cv <- rf.crossValidation(x = WL_predict_gene, xdata = gene_W, 
-                                    p = 0.10, n = 99, ntree = 501)
+                                    p = 0.10, n = 99, ntree = 308)
 
 predict_WL_cv$fit.var.exp
-
+predict_WL_cv$fit.mse
 par(mar=c(1,1,1,1))
 
 ##################
