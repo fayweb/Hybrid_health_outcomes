@@ -252,7 +252,7 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  # Is there any evidence for an association between infection status, 
  #hybridicity and their impact on weight loss? 
  if (1) source(file.path(canalysis, 
-                         "analysis_predicted_WL_parasites.R"))
+                         "analysis_WL_parasites.R"))
 
  #analysis help next
  

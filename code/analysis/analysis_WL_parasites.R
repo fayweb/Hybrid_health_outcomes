@@ -110,7 +110,7 @@ ggsave(filename = paste0(an_fi, "/coefficient_plot_parasites.jpeg"),
 
 
 ##############remove eimeria
-modelB <- lm(predicted_WL ~   infected_Aspiculuris 
+modelB <- lm(predicted_WL ~  infection_status + infected_Aspiculuris 
              + infected_syphasia + infected_crypto, data = Field_par)
 
 summary(modelB)
@@ -178,7 +178,7 @@ ggsave(plot = raincloud_plots__eimeria, filename =
 
 
 #### just eimeria
-modelc <- lm(predicted_WL ~ infection_status, Field)
+modelc <- lm(predicted_WL ~ species_Eimeria * FEC_Eim_Ct, Field )
 summary(modelc)
 
 # Combine the plots
@@ -202,3 +202,7 @@ print(panel)
 # Save the panel figure
 ggsave(paste0(panels_fi, '/infection_predictions_panels.jpeg'), 
        panel, width = 18, height =18, dpi = 300)
+
+
+
+
