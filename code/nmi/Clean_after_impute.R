@@ -125,12 +125,7 @@ hm <- hm %>%
         TRUE ~ coalesce(immunization, NA_character_)
     ))
 
-x <- x %>%
-    mutate(immunization = case_when(
-        Parasite_primary == "Uninfected controls" & Parasite_challenge == 
-            "Uninfected controls" ~ "Uninfected controls",
-        TRUE ~ coalesce(immunization, NA_character_)
-    ))
+
 
 
 ## set the factor levels for the immunization variable

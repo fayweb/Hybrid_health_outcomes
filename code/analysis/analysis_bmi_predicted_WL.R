@@ -14,9 +14,38 @@ ggplot(data = Field_infected, aes(x = delta_ct_cewe_MminusE, y = predicted_WL)) 
     geom_point() +
     stat_smooth(method= "lm") 
 
+
+# Create the scatter plot
+ggplot(data = Field_infected, aes(x = delta_ct_cewe_MminusE, y = predicted_WL)) +
+    geom_point(color = "black", size = 3, alpha = 0.6) +   # Plot the data points with specified color, size, and transparency
+    geom_smooth(method = "lm", se = TRUE, color = "blue", linetype = "solid", size = 1) +  # Add a linear trend line with confidence interval
+    geom_smooth(method = "loess", se = TRUE, color = "red", linetype = "dashed", size = 1) +  # Add a smoothing line with confidence interval
+    labs( x = "Infection Intensity of Eimeria spp.",
+        y = "Predicted Maximum Weight Loss",) +
+    theme_minimal(base_size = 15) +  # Use a minimal theme with larger base font size for better readability
+    theme(
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 18),  # Center the plot title and adjust its style
+        plot.subtitle = element_text(hjust = 0.5, size = 14),  # Center the plot subtitle and adjust its size
+        axis.title = element_text(face = "bold"),  # Bold axis titles
+        panel.grid.major = element_line(color = "grey80"),  # Subtle grid lines for major grids
+        panel.grid.minor = element_blank()  # Remove minor grid lines
+    ) -> Cor_infection_wl
+
+Cor_infection_wl
+
+ggsave(paste0(an_fi, "/correlation_intensity_pred_WL.jpeg"), Cor_infection_wl)
+
+
+plot(Field_infected$predicted_WL, Field_infected$delta_ct_cewe_MminusE)
+shapiro.test(Field_infected$predicted_WL) # normal distribution
+shapiro.test(Field_infected$delta_ct_cewe_MminusE) # non normal distribution
+
+lm_model <- lm(predicted_WL ~ delta_ct_cewe_MminusE, data = Field_infected)
+plot(lm_model$residuals)
+
 # Is the predicted weight loss correlated to the infection intensities?
 cor.test(Field_infected$predicted_WL, Field_infected$delta_ct_cewe_MminusE,
-         method=c("pearson", "kendall", "spearman"))
+         method=c("spearman"), exact=FALSE)
 # correlation non significant
 
 # can the infection intensity predict weight loss?
@@ -43,16 +72,32 @@ ggplot(data = Field, aes(x = OPG, y = predicted_WL)) +
   stat_smooth(method= "lm") +
   scale_x_log10()
 
-Field2 <- Field %>%
-  drop_na(OPG)
-
-ggplot(data = Field2, aes(x = OPG, y = predicted_WL)) +
-    geom_point() +
-    stat_smooth(method= "lm") +
+# Create the scatter plot for the variable OPG
+Cor_OPG_wl <- ggplot(data = Field, aes(x = OPG, y = predicted_WL)) +
+    geom_point(color = "black", size = 3, alpha = 0.6) +   # Plot the data points with specified color, size, and transparency
+    geom_smooth(method = "lm", se = TRUE, color = "blue", linetype = "solid", size = 1) +  # Add a linear trend line with confidence interval
+    geom_smooth(method = "loess", se = TRUE, color = "red", linetype = "dashed", size = 1) +  # Add a smoothing line with confidence interval
+    labs(
+        x = "Predicted Maximum Weight Loss",
+        y = "Infection Intensity of Eimeria spp. (OPG)"
+    ) +
+    theme_minimal(base_size = 15) +  # Use a minimal theme with larger base font size for better readability
+    theme(
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 18),  # Center the plot title and adjust its style
+        plot.subtitle = element_text(hjust = 0.5, size = 14),  # Center the plot subtitle and adjust its size
+        axis.title = element_text(face = "bold"),  # Bold axis titles
+        panel.grid.major = element_line(color = "grey80"),  # Subtle grid lines for major grids
+        panel.grid.minor = element_blank()  # Remove minor grid lines
+    ) +
     scale_x_log10()
 
+Cor_OPG_wl
 
-cor.test(Field2$predicted_WL, Field2$OPG)
+shapiro.test(Field$OPG) # non normal distribution
+
+
+cor.test(Field$predicted_WL, Field$OPG,  method= "spearman", exact = FALSE)
+
 model <- lm(predicted_WL ~  OPG, data = Field)
 
 
@@ -63,10 +108,32 @@ confint(model)
 
 ## Let'S dive into it further
 # what about a combination of the oocyst and infection intensity data with qpcr?
-model <- lm(predicted_WL ~  OPG * delta_ct_cewe_MminusE, data = Field)
+model <- lm(predicted_WL ~  infection_status * delta_ct_cewe_MminusE, data = Field)
 summary(model)
 confint(model)
 
+# Plot the summary with enhanced aesthetics
+plot_summs(model, 
+           scale = TRUE, 
+           inner_ci_level = 0.95, 
+           outer_ci_level = 0.99) +
+    theme_minimal() +
+    theme(
+        text = element_text(size = 12),
+        axis.text.x = element_text(size = 12, color = "black"),
+        axis.text.y = element_text(size = 12, color = "black"),
+        axis.title.x = element_text(size = 14, color = "black"),
+        axis.title.y = element_text(size = 14, color = "black"),
+        plot.title = element_text(size = 16, hjust = 0.5, face = "bold")
+    ) +
+    labs(
+        x = "Estimate",
+        y = "Predictor"
+    ) +
+    scale_color_manual(values = c("blue", "red")) +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "grey") -> int_MC
+
+ggsave(paste0(an_fi, "/intensity_melting_curve.jpeg"), int_MC)
 
 ## LetÄ's create the BMI variable and see how it works
 Field <- Field %>%
@@ -91,6 +158,7 @@ ggplot(data = Field, aes(x = BMI, y = predicted_WL)) +
 bmi_plot
 
 bmi <- lm(predicted_WL ~ BMI, data = Field)
+shapiro.test(Field$BMI) # non normal distribution
 
 # fitting the bmi model
 predictions <- ggpredict(bmi, terms = c("BMI"))
@@ -108,7 +176,7 @@ ggplot(predictions, aes(x = x, y = predicted)) +
     theme(plot.title = element_text(hjust = 0.5))
 
 # Perform correlation test
-cor.test(Field$BMI, Field$predicted_WL, use = "complete.obs")
+cor.test(Field$BMI, Field$predicted_WL, method = "spearman", use = "complete.obs")
 
 # Summarize the linear model
 summary(bmi)

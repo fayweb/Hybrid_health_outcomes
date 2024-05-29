@@ -236,7 +236,7 @@ ggplot(preds, aes(x = x, y = predicted, color = x)) +
     geom_line(aes(group = group, color = "black")) +
     scale_color_manual(values = color_mapping, labels = labels) +
     labs(
-        x = "Infection group",
+        x = "Experimental infection groups",
         y = "Predicted maximum weight loss",
         color = "current_infection",
         shape = "current_infection"
