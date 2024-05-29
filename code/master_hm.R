@@ -235,7 +235,7 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  # Is there a relationship with the infection intensities with Eimeria spp.?
  # Is there a relationship between bmi and predicted weight loss?
  # We find a weak relationship of bmi and predicted weight loss
- if (0) source(file.path(canalysis, "analysis_bmi_predicted_WL.R"))
+ if (1) source(file.path(canalysis, "analysis_bmi_predicted_WL.R"))
  # 7.6: Could we derive tolerance out of the predicted health impact and 
  # infection intenstities for each mouse? 
  # If so, can we test the hybridicity on this derives tolerance variable?
@@ -247,7 +247,12 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  #hybridicity and their impact on weight loss? 
  if (0) source(file.path(canalysis, 
                          "analysis_predicted_WL_infection_with_Eimeria.R"))
- 
+ # 7.7: Testing impact of infection status with Eimeria spp. on wild mice
+ # Do we predict higher weight loss for mice that are infected with Eimeria spp? 
+ # Is there any evidence for an association between infection status, 
+ #hybridicity and their impact on weight loss? 
+ if (1) source(file.path(canalysis, 
+                         "analysis_predicted_WL_parasites.R"))
 
  #analysis help next
  
