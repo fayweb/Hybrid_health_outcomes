@@ -40,7 +40,9 @@ plot(Field_infected$predicted_WL, Field_infected$delta_ct_cewe_MminusE)
 shapiro.test(Field_infected$predicted_WL) # normal distribution
 shapiro.test(Field_infected$delta_ct_cewe_MminusE) # non normal distribution
 
-lm_model <- lm(predicted_WL ~ delta_ct_cewe_MminusE, data = Field_infected)
+lm_model <- lm(predicted_WL ~ delta_ct_cewe_MminusE, 
+               data = Field_infected)
+summary(lm_model)
 plot(lm_model$residuals)
 
 # Is the predicted weight loss correlated to the infection intensities?
@@ -50,10 +52,25 @@ cor.test(Field_infected$predicted_WL, Field_infected$delta_ct_cewe_MminusE,
 
 # can the infection intensity predict weight loss?
 model_WL <- lm(predicted_WL ~  delta_ct_cewe_MminusE, data = Field_infected)
-
+model_fa <- lm(predicted_WL ~  delta_ct_cewe_MminusE, data = Field_infected %>%
+                   filter(species_Eimeria == "E. falciformis"))
+model_fe <- lm(predicted_WL ~  delta_ct_cewe_MminusE, data = Field_infected %>%
+                   filter(species_Eimeria == "E. ferrisi"))
 summary(model_WL)
+summary(model_fa)
+summary(model_fe)
 confint(model_WL)
 
+
+fa <- Field_infected %>%
+    filter(species_Eimeria == "E. falciformis")
+
+cor.test(fa$predicted_WL, fa$delta_ct_cewe_MminusE,
+         method=c("spearman"), exact=FALSE)
+fe <- Field_infected %>%
+    filter(species_Eimeria == "E. ferrisi")
+cor.test(fe$predicted_WL, fe$delta_ct_cewe_MminusE,
+         method=c("spearman"), exact=FALSE)
 
 model_WL_infection <- 
     ggpredict(model_WL) %>% 
@@ -98,8 +115,7 @@ shapiro.test(Field$OPG) # non normal distribution
 
 cor.test(Field$predicted_WL, Field$OPG,  method= "spearman", exact = FALSE)
 
-model <- lm(predicted_WL ~  OPG, data = Field)
-
+model <- lm(predicted_WL ~  OPG * species_Eimeria, data = Field)
 
 summary(model)
 confint(model)

@@ -253,6 +253,9 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  #hybridicity and their impact on weight loss? 
  if (1) source(file.path(canalysis, 
                          "analysis_WL_parasites.R"))
+ ######
+ if (1) source(file.path(canalysis, 
+                         "analysis_multiple_multivariate_regression_field.R"))
 
  #analysis help next
  
