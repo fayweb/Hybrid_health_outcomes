@@ -2,7 +2,7 @@
 
 ## Let'S dive into it further
 # what about a combination of the oocyst and infection intensity data with qpcr?
-model <- lm(predicted_WL ~  infection_status * delta_ct_cewe_MminusE, data = Field)
+model <- lm(predicted_WL ~  infection_status * infection_intensity, data = Field)
 summary(model)
 confint(model)
 modelsummary(model)
@@ -79,7 +79,7 @@ ggsave(paste0(an_fi, "/predicted_weight_loss_species.jpeg"),
 # for other intestinal parasites?
 # Eventhough our model is trained and tested on eimeria infections
 Field <- Field %>%
-    mutate(infection_intensity_Eim = delta_ct_cewe_MminusE)
+    mutate(infection_intensity_Eim = infection_intensity)
 
 Field_par <- Field %>%
     mutate(
@@ -192,7 +192,7 @@ panel <-
 
 # Add a figure title
 panel <- panel + 
-    plot_annotation(title = 'Fig. 9', 
+    plot_annotation(title = 'Fig. 6', 
                     theme = theme(plot.title = 
                                       element_text(size = 13, hjust = 0)))
 

@@ -396,7 +396,7 @@ combi_plot
 
 # Add a figure title
 combi_plot <- combi_plot + 
-    plot_annotation(title = 'Fig. 6', 
+    plot_annotation(title = 'Fig. 5', 
                     theme = theme(plot.title = element_text(size = 13, 
                                                             hjust = 0)))
 

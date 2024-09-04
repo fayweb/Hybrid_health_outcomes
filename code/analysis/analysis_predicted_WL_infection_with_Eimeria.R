@@ -16,7 +16,7 @@ ggplot(Field, aes(x = HI, HE)) +
     geom_point() +
     geom_line()
 
-model1 <- lm(predicted_WL ~ MC.Eimeria + MC.Eimeria * delta_ct_cewe_MminusE * 
+model1 <- lm(predicted_WL ~ MC.Eimeria + MC.Eimeria * infection_intensity * 
                  HE + HI, Field)
 summary(model1)
 summ(model1)
@@ -36,7 +36,7 @@ model2 <- lm(predicted_WL ~  HI + HE, Field)
 summary(model2)
 modelsummary(model2)
 # infection status with eimeria
-model3 <- lm(predicted_WL ~  MC.Eimeria * delta_ct_cewe_MminusE, Field)
+model3 <- lm(predicted_WL ~  MC.Eimeria * infection_intensity, Field)
 summary(model3)
 modelsummary(model3)
 
@@ -104,8 +104,6 @@ ggsave(paste0(an_fi, "/predicted_weight_loss_species.jpeg"),
 #### Are there any differences in prediced weight loss when we control 
 # for other intestinal parasites?
 # Eventhough our model is trained and tested on eimeria infections
-Field <- Field %>%
-    mutate(infection_intensity_Eim = delta_ct_cewe_MminusE)
 
 Field_par <- Field %>%
     mutate(
@@ -204,7 +202,7 @@ ggsave(plot = raincloud_plots__eimeria, filename =
 
 # Add a figure title
 panel <- panel + 
-    plot_annotation(title = 'Fig. 9', 
+    plot_annotation(title = 'Fig. 6', 
                     theme = theme(plot.title = 
                                       element_text(size = 13, hjust = 0)))
 

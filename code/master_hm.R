@@ -30,7 +30,7 @@ pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor,
                reshape2, sjPlot, stargazer, jtools,modelsummary, ggeffects, 
                pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities,
                parasiteLoad, fitdistrplus, optimx, leaflet, magick, ggdist,
-               ggbeeswarm, ggtext, kableExtra, webshot)
+               ggbeeswarm, ggtext, kableExtra, webshot, broom)
     
 ## Define within project file paths ----
         # code

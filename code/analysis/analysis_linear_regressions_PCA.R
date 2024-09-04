@@ -115,7 +115,7 @@ modelsummary(models = as.list(model_1, model_5, model_3),
              output = paste0(tables, "/lab_model1.docx"))
 
 summ(model_1)
-modelsummary(models = c(model_1, model_5, model_3))
+#modelsummary(models = c(model_1, model_5, model_3))
 
 plot_summs(model_1, model_5, model_3, 
            colors = "CUD", rescale.distributions = TRUE, 
@@ -129,8 +129,64 @@ coefs1_3
 ggsave(filename = paste0(an_fi, "/plot_sums_complex_pca.jpeg"),
        plot = coefs1_3, width = 6, height = 4)
 
+####################################
+# Tidy the models
+tidy_model_1 <- tidy(model_1)
+tidy_model_5 <- tidy(model_5)
+tidy_model_3 <- tidy(model_3)
+
+# Combine the tidied models with model labels
+all_models <- bind_rows(
+    tidy_model_1 %>% mutate(model = "Model 1"),
+    tidy_model_5 %>% mutate(model = "Model 2"),
+    tidy_model_3 %>% mutate(model = "Model 3")
+)
+
+# Group mouse_strain terms into a single summary row per model
+mouse_strain_summary <- all_models %>%
+    filter(grepl("mouse_strain", term)) %>%
+    group_by(model) %>%
+    summarise(
+        term = "Mouse Strain (combined)",
+        estimate = paste0(round(estimate, 3), collapse = ", "),
+        std.error = paste0("(", round(std.error, 3), ")", collapse = ", "),
+        p.value = paste0(round(p.value, 3), collapse = ", ")
+    ) %>%
+    mutate(across(c(estimate, std.error, p.value), as.character))  # Ensure consistency in data type
+
+# Filter out the mouse_strain terms from the non-strain rows
+non_mouse_strain_terms <- all_models %>%
+    filter(!grepl("mouse_strain", term)) %>%
+    mutate(across(c(estimate, std.error, p.value), as.character))  # Convert to character to match
+
+# Combine non-mouse_strain terms with mouse_strain_summary
+final_table <- bind_rows(non_mouse_strain_terms, mouse_strain_summary)
+
+# Arrange rows by model and move Mouse Strain row down
+final_table <- final_table %>%
+    arrange(model, desc(term != "Mouse Strain (combined)"))
+
+# Create a final clean table
+publication_table <- final_table %>%
+    dplyr::select(model, term, estimate, std.error, p.value) %>%  # Select relevant columns
+    kbl(format = "html", digits = 3, caption = "Compact Regression Table with Mouse Strain Combined") %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>%
+    add_header_above(c(" " = 2, "Model 1" = 1, "Model 2" = 1, "Model 3" = 1))  # Adjusted for 5 total columns
+
+# Save as HTML
+save_kable(publication_table, file = "output/tables/compact_regression_table_combined.html")
+
+# Convert to PNG for Google Docs
+webshot("output/tables/compact_regression_table_combined.html", 
+        file = "output/tables/compact_regression_table_combined.png")
 
 
+
+
+
+#########################################################################
+##########################################################################
+########################################################################
 
 model_6 <- lm(WL_max ~ PC1 * current_infection + PC2 *current_infection, 
               data = lab)
@@ -299,7 +355,7 @@ panel_figure5 <-
 
 # Add a figure title
 panel_figure5 <- panel_figure5 + 
-    plot_annotation(title = 'Fig. 5', 
+    plot_annotation(title = 'Fig. 4', 
                     theme = theme(plot.title = element_text(size = 20, hjust = 0)))# +
     #plot_layout(heights = c(1, 1,1), 
      #           widths = c(1,1,1))

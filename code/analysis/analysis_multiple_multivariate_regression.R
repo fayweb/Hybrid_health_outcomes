@@ -160,7 +160,7 @@ regression_table <- tidy_models_no_intercept %>%
 # Create the formatted table with kableExtra
 publication_table <- regression_table %>%
         kbl(
-            caption = "Regression Results of Immune Gene Expression for E. ferrisi and E. falciformis",
+            caption = "Table 1: Regression results for immune gene expression in E. ferrisi and E. falciformis-infected mice in controlled experiments",
             format = "html",  # Or "latex" for LaTeX output
             digits = 3  # Control the number of decimal places
         ) %>%
