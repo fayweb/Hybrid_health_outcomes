@@ -117,7 +117,7 @@ modelsummary(models = as.list(model_1, model_5, model_3),
 summ(model_1)
 modelsummary(models = c(model_1, model_5, model_3))
 
-plot_summs(model_1, model_5, model_5, 
+plot_summs(model_1, model_5, model_3, 
            colors = "CUD", rescale.distributions = TRUE, 
            plot.distributions = FALSE, point.size = 3, 
            robust = TRUE,

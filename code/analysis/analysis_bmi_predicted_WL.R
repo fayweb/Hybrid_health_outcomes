@@ -122,9 +122,12 @@ confint(model)
 
 
 
-## Let'S dive into it further
-# what about a combination of the oocyst and infection intensity data with qpcr?
-model <- lm(predicted_WL ~  infection_status * delta_ct_cewe_MminusE, data = Field)
+# Let's dive into it further
+# What about a combination of the oocyst and infection intensity data with qPCR?
+Field <- Field %>% 
+    rename(infection_intensity = delta_ct_cewe_MminusE)  # Rename the column for the plot
+
+model <- lm(predicted_WL ~ infection_status * infection_intensity, data = Field)
 summary(model)
 confint(model)
 
@@ -148,6 +151,9 @@ plot_summs(model,
     ) +
     scale_color_manual(values = c("blue", "red")) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "grey") -> int_MC
+
+int_MC
+
 
 ggsave(paste0(an_fi, "/intensity_melting_curve.jpeg"), int_MC)
 

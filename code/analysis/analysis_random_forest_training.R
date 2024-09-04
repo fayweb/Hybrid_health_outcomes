@@ -127,7 +127,8 @@ variable_importance <- varImpPlot(WL_predict_gene)
 
 
 ggsave(filename = paste0(an_fi, "/variable_imporance_random.jpeg"),
-       width = 6, height = 5, dpi = 300)
+       #width = 6, height = 5, 
+       dpi = 1000)
 
 
 # Get variable importance from the WL_predict_gene fit
@@ -236,6 +237,8 @@ ggplot(preds, aes(x = x, y = predicted, color = x)) +
     geom_line(aes(group = group, color = "black")) +
     scale_color_manual(values = color_mapping, labels = labels) +
     labs(
+       # title = "Bar plot showing the predicted maximum weight 
+        #loss for each infection group",
         x = "Experimental infection groups",
         y = "Predicted maximum weight loss",
         color = "current_infection",
@@ -298,7 +301,8 @@ summary(model_d)
 ggpredict(model_d, terms = c("delta_ct_cewe_MminusE"), interactive=TRUE) %>% 
     plot(color = "purple") +
     labs(title = NULL) +  # This removes the title
-    # ggtitle("Effect of PC2 on Predicted Weight Loss") +
+   # ggtitle("Relationship between infection intensity 
+   #         and predicted maximum weight loss") +
     xlab("Infection intensity with Eimeria delta Ct") +
     ylab("Predicted maximum weight loss") +
     theme_minimal() +
@@ -313,9 +317,9 @@ ggpredict(model_d, terms = c("delta_ct_cewe_MminusE"), interactive=TRUE) %>%
 
 lm_short
 
-
 preds <- ggpredict(model_d, terms = "delta_ct_cewe_MminusE")
-
+ggsave(filename = paste0(an_fi, "/deltact_random.jpeg"),
+       width = 6, height = 5, dpi = 300)
 #### Plotting
 ggplot(preds, aes(x = x, y = predicted, color = x)) +
    # geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.1, size = 0.7) +
@@ -377,8 +381,8 @@ predictions_random_for_lab
     
 
 ggsave(plot = predictions_random_for_lab, 
-       filename = paste0(an_fi, "predictions_random_for_lab.jpeg"), 
-       width = 8, height = 5,
+       filename = paste0(an_fi, "/predictions_random_for_lab.jpeg"), 
+       width = 6, height = 5,
        dpi = 1000)
 
 

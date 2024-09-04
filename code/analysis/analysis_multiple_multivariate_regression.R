@@ -131,6 +131,62 @@ density_imm
     ggsave(paste0(panels_fi, "/panel_immune_gene_expression_lab.jpeg"), 
            comb, width = 12, height = 6, dpi = 300)    
     
+    
+    
+    # Update gene names to replace "." with "-" and "IFNg" with "IFNy"
+regression_table <- tidy_models_no_intercept %>%
+        dplyr::select(model, term, estimate, std.error, conf.low, conf.high, p.value) %>%
+        mutate(
+            model = gsub("\\.", "-", model),  # Replace "." with "-"
+            model = gsub("IFNg", "IFNy", model),  # Replace "IFNg" with "IFNy"
+            significance = case_when(
+                p.value < 0.001 ~ "***",
+                p.value < 0.01 ~ "**",
+                p.value < 0.05 ~ "*",
+                TRUE ~ ""
+            )
+        ) %>%
+        rename(
+            Gene = model,
+            'Treatment group' = term,
+            Estimate = estimate,
+            `Std. Error` = std.error,
+            `CI Lower` = conf.low,
+            `CI Upper` = conf.high,
+            `P-value` = p.value,
+            `Significance` = significance
+        )
+    
+# Create the formatted table with kableExtra
+publication_table <- regression_table %>%
+        kbl(
+            caption = "Regression Results of Immune Gene Expression for E. ferrisi and E. falciformis",
+            format = "html",  # Or "latex" for LaTeX output
+            digits = 3  # Control the number of decimal places
+        ) %>%
+        kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                      full_width = F) %>%
+        column_spec(1, bold = TRUE) %>%  # Bold gene names for emphasis
+        add_header_above(c(" " = 2, "Regression Estimates" = 5, " " = 1)) %>%  # Custom header, include space for "Significance"
+        footnote(
+            general = "Significance codes: '***' 0.001 '**' 0.01 '*' 0.05",
+            footnote_as_chunk = TRUE
+        )
+    
+# Print the table
+print(publication_table)
+
+#Save the table as an HTML file
+save_kable(publication_table, 
+           file = "output/tables/differences_in_treatment_groups_genes.html")
+
+
+# Convert the saved HTML file to an image
+webshot("output/tables/differences_in_treatment_groups_genes.html", 
+        "output/tables/differences_in_treatment_groups_genes.png")
+    
+
+    
   rm(coef_mmr, comb, density_imm, results, tidy_models, 
      tidy_models_no_intercept, biplot, coefs5, contr_PC1, contr_PC2, 
      figure_panel, pc1_current_infection, pc2_current_infection,

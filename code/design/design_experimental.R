@@ -309,7 +309,8 @@ Challenge %>%
 Rwc
 
 ggsave(filename = paste0(d_fi,"/relative_WL_challenge.jpeg"), plot = Rwc, 
-       width = 8, height = 10, dpi = 1000)
+       #width = 6, height = 4, 
+       dpi = 1000)
 
 #relative weight loss per day - primary
 #################### combined plot weight loss per day
@@ -339,7 +340,7 @@ Challenge %>%
 Rwp
 
 ggsave(filename = paste0(d_fi,"/relative_WL_primary.jpeg"), plot = Rwp, 
-       width = 8, height = 10, dpi = 1000)
+       width = 6, height = 4, dpi = 1000)
 
 
 
@@ -372,7 +373,7 @@ Challenge %>%
 ooc_challenge
 
 ggsave(filename = paste0(d_fi,"/oocysts_challenge.jpeg"), plot = ooc_challenge, 
-       width = 8, height = 10, dpi = 1000)
+       width = 6, height = 4, dpi = 1000)
 
 
 # Adjusted ggplot2 code for OoC variable
@@ -403,7 +404,8 @@ Challenge %>%
 ooc_primary
 
 ggsave(filename = paste0(d_fi,"/oocysts_primary.jpeg"), plot = ooc_primary, 
-       width = 8, height = 10, dpi = 1000)
+       #width = 5, height = 4, 
+       dpi = 1000)
 
 ooc_primary + ooc_challenge + Rwp + Rwc +
     m_s + strains_weight +

@@ -73,6 +73,8 @@ ggplot(preds, aes(x = x, y = predicted, color = x)) +
     geom_line(aes(group = group, color = "black")) +
     scale_color_manual(values = color_mapping_f, labels = labels_f) +
     labs(
+       # title = "Predicted weight loss in wild mice, 
+        #categorized by the species of Eimeria",
          x = "Eimeria spp. subspecies",
          y = "Predicted Weight Loss",
          color = "Species",
@@ -80,7 +82,7 @@ ggplot(preds, aes(x = x, y = predicted, color = x)) +
     ) +
     theme_minimal() +
     theme(
-          legend.position = "right",
+          legend.position = "none",
           plot.title = element_text(hjust = 0.5, size = 14),
           axis.text = element_text(size = 12),
           axis.title = element_text(size = 13),
@@ -95,7 +97,8 @@ predictions
 
 # Save the plot to a file
 ggsave(paste0(an_fi, "/predicted_weight_loss_species.jpeg"),
-       width = 8, height = 6, dpi = 300)
+       #width = 8, height = 6, 
+       dpi = 1000)
 
 
 #### Are there any differences in prediced weight loss when we control 
@@ -173,7 +176,10 @@ Field %>%
     ) +
     coord_cartesian(ylim = c(1.2, 2.9), clip = "off") +
     theme_minimal() +
-    labs(y = "Infection status with Eimerai spp.", 
+    labs(
+        #title = "Mice infected with Eimeria spp. experience 
+        #significantly greater predicted weight loss",
+        y = "Infection status with Eimerai spp.", 
          x = "Predicted weight loss" , 
          fill = "Infection status with Eimeria spp.") +
     theme(legend.position = "blank") -> raincloud_plots__eimeria
@@ -182,8 +188,9 @@ raincloud_plots__eimeria
 
 ggsave(plot = raincloud_plots__eimeria, filename = 
            paste0(an_fi, "/raincloud_eimeria.jpeg"), 
-       width = 6, 
-       height = 4, dpi = 1000)
+      width = 6, 
+       height = 4, 
+      dpi = 1000)
 
 
 # Combine the plots

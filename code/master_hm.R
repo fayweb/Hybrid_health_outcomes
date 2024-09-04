@@ -30,7 +30,7 @@ pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor,
                reshape2, sjPlot, stargazer, jtools,modelsummary, ggeffects, 
                pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities,
                parasiteLoad, fitdistrplus, optimx, leaflet, magick, ggdist,
-               ggbeeswarm, ggtext)
+               ggbeeswarm, ggtext, kableExtra, webshot)
     
 ## Define within project file paths ----
         # code
@@ -199,6 +199,11 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  # Requires: hm, lab
  #----------------------------------------------------------*
  if (0) source(file.path(canalysis, "analysis_multiple_multivariate_regression.R"))
+ #----------------------------------------------------------*
+ # 6.4: Multiple multivariate regression of genes vs weight loss in the field infections
+ # Requires: hm, field
+ #----------------------------------------------------------*
+ if (0) source(file.path(canalysis, "analysis_multiple_multivariate_regression_field.R"))
  
  
  # ***********************************************************
