@@ -76,7 +76,9 @@ model_4 <- lm(WL_max ~ PC1 + PC2 + current_infection + delta_ct_cewe_MminusE +
 
 
 summary(model_4)
-plot_coefs(model_1, model_2, model_3)
+plot_coefs(model_1, model_2, model_3) -> coef_plot_pca
+coef_plot_pca
+
 
 # remove gene information
 model_5 <- lm(WL_max ~  current_infection + delta_ct_cewe_MminusE +
@@ -344,6 +346,19 @@ figure_panel <- annotate_figure(figure_panel,
 
 ggsave(paste0(panels_fi, "/panel_regression_pca.jpeg"), 
        figure_panel, width = 12, height = 10, dpi = 300)
+
+
+###########################biplot and linear models
+panel_biplot_regr <- ggarrange(biplot, coefs1_3,
+                               labels = c("A", "B"),
+                               ncol = 2)
+
+panel_biplot_regr <- annotate_figure(panel_biplot_regr,
+                                     top = text_grob("Fig. 3", size = 14, 
+                                               face = "bold"))
+
+ggsave(paste0(panels_fi, "/panel_regression_biplot.jpeg"), 
+       panel_biplot_regr, width = 21, height = 10, dpi = 300)
 
 ################### Create the simplified figure# combine
 panel_figure5 <- 
