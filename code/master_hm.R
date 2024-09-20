@@ -183,7 +183,7 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
  # Plots: biplot, pca_variables,
  #  contr_PC1, contr_PC2
 #----------------------------------------------------------*
-if (1) source(file.path(canalysis, "analysis_PCA_genes_lab.R"))
+if (0) source(file.path(canalysis, "analysis_PCA_genes_lab.R"))
  # 6.2: PCA 
  # Regressions with pc axes 
  # Plots: pc1_current_infection, pc2_current_infection, coefs5
@@ -221,7 +221,7 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  # requires hm and random forest model
  # Creates Field with updated new variable of predicted weight loss for each mouse
  # removed one mouse due to missing genotyping
- if (1) source(file.path(canalysis, "analysis_apply_random_forest.R"))
+ if (0) source(file.path(canalysis, "analysis_apply_random_forest.R"))
  # 7.3: We want to analyze the distribution of the predicted outcome variable
  # "WL_max" (predicted weight loss dependent on the immune gene expression values)
  # the distribution type is required for the downstream analysis
@@ -240,7 +240,7 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  # Is there a relationship with the infection intensities with Eimeria spp.?
  # Is there a relationship between bmi and predicted weight loss?
  # We find a weak relationship of bmi and predicted weight loss
- if (1) source(file.path(canalysis, "analysis_bmi_predicted_WL.R"))
+ if (0) source(file.path(canalysis, "analysis_bmi_predicted_WL.R"))
  # 7.6: Could we derive tolerance out of the predicted health impact and 
  # infection intenstities for each mouse? 
  # If so, can we test the hybridicity on this derives tolerance variable?
@@ -256,10 +256,10 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
  # Do we predict higher weight loss for mice that are infected with Eimeria spp? 
  # Is there any evidence for an association between infection status, 
  #hybridicity and their impact on weight loss? 
- if (1) source(file.path(canalysis, 
+ if (0) source(file.path(canalysis, 
                          "analysis_WL_parasites.R"))
  ######
- if (1) source(file.path(canalysis, 
+ if (0) source(file.path(canalysis, 
                          "analysis_multiple_multivariate_regression_field.R"))
 
  #analysis help next
@@ -268,3 +268,5 @@ if (0) source(file.path(canalysis, "heatmap_lab_genes.R"))
 # Part end: Save information key information about project    ----
 # ***********************************************************
 sessionInfo()
+
+ 

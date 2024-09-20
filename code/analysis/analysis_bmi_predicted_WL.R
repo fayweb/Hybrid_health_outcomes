@@ -7,16 +7,16 @@
 # Can the predicted weight loss be predicted by infection intensities
 # infected samples
 Field_infected <- Field %>%
-  drop_na(infection_intensity) %>%
+  drop_na(delta_ct_cewe_MminusE) %>%
     filter(infection_status == TRUE)
 
-ggplot(data = Field_infected, aes(x = infection_intensity, y = predicted_WL)) +
+ggplot(data = Field_infected, aes(x = delta_ct_cewe_MminusE, y = predicted_WL)) +
     geom_point() +
     stat_smooth(method= "lm") 
 
 
 # Create the scatter plot
-ggplot(data = Field_infected, aes(x = predicted_WL, y = infection_intensity)) +
+ggplot(data = Field_infected, aes(x = predicted_WL, y = delta_ct_cewe_MminusE)) +
     geom_point(color = "black", size = 3, alpha = 0.6) +   # Plot the data points with specified color, size, and transparency
     geom_smooth(method = "lm", se = TRUE, color = "blue", linetype = "solid", size = 1) +  # Add a linear trend line with confidence interval
     geom_smooth(method = "loess", se = TRUE, color = "red", linetype = "dashed", size = 1) +  # Add a smoothing line with confidence interval
@@ -36,25 +36,25 @@ Cor_infection_wl
 ggsave(paste0(an_fi, "/correlation_intensity_pred_WL.jpeg"), Cor_infection_wl)
 
 
-plot(Field_infected$predicted_WL, Field_infected$infection_intensity)
+plot(Field_infected$predicted_WL, Field_infected$delta_ct_cewe_MminusE)
 shapiro.test(Field_infected$predicted_WL) # normal distribution
-shapiro.test(Field_infected$infection_intensity) # non normal distribution
+shapiro.test(Field_infected$delta_ct_cewe_MminusE) # non normal distribution
 
-lm_model <- lm(predicted_WL ~ infection_intensity, 
+lm_model <- lm(predicted_WL ~ delta_ct_cewe_MminusE, 
                data = Field_infected)
 summary(lm_model)
 plot(lm_model$residuals)
 
 # Is the predicted weight loss correlated to the infection intensities?
-cor.test(Field_infected$predicted_WL, Field_infected$infection_intensity,
+cor.test(Field_infected$predicted_WL, Field_infected$delta_ct_cewe_MminusE,
          method=c("spearman"), exact=FALSE)
 # correlation non significant
 
 # can the infection intensity predict weight loss?
-model_WL <- lm(predicted_WL ~  infection_intensity, data = Field_infected)
-model_fa <- lm(predicted_WL ~  infection_intensity, data = Field_infected %>%
+model_WL <- lm(predicted_WL ~  delta_ct_cewe_MminusE, data = Field_infected)
+model_fa <- lm(predicted_WL ~  delta_ct_cewe_MminusE, data = Field_infected %>%
                    filter(species_Eimeria == "E. falciformis"))
-model_fe <- lm(predicted_WL ~  infection_intensity, data = Field_infected %>%
+model_fe <- lm(predicted_WL ~  delta_ct_cewe_MminusE, data = Field_infected %>%
                    filter(species_Eimeria == "E. ferrisi"))
 summary(model_WL)
 summary(model_fa)
@@ -65,11 +65,11 @@ confint(model_WL)
 fa <- Field_infected %>%
     filter(species_Eimeria == "E. falciformis")
 
-cor.test(fa$predicted_WL, fa$infection_intensity,
+cor.test(fa$predicted_WL, fa$delta_ct_cewe_MminusE,
          method=c("spearman"), exact=FALSE)
 fe <- Field_infected %>%
     filter(species_Eimeria == "E. ferrisi")
-cor.test(fe$predicted_WL, fe$infection_intensity,
+cor.test(fe$predicted_WL, fe$delta_ct_cewe_MminusE,
          method=c("spearman"), exact=FALSE)
 
 model_WL_infection <- 
@@ -125,9 +125,9 @@ confint(model)
 # Let's dive into it further
 # What about a combination of the oocyst and infection intensity data with qPCR?
 Field <- Field %>% 
-    rename(infection_intensity = infection_intensity)  # Rename the column for the plot
+    rename(delta_ct_cewe_MminusE = delta_ct_cewe_MminusE)  # Rename the column for the plot
 
-model <- lm(predicted_WL ~ infection_status * infection_intensity, data = Field)
+model <- lm(predicted_WL ~ infection_status * delta_ct_cewe_MminusE, data = Field)
 summary(model)
 confint(model)
 
