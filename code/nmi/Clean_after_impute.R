@@ -57,8 +57,8 @@ hm$eimeriaSpecies <- gsub(pattern = "uninfected", "Uninfected",
 
 # Then, define the color for each level of infection
 color_mapping <- c("Uninfected controls" = "skyblue",
-                   "E. ferrisi" = "forestgreen",
-                   "E. falciformis" = "salmon")
+                   "E. ferrisi" = "#5f154f",
+                   "E. falciformis" = "#c80640")
 
 factor_levels <- c("Uninfected controls",
                    "E. ferrisi",
@@ -67,8 +67,8 @@ factor_levels <- c("Uninfected controls",
 ## repeat for field infections
 # Then, define the color for each level of infection
 color_mapping_f <- c("Uninfected" = "skyblue",
-                   "E. ferrisi" = "forestgreen",
-                   "E. falciformis" = "salmon")
+                   "E. ferrisi" = "#5f154f",
+                   "E. falciformis" = "#c80640")
 
 factor_levels_f <- c("Uninfected",
                    "E. ferrisi",

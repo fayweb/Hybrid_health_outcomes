@@ -110,7 +110,7 @@ ggsave(filename = paste0(d_fi,"/strains_weight_chalenge.jpeg"),
 ###################### eimeria strains
 ggplot(lab, aes(x = WL_max, y = Parasite_challenge, fill = Parasite_challenge)) + 
     geom_density_ridges(jittered_points = TRUE, position = position_points_jitter(height = 0), 
-                        scale = 0.9, alpha = 0.6, point_shape = 21, point_size = 2, point_alpha = 1) +
+                        scale = 0.9, alpha = 0.8, point_shape = 21, point_size = 2, point_alpha = 1) +
     geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5, 
                  position = position_nudge(x = 0.2)) +
     theme_minimal() +
@@ -138,7 +138,7 @@ ggplot(lab %>%
        aes(x = WL_max, y = Parasite_primary, fill = Parasite_primary)) + 
     geom_density_ridges(jittered_points = TRUE, 
                         position = position_points_jitter(height = 0), 
-                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        scale = 0.9, alpha = 0.8, point_shape = 21, 
                         point_size = 2, point_alpha = 1) +
     geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5,
                  position = position_nudge(x = 0.2)) +
