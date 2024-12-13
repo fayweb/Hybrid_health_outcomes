@@ -17,6 +17,7 @@ Genes_v   <- c("IFNy", "CXCR3", "IL.6", "IL.13", #"IL.10",
 
 # Creating colors and labels for following scripts 
 # preparing the parasite names for figure legends
+
 hm$Parasite_primary <- gsub(pattern = "_", ". ",  hm$Parasite_primary)
 
 hm$Parasite_challenge <- gsub(pattern = "_", ". ",  hm$Parasite_challenge)
@@ -137,4 +138,4 @@ hm$mouse_strain <- factor(hm$mouse_strain,
 ## set the factor levels for the immunization variable
 hm$immunization <- as.factor(hm$immunization)
 hm$immunization <- relevel(hm$immunization, ref = "Uninfected controls")
-
+hm$infection <- factor(hm$infection, levels = c("primary", "challenge"))

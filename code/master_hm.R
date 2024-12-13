@@ -163,6 +163,28 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
  #----------------------------------------------------------*
  
  
+ 
+ 
+
+ # ***********************************************************
+ # Part 5: Figures                          ----
+ # ***********************************************************
+ #----------------------------------------------------------*
+ # Figure one
+ # Here we test to see if we can use gene expression values to predict 
+ # weight loss in the laboratory infection experiments
+ # Here is the experimental design of the laboratory infections
+if (1) source(file = "code/analysis/Experimental_design_laboratory_infections.R")
+ # Now let's analyse the gene expression value distribution
+ if (1) source(file = "code/analysis/Analysis_PCA_lab_infections.R")
+ # Can the PC1 and PC2 representing immune gene expression predict weight loss?
+ if (1) source(file = "code/analysis/Analysis_linear_regressions_PCA_laboratory_infections.R")
+ # Let's create the panel figure 1 for the manuscript
+ if (1) source(file = "code/figure_creation/Panel_1.R")
+ 
+ 
+ 
+ 
  # ***********************************************************
  # Part 5: Experimental design                           ----
  # ***********************************************************
