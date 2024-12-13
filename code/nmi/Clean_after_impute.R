@@ -125,7 +125,13 @@ hm <- hm %>%
         TRUE ~ coalesce(immunization, NA_character_)
     ))
 
+hm$mouse_strain <- gsub(pattern = "_", " ", hm$mouse_strain)
 
+# order factor levels
+hm$mouse_strain <- factor(hm$mouse_strain, 
+                           levels = names(
+                               sort(tapply(hm$WL_max, hm$mouse_strain, 
+                                           median))))
 
 
 ## set the factor levels for the immunization variable
