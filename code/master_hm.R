@@ -167,20 +167,89 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
  
 
  # ***********************************************************
- # Part 5: Figures                          ----
+ # Part 5: Can we use immune gene expression data to predict weight loss in 
+ # laboratory experiments? An explorative analysis----
  # ***********************************************************
- #----------------------------------------------------------*
- # Figure one
+ #----------------------------------------------------*
  # Here we test to see if we can use gene expression values to predict 
  # weight loss in the laboratory infection experiments
- # Here is the experimental design of the laboratory infections
-if (1) source(file = "code/analysis/Experimental_design_laboratory_infections.R")
+ # Experimental design of the laboratory infections
+if (0) source(file = "code/analysis/Experimental_design_laboratory_infections.R")
  # Now let's analyse the gene expression value distribution
- if (1) source(file = "code/analysis/Analysis_PCA_lab_infections.R")
+ if (0) source(file = "code/analysis/Analysis_PCA_lab_infections.R")
  # Can the PC1 and PC2 representing immune gene expression predict weight loss?
- if (1) source(file = "code/analysis/Analysis_linear_regressions_PCA_laboratory_infections.R")
+ if (0) source(file = "code/analysis/Analysis_linear_regressions_PCA_laboratory_infections.R")
  # Let's create the panel figure 1 for the manuscript
- if (1) source(file = "code/figure_creation/Panel_1.R")
+ if (0) source(file = "code/figure_creation/Panel_1.R")
+ 
+ 
+ # ***********************************************************
+ # Part 6: How different are wild-derived and wild-caugth mice?
+ # ***********************************************************
+ #----------------------------------------------------------*
+ if (0) source(file.path(canalysis, 
+                         "analysis_multiple_multivariate_regression.R"))
+ #----------------------------------------------------------*
+ # Multiple multivariate regression of genes vs weight loss in the field infections
+ # Requires: hm, field
+ #----------------------------------------------------------*
+ if (0) source(file.path(canalysis, 
+                         "analysis_multiple_multivariate_regression_field.R"))
+ #----------------------------------------------------------*
+ # Let's create a PCA showing the overlap of the field and laboratory
+ # immune gene expression
+ if (0) source(file.path(canalysis, 
+                         "analysis_compare_PCA_lab_field.R"))
+ #----------------------------------------------------------*
+ # Panel 2: multivariate regression of genes vs weight loss in the field infections
+ # Requires: hm, field
+ #----------------------------------------------------------*
+ if (0) source(file = "code/figure_creation/Panel_2.R")
+ 
+ # ***********************************************************
+ # Part 7: Using a random forest model to predict weight loss and extrapolate
+ # to the wild
+ # ***********************************************************
+ #----------------------------------------------------------*
+ # Creates random forest model: WL_predict_gene.RData
+ #----------------------------------------------------------*
+ if (0) source(file.path(canalysis, "analysis_random_forest_training.R"))
+ #7.2: Aplication of random forest on field samples
+ # requires hm and random forest model
+ # Creates Field with updated new variable of predicted weight loss for each mouse
+ # removed one mouse due to missing genotyping
+ if (0) source(file.path(canalysis, "analysis_apply_random_forest.R"))
+ # 7.3: We want to analyze the distribution of the predicted outcome variable
+ # "WL_max" (predicted weight loss dependent on the immune gene expression values)
+ # the distribution type is required for the downstream analysis
+ # It seems that our predicted weight loss variale fits a normal distribution
+ if (0) source(file.path(canalysis, "analysis_fit_distribution.R"))
+ # 7.4: Here we test the hybrid impact on predicted weight loss and further test 
+ # requires script: "analysis_apply_random_forest.R"
+ # the effect of sex and infection status with Eimeria 
+ # I have further tested to see if the presence of various parasites independent 
+ # of eimeria have an impact on the predicted weight loss in combination with 
+ # hybridicity 
+ # # requires script: "analysis_apply_random_forest.R"
+ if (0) source(file.path(canalysis, "analysis_tolerance.R"))
+ # 7.7: Testing impact of infection status with Eimeria spp. on wild mice
+ # Do we predict higher weight loss for mice that are infected with Eimeria spp? 
+ # Is there any evidence for an association between infection status, 
+ #hybridicity and their impact on weight loss? 
+ if (0) source(file.path(canalysis, 
+                         "analysis_predicted_WL_infection_with_Eimeria.R"))
+ # 7.7: Testing impact of infection status with Eimeria spp. on wild mice
+ # Do we predict higher weight loss for mice that are infected with Eimeria spp? 
+ # Is there any evidence for an association between infection status, 
+ #hybridicity and their impact on weight loss? 
+ if (0) source(file.path(canalysis, 
+                         "analysis_WL_parasites.R"))
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  

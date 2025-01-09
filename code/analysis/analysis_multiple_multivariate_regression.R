@@ -56,7 +56,7 @@ ggplot(tidy_models_no_intercept, aes(x = model, y = estimate, color = term)) +
     geom_point(position = position_dodge(width = 0.5)) +
     geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2, position = position_dodge(width = 0.5)) +
     geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
-    scale_color_manual(values = c("E. falciformis" = "salmon", "E. ferrisi" = "forestgreen")) +
+    scale_color_manual(values = c("E. falciformis" = "#c80640", "E. ferrisi" = "#5f154f")) +
     theme_classic() +
     theme(axis.text.y = element_text(angle = 45, hjust = 1)) +
     labs(x = "Gene", y = "Coefficients estimate (Difference to uninfected)") +
@@ -186,11 +186,5 @@ webshot("output/tables/differences_in_treatment_groups_genes.html",
         "output/tables/differences_in_treatment_groups_genes.png")
     
 
-    
-  rm(coef_mmr, comb, density_imm, results, tidy_models, 
-     tidy_models_no_intercept, biplot, coefs5, contr_PC1, contr_PC2, 
-     figure_panel, pc1_current_infection, pc2_current_infection,
-     pc1_WL_current_infection, pc2_WL_current_infection, pca_individuals, vpg,
-     coefs6, model_6, panel_figure5, plot1, plot2, plot3, plot4, residuals, Mouse_ID)
-  
+
   

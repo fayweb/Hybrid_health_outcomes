@@ -201,13 +201,14 @@ biplot <- fviz_pca_biplot(res.pca,
                 col.ind = lab$current_infection,
                 pointsize = 2,
                 addEllipses = TRUE, 
+                ellipse.level = 0.5, # Adjust the confidence level
                 label = "var",
                 col.var = "black", 
                 repel = TRUE,
                 legend.title = "Infection groups",
                 title = "") +
     scale_color_manual(values = color_mapping, labels = labels) +
-    scale_fill_manual(values = color_mapping, labels = labels) +
+    scale_fill_manual(values = color_mapping, guide = "none") +
     scale_shape_manual(values = c(15, 16, 17), labels = labels) +
     labs(color = "Infection groups", shape = "Infection groups") +
     theme(legend.text = element_markdown())

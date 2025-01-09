@@ -28,10 +28,10 @@ lab  %>%
     ggplot(aes(x = WL_max, y = current_infection, fill = current_infection)) + 
     geom_density_ridges(jittered_points = TRUE, 
                         position = position_points_jitter(height = 0), 
-                        scale = 0.9, alpha = 0.8, point_shape = 21, 
-                        point_size = 2, point_alpha = 1) +
-    geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.5,
-                 position = position_nudge(x = 0.2)) +
+                        scale = 0.9, alpha = 0.6, point_shape = 21, 
+                        point_size = 2, point_alpha = 0.8) +
+    geom_boxplot(width = 0.15, outlier.shape = NA, alpha = 0.7,
+                 position = position_nudge(x = 0.1)) +
     theme_minimal(base_size = 16) +
     scale_fill_manual(values = color_mapping) +
     theme(legend.position = "none",
@@ -65,9 +65,9 @@ biplot <- fviz_pca_biplot(
     col.ind = lab$current_infection,
     pointsize = 2,
     addEllipses = TRUE, 
-    ellipse.level = 0.95, # Set ellipse confidence level to 95%
-    alpha.ind = 0.9,
-    alpha.var = 0.9, 
+    ellipse.level = 0.5, # Set ellipse confidence level to 95%
+    alpha.ind = 0.8,
+    alpha.var = 1, 
     label = "var",
     col.var = "black", 
     repel = TRUE,
@@ -77,11 +77,11 @@ biplot <- fviz_pca_biplot(
     scale_color_manual(values = color_mapping, labels = labels) +
     scale_fill_manual(values = color_mapping, labels = labels) +
     scale_shape_manual(values = c(15, 16, 17), labels = labels) +
-    labs(color = "Infection group", shape = "Infection group") +
+    labs(color = "Parasite strain", shape = "Parasite strain") +
     theme_minimal(base_size = 16) +
     theme(legend.text = element_markdown()) # Enable Markdown for italics
 
-biplot
+#biplot
 
 ggsave(filename = paste0(an_fi, "/biplot.jpeg"), plot = biplot, 
        width = 12, height = 6, dpi = 600)
@@ -129,11 +129,11 @@ pc1_WL_current_infection <- ggpredict(model_6, terms = c("PC1", "current_infecti
     theme(
         legend.position = "none",
         plot.title = element_text(size = 16, hjust = 0.5),
-        axis.title.x = element_text(size = 12),
-        axis.title.y = element_text(size = 12),
-        axis.text.x = element_text(size = 12),
-        axis.text.y = element_text(size = 12),
-        legend.title = element_text(size = 12),
+        axis.title.x = element_text(size = 16),
+        axis.title.y = element_text(size = 16),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 16),
+        legend.title = element_text(size = 16),
         legend.text = element_markdown()  # Enables italics in legend
     )
 
@@ -152,19 +152,19 @@ ggpredict(model_6, terms = c("PC2", "current_infection")) %>%
     labs(title = NULL) +  # This removes the title
     # ggtitle("Effect of PC2 on Predicted Weight Loss") +
     xlab("Principal Component 2 (PC2)") +
-    ylab("Predicted values of weight loss") +
-    theme_minimal() +
+    ylab("") +
+    theme_minimal(base_size = 16) +
     scale_color_manual(values = color_mapping, labels = labels) +
     scale_fill_manual(values = color_mapping, labels = labels) +
     labs(color = "Infection group") +
     theme(
         legend.position = "none",
         plot.title = element_text(size = 16, hjust = 0.5),
-        axis.title.x = element_text(size = 12),
-        axis.title.y = element_text(size = 12),
-        axis.text.x = element_text(size = 12),
-        axis.text.y = element_text(size = 12),
-        legend.title = element_text(size = 12),
+        axis.title.x = element_text(size = 16),
+        axis.title.y = element_text(size = 16),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 16),
+        legend.title = element_text(size = 16),
         legend.text = element_markdown())  -> pc2_WL_current_infection
 
 pc2_WL_current_infection
@@ -172,19 +172,12 @@ pc2_WL_current_infection
 ggsave(paste0(tables, "/pc2_WL_current_infection.jpeg"),
        pc2_WL_current_infection, width = 8, height = 6, dpi = 1000)
 
-pc1_WL_current_infection <- pc1_WL_current_infection +
-    scale_y_continuous(limits = common_y_limits) +  # Ensure axis range matches data
-    theme(
-        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),  # Adjust margins
-        axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold")
-    )
-
 
 
 
 combined_plot <- (
-    (eimeria_weight + biplot) /  
+    eimeria_weight /
+         biplot /  
         (pc1_WL_current_infection + pc2_WL_current_infection)
 ) +
     plot_annotation(
@@ -202,8 +195,16 @@ combined_plot <- (
 ggsave(
     filename = paste0(panels_fi, "/Figure1_combined.jpeg"),
     plot = combined_plot,
-    width = 14, height = 12, dpi = 300
+    width = 12, height = 16, dpi = 300  # Adjusted dimensions
 )
+
+ 
+
+
+
+
+
+
 
 
 

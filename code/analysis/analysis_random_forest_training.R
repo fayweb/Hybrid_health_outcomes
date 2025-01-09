@@ -356,7 +356,7 @@ test_lab %>%
         y = "Observed: Maximum weight loss",
       #  title = "Relationship between Predicted and Observed Weight Loss",
         #subtitle = "Grouped by Current Infection and Sized by Delta CT Value",
-        color = "Infection group",
+        color = "Parasite strain",
        # size = "Caecal infection intensities, Delta Ct value",
         #shape = "Delta Ct treshold"
     ) +

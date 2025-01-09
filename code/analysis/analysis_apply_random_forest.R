@@ -38,3 +38,4 @@ result_field <- cbind(result_field, as.data.frame(predicted_WL))
 Field <- cbind(Field,  as.data.frame(predicted_WL))
 
 rm(gene,genes, result_field, weight_loss_predict)
+

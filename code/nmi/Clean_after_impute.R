@@ -139,3 +139,13 @@ hm$mouse_strain <- factor(hm$mouse_strain,
 hm$immunization <- as.factor(hm$immunization)
 hm$immunization <- relevel(hm$immunization, ref = "Uninfected controls")
 hm$infection <- factor(hm$infection, levels = c("primary", "challenge"))
+
+
+# unifying the infection status variable for both lab and field infections
+# Update the infection_status variable
+hm <- hm %>%
+    mutate(infection_status = coalesce(infection_status, MC.Eimeria))
+
+# do the same for the EImeria species. 
+hm <- hm %>%
+    mutate(species_Eimeria = coalesce(species_Eimeria, current_infection))

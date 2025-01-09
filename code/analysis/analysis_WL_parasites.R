@@ -2,7 +2,7 @@
 
 ## Let'S dive into it further
 # what about a combination of the oocyst and infection intensity data with qpcr?
-model <- lm(predicted_WL ~  infection_status * infection_intensity, data = Field)
+model <- lm(predicted_WL ~  infection_status * delta_ct_cewe_MminusE, data = Field)
 summary(model)
 confint(model)
 modelsummary(model)
@@ -10,8 +10,12 @@ modelsummary(model)
 # Plot the summary with enhanced aesthetics
 plot_summs(model, 
            scale = TRUE, 
+           robust = TRUE,
            inner_ci_level = 0.95, 
-           outer_ci_level = 0.99) +
+           outer_ci_level = 0.99,
+           coefs = c("Infected with Eimeria spp." = "infection_statusTRUE", 
+                     "Infection intensity with Eimeria spp." = 
+                         "infection_statusTRUE:delta_ct_cewe_MminusE")) +
     theme_minimal() +
     theme(
         text = element_text(size = 12),
@@ -27,6 +31,8 @@ plot_summs(model,
     ) +
     scale_color_manual(values = c("blue", "red")) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "grey") -> int_MC
+
+int_MC
 
 ggsave(paste0(an_fi, "/intensity_melting_curve.jpeg"), int_MC)
 
@@ -79,7 +85,7 @@ ggsave(paste0(an_fi, "/predicted_weight_loss_species.jpeg"),
 # for other intestinal parasites?
 # Eventhough our model is trained and tested on eimeria infections
 Field <- Field %>%
-    mutate(infection_intensity_Eim = infection_intensity)
+    mutate(infection_intensity_Eim = delta_ct_cewe_MminusE)
 
 Field_par <- Field %>%
     mutate(
@@ -126,11 +132,16 @@ ggsave(filename = paste0(an_fi, "/coefficient_plot_parasites.jpeg"),
 ###### Plotting the raincloud plot to show the effect of Eimeria spp.
 # on predicted weight loss
 # Define colors
-colors <- c("TRUE" = "purple", "FALSE" = "steelblue")
+colors <- c("TRUE" = "red", "FALSE" = "steelblue")
 
+
+gsub(pattern = "TRUE", replacement = "Infected with Eimeria spp.", 
+     x = Field$MC.Eimeria) -> Field$MC.Eimeria
+gsub(pattern = "FALSE", replacement = "Uninfected with Eimeria sp.", 
+     x = Field$MC.Eimeria) -> Field$MC.Eimeria
 
 Field %>%
-    drop_na(MC.Eimeria)%>%
+    drop_na(MC.Eimeria) %>%
     ggplot(aes(y = MC.Eimeria, x = predicted_WL, fill = MC.Eimeria)) + 
     ggdist::stat_halfeye(
         adjust = .5, 
@@ -164,7 +175,7 @@ Field %>%
     ) +
     coord_cartesian(ylim = c(1.2, 2.9), clip = "off") +
     theme_minimal() +
-    labs(y = "Infection status with Eimerai spp.", 
+    labs(y = "Infection status with Eimeria spp.", 
          x = "Predicted weight loss" , 
          fill = "Infection status with Eimeria spp.") +
     theme(legend.position = "blank") -> raincloud_plots__eimeria
@@ -180,29 +191,4 @@ ggsave(plot = raincloud_plots__eimeria, filename =
 #### just eimeria
 modelc <- lm(predicted_WL ~ species_Eimeria * FEC_Eim_Ct, Field )
 summary(modelc)
-
-# Combine the plots
-
-panel <-   
-    (raincloud_plots__eimeria | predictions) /
-    (coef_A | int_MC) /
-    (Cor_infection_wl | Cor_OPG_wl ) +
-    plot_annotation(tag_levels = 'A')
-
-
-# Add a figure title
-panel <- panel + 
-    plot_annotation(title = 'Fig. 6', 
-                    theme = theme(plot.title = 
-                                      element_text(size = 13, hjust = 0)))
-
-# Display the panel figure
-print(panel)
-
-# Save the panel figure
-ggsave(paste0(panels_fi, '/infection_predictions_panels.jpeg'), 
-       panel, width = 18, height =18, dpi = 300)
-
-
-
 

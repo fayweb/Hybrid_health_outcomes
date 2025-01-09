@@ -461,3 +461,4 @@ summary(model2)
  #  eimeria_weight_prim, h_w, m_s, map_hybrids, model, model2, mouse_WL, 
   # ooc_challenge, ooc_primary, panel_figure, panel_hybr, parasite_WL, primary, 
  #  Rwc, Rwp, s, strains_weight, strains_weight_challenge, world_map)
+
