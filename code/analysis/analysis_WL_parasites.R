@@ -129,63 +129,6 @@ coef_B
 ggsave(filename = paste0(an_fi, "/coefficient_plot_parasites.jpeg"), 
        width = 8, height = 6, dpi = 300)
 
-###### Plotting the raincloud plot to show the effect of Eimeria spp.
-# on predicted weight loss
-# Define colors
-colors <- c("TRUE" = "red", "FALSE" = "steelblue")
-
-
-gsub(pattern = "TRUE", replacement = "Infected with Eimeria spp.", 
-     x = Field$MC.Eimeria) -> Field$MC.Eimeria
-gsub(pattern = "FALSE", replacement = "Uninfected with Eimeria sp.", 
-     x = Field$MC.Eimeria) -> Field$MC.Eimeria
-
-Field %>%
-    drop_na(MC.Eimeria) %>%
-    ggplot(aes(y = MC.Eimeria, x = predicted_WL, fill = MC.Eimeria)) + 
-    ggdist::stat_halfeye(
-        adjust = .5, 
-        width = .6, 
-        alpha = 0.5,
-        .width = 0, 
-        justification = -.2, 
-        point_colour = NA,
-        orientation = "y"  # Set orientation to y
-    ) + 
-    scale_fill_manual(values = colors) +
-    geom_boxplot(
-        width = .15, 
-        outlier.shape = NA,
-        orientation = "y"  # Set orientation to y
-    ) +
-    stat_dots(
-        # ploting on left side
-        side = "left",
-        # adjusting position
-        justification = 1.1,
-        # adjust grouping (binning) of observations
-        binwidth = 0.25,
-        alpha = 0.5) +
-    geom_point(
-        shape = 95,
-        size = 15,
-        alpha = .2,
-        color = "gray50",
-        position = position_dodge(width = 0.75)
-    ) +
-    coord_cartesian(ylim = c(1.2, 2.9), clip = "off") +
-    theme_minimal() +
-    labs(y = "Infection status with Eimeria spp.", 
-         x = "Predicted weight loss" , 
-         fill = "Infection status with Eimeria spp.") +
-    theme(legend.position = "blank") -> raincloud_plots__eimeria
-
-raincloud_plots__eimeria
-
-ggsave(plot = raincloud_plots__eimeria, filename = 
-           paste0(an_fi, "/raincloud_eimeria.jpeg"), 
-       width = 6, 
-       height = 4, dpi = 1000)
 
 
 #### just eimeria

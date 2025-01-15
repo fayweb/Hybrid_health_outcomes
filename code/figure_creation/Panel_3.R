@@ -1,3 +1,9 @@
+# importance plot
+# predictions correlations with observations in the lab
+# predictions species eimeria
+# 
+
+
 importance_plot
 predictions_random_for_lab
 predictions
@@ -9,8 +15,7 @@ int_MC
 
 panel <-   
     (predictions_random_for_lab | importance_plot) /
-    (coef_A | int_MC) /
-    (Cor_infection_wl | Cor_OPG_wl ) +
+    (predictions | raincloud_plots__eimeria | int_MC) +
     plot_annotation(tag_levels = 'A')
 
 
@@ -25,7 +30,7 @@ print(panel)
 
 # Save the panel figure
 ggsave(paste0(panels_fi, '/infection_predictions_panels.jpeg'), 
-       panel, width = 18, height =18, dpi = 300)
+       panel, width = 16, height =10, dpi = 300)
 
 
 

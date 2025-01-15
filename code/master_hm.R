@@ -244,7 +244,11 @@ if (0) source(file = "code/analysis/Experimental_design_laboratory_infections.R"
  #hybridicity and their impact on weight loss? 
  if (0) source(file.path(canalysis, 
                          "analysis_WL_parasites.R"))
- 
+ #----------------------------------------------------------*
+ # Panel 3: Random Forest predicting weight loss
+ # Requires: hm, field
+ #----------------------------------------------------------*
+ if (0) source(file = "code/figure_creation/Panel_3.R")
  
  
  

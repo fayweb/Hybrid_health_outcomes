@@ -119,6 +119,7 @@ var_imp <- var_imp %>%
               legend.title = element_blank()) + # Remove the legend title if desired
         scale_fill_viridis_c(option = "magma", direction = -1) + # Apply a Viridis color scale with the 'magma' option
         theme(legend.position = c(0.8, 0.4))
+ 
  importance_plot
 ## S3 method for class 'randomForest'
 plot(WL_predict_gene, type = "l", main=deparse(substitute(x)))

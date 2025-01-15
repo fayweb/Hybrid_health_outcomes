@@ -89,7 +89,14 @@ ggsave(filename = paste0(an_fi, "/coefficient_plot_parasites.jpeg"),
 ###### Plotting the raincloud plot to show the effect of Eimeria spp.
 # on predicted weight loss
 # Define colors
-colors <- c("TRUE" = "red", "FALSE" = "steelblue")
+gsub(pattern = "TRUE",replacement =  "Infected with Eimeria spp.", 
+     x = Field$MC.Eimeria) -> Field$MC.Eimeria
+gsub(pattern = "FALSE",replacement =  "Uninfected", 
+     x = Field$MC.Eimeria) -> Field$MC.Eimeria
+
+
+
+colors <- c("Infected with Eimeria spp." = "red", "Uninfected" = "steelblue")
 
 
 Field %>%
