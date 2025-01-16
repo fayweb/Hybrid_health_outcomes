@@ -65,7 +65,7 @@ biplot <- fviz_pca_biplot(
     col.ind = lab$current_infection,
     pointsize = 2,
     addEllipses = TRUE, 
-    ellipse.level = 0.5, # Set ellipse confidence level to 95%
+    ellipse.level = 0.8, # Set ellipse confidence level to 95%
     alpha.ind = 0.8,
     alpha.var = 1, 
     label = "var",
@@ -81,10 +81,10 @@ biplot <- fviz_pca_biplot(
     theme_minimal(base_size = 16) +
     theme(legend.text = element_markdown()) # Enable Markdown for italics
 
-#biplot
+biplot
 
 ggsave(filename = paste0(an_fi, "/biplot.jpeg"), plot = biplot, 
-       width = 12, height = 6, dpi = 600)
+       width = 8, height = 6, dpi = 300)
 
 
 # coefficient Plot 1 
@@ -114,63 +114,67 @@ model_6 <- lm(WL_max ~ PC1 * current_infection + PC2 *current_infection,
 summary(model_6)
 
 
-# Now create the scatter plot using this color mapping
+# Set consistent axis limits
+x_limits <- c(-8, 5)  # Example limits for the x-axis (adjust as needed)
+y_limits <- c(-1, 30)  # Example limits for the y-axis (adjust as needed)
+
+
+# PC1 Plot
 pc1_WL_current_infection <- ggpredict(model_6, terms = c("PC1", "current_infection")) %>% 
     plot() +  
     geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") + 
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
-    labs(title = NULL) +  # This removes the title
     xlab("Principal Component 1 (PC1)") +
-    ylab("Predicted values of weight loss") +
-    theme_minimal(base_size = 16) +
+    ylab("Predicted values of maximum weight loss") +
+    theme_minimal(base_size = 12) +  # Global base font size
     labs(color = "Infection group", fill = "Infection group") +
     scale_color_manual(values = color_mapping, labels = labels) +
     scale_fill_manual(values = color_mapping, labels = labels) +
     theme(
         legend.position = "none",
-        plot.title = element_text(size = 16, hjust = 0.5),
-        axis.title.x = element_text(size = 16),
-        axis.title.y = element_text(size = 16),
-        axis.text.x = element_text(size = 16),
-        axis.text.y = element_text(size = 16),
-        legend.title = element_text(size = 16),
-        legend.text = element_markdown()  # Enables italics in legend
-    )
+        title = element_blank(),
+        axis.title.x = element_text(size = 14, face = "bold"),  # X-axis title size
+        axis.title.y = element_text(size = 14, face = "bold"),  # Y-axis title size
+        axis.text.x = element_text(size = 12),  # X-axis tick size
+        axis.text.y = element_text(size = 12),  # Y-axis tick size
+        legend.title = element_text(size = 12),
+        legend.text = element_text(size = 12)
+    ) +
+    coord_cartesian(xlim = x_limits, ylim = y_limits)
 
 pc1_WL_current_infection
 
 ggsave(paste0(an_fi, "/pc1_WL_current_infection.jpeg"), pc1_WL_current_infection, 
-       width = 8, height = 6, dpi = 1000)
+       width = 8, height = 6, dpi = 300)  # Use high dpi for publication
 
-
-# Now create the scatter plot using this color mapping
-# Now create the scatter plot using this color mapping
-ggpredict(model_6, terms = c("PC2", "current_infection")) %>% 
+# PC2 Plot
+pc2_WL_current_infection <- ggpredict(model_6, terms = c("PC2 [-8:5]", "current_infection")) %>% 
     plot() +  
     geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") + 
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
-    labs(title = NULL) +  # This removes the title
-    # ggtitle("Effect of PC2 on Predicted Weight Loss") +
     xlab("Principal Component 2 (PC2)") +
-    ylab("") +
-    theme_minimal(base_size = 16) +
+    ylab("Predicted values of maximum weight loss") +
+    theme_minimal(base_size = 12) +
     scale_color_manual(values = color_mapping, labels = labels) +
     scale_fill_manual(values = color_mapping, labels = labels) +
     labs(color = "Infection group") +
     theme(
         legend.position = "none",
-        plot.title = element_text(size = 16, hjust = 0.5),
-        axis.title.x = element_text(size = 16),
-        axis.title.y = element_text(size = 16),
-        axis.text.x = element_text(size = 16),
-        axis.text.y = element_text(size = 16),
-        legend.title = element_text(size = 16),
-        legend.text = element_markdown())  -> pc2_WL_current_infection
+        title = element_blank(),
+        axis.title.x = element_text(size = 14, face = "bold"),
+        axis.title.y = element_text(size = 14, face = "bold"),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        legend.title = element_text(size = 12),
+        legend.text = element_text(size = 12)
+    ) +
+    coord_cartesian(xlim = x_limits, ylim = y_limits)
 
 pc2_WL_current_infection
 
-ggsave(paste0(tables, "/pc2_WL_current_infection.jpeg"),
-       pc2_WL_current_infection, width = 8, height = 6, dpi = 1000)
+ggsave(paste0(tables, "/pc2_WL_current_infection.jpeg"), 
+       pc2_WL_current_infection, width = 8, height = 6, dpi = 300)  # High dpi
+
 
 
 
