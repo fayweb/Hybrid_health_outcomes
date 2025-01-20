@@ -35,7 +35,10 @@ lab  %>%
     theme_minimal(base_size = 16) +
     scale_fill_manual(values = color_mapping) +
     theme(legend.position = "none",
-          axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.3)) +
+          axis.title.x = element_text(size = 20, face = "bold"),  # X-axis title size
+          axis.title.y = element_text(size = 20, face = "bold"),  # Y-axis title size
+          axis.text.x = element_text(size = 20),  # X-axis tick size
+          axis.text.y = element_text(size = 20))+ # Y-axis tick size) +
     xlab("Maximum relative weight loss") +
     ylab("Parasite strain")  -> eimeria_weight
 
@@ -44,9 +47,9 @@ eimeria_weight
 eimeria_weight <- italics_y(eimeria_weight, labels)
 eimeria_weight
 
-ggsave(filename = paste0(d_fi,"/eimeria_weight_combined.jpeg"),
+ggsave(filename = paste0(d_fi,"/eimeria_weight_combined.pdf"),
        plot = eimeria_weight, 
-       width = 8, height = 6, dpi = 1000)
+       width = 8, height = 6, dpi = 300)
 
 ###############################################      Plot 1B
 lab <- hm %>%
@@ -79,11 +82,15 @@ biplot <- fviz_pca_biplot(
     scale_shape_manual(values = c(15, 16, 17), labels = labels) +
     labs(color = "Parasite strain", shape = "Parasite strain") +
     theme_minimal(base_size = 16) +
-    theme(legend.text = element_markdown()) # Enable Markdown for italics
+    theme(legend.text = element_markdown(),
+          axis.title.x = element_text(size = 20, face = "bold"),  # X-axis title size
+          axis.title.y = element_text(size = 20, face = "bold"),  # Y-axis title size
+          axis.text.x = element_text(size = 20),  # X-axis tick size
+          axis.text.y = element_text(size = 20)) # Enable Markdown for italics
 
 biplot
 
-ggsave(filename = paste0(an_fi, "/biplot.jpeg"), plot = biplot, 
+ggsave(filename = paste0(an_fi, "/biplot.pdf"), plot = biplot, 
        width = 8, height = 6, dpi = 300)
 
 
@@ -133,18 +140,18 @@ pc1_WL_current_infection <- ggpredict(model_6, terms = c("PC1", "current_infecti
     theme(
         legend.position = "none",
         title = element_blank(),
-        axis.title.x = element_text(size = 14, face = "bold"),  # X-axis title size
-        axis.title.y = element_text(size = 14, face = "bold"),  # Y-axis title size
-        axis.text.x = element_text(size = 12),  # X-axis tick size
-        axis.text.y = element_text(size = 12),  # Y-axis tick size
-        legend.title = element_text(size = 12),
+        axis.title.x = element_text(size = 20, face = "bold"),  # X-axis title size
+        axis.title.y = element_text(size = 20, face = "bold"),  # Y-axis title size
+        axis.text.x = element_text(size = 20),  # X-axis tick size
+        axis.text.y = element_text(size = 20),  # Y-axis tick size
+        legend.title = element_text(size = 20),
         legend.text = element_text(size = 12)
     ) +
     coord_cartesian(xlim = x_limits, ylim = y_limits)
 
 pc1_WL_current_infection
 
-ggsave(paste0(an_fi, "/pc1_WL_current_infection.jpeg"), pc1_WL_current_infection, 
+ggsave(paste0(an_fi, "/pc1_WL_current_infection.pdf"), pc1_WL_current_infection, 
        width = 8, height = 6, dpi = 300)  # Use high dpi for publication
 
 # PC2 Plot
@@ -161,18 +168,18 @@ pc2_WL_current_infection <- ggpredict(model_6, terms = c("PC2 [-8:5]", "current_
     theme(
         legend.position = "none",
         title = element_blank(),
-        axis.title.x = element_text(size = 14, face = "bold"),
-        axis.title.y = element_text(size = 14, face = "bold"),
-        axis.text.x = element_text(size = 12),
-        axis.text.y = element_text(size = 12),
-        legend.title = element_text(size = 12),
-        legend.text = element_text(size = 12)
+        axis.title.x = element_text(size = 20, face = "bold"),
+        axis.title.y = element_text(size = 20, face = "bold"),
+        axis.text.x = element_text(size = 20),
+        axis.text.y = element_text(size = 20),
+        legend.title = element_text(size = 20),
+        legend.text = element_text(size = 20)
     ) +
     coord_cartesian(xlim = x_limits, ylim = y_limits)
 
 pc2_WL_current_infection
 
-ggsave(paste0(tables, "/pc2_WL_current_infection.jpeg"), 
+ggsave(paste0(an_fi, "/pc2_WL_current_infection.pdf"), 
        pc2_WL_current_infection, width = 8, height = 6, dpi = 300)  # High dpi
 
 
@@ -197,7 +204,7 @@ combined_plot <- (
 
 
 ggsave(
-    filename = paste0(panels_fi, "/Figure1_combined.jpeg"),
+    filename = paste0(panels_fi, "/Figure1_combined.pdf"),
     plot = combined_plot,
     width = 12, height = 16, dpi = 300  # Adjusted dimensions
 )

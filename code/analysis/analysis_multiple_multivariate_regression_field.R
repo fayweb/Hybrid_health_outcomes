@@ -50,21 +50,27 @@ tidy_models_no_intercept <- as.data.frame(tidy_models_no_intercept) %>%
 
 
 
+# Determine the common y-axis range
+common_y_limits <- range(-7,7)
+
 # Create the coefficient plot
-ggplot(tidy_models_no_intercept, aes(x = model, y = estimate, color = term)) +
+coef_mmr_B <- ggplot(tidy_models_no_intercept, aes(x = model, y = estimate, color = term)) +
     coord_flip() +
     geom_point(position = position_dodge(width = 0.5)) +
     geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2, position = position_dodge(width = 0.5)) +
     geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
-    scale_color_manual(values = c("E. falciformis" = "#c80640", "E. ferrisi" = "#5f154f")) +
+    scale_color_manual(values = c("E. falciformis" = "#FF0000", "E. ferrisi" = "#7A0092")) +
     theme_classic() +
     theme(axis.text.y = element_text(angle = 45, hjust = 1)) +
     labs(x = "Gene", y = "Coefficients estimate (Difference to uninfected)") +
-    theme(legend.title = element_blank()) -> coef_mmr_B
+    scale_y_continuous(limits = common_y_limits) +  # Apply shared y-axis limits
+    theme(legend.title = element_blank(),
+          legend.position = "none")
+
 
 print(coef_mmr_B)
 
-ggsave(filename = paste0(an_fi, "/coef_plot_field_genes.jpeg"),
+ggsave(filename = paste0(an_fi, "/coef_plot_field_genes.pdf"),
        plot = coef_mmr_B, width = 6, height = 4, dpi = 300)
 
 
@@ -103,7 +109,7 @@ field %>%
     
 density_imm
     
- ggsave(filename = paste0(an_fi, "/density_immune_genes_field.jpeg"),
+ ggsave(filename = paste0(an_fi, "/density_immune_genes_field.pdf"),
            plot = density_imm, width = 10, height = 8, dpi = 300)
     
 

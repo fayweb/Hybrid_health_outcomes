@@ -28,8 +28,8 @@ pca_plot <- ggplot(pca_coordinates, aes(x = Dim.1, y = Dim.2, color = origin, fi
         color = "Sample Type",  # Rename "Origin"
         fill = "Sample Type"    # Rename "Origin"
     ) +
-    scale_color_viridis_d(option = "C", begin = 0.2, end = 0.8) +  # Use a beautiful viridis palette
-    scale_fill_viridis_d(option = "C", begin = 0.2, end = 0.8) +   # Use the same palette for fill
+    scale_color_viridis_d(option = "C", begin = 0.01, end = 0.8) +  # Use a beautiful viridis palette
+    scale_fill_viridis_d(option = "C", begin = 0.01, end = 0.8) +   # Use the same palette for fill
     theme_minimal(base_size = 16) +
     theme(
         legend.position = "top",
@@ -39,12 +39,13 @@ pca_plot <- ggplot(pca_coordinates, aes(x = Dim.1, y = Dim.2, color = origin, fi
         legend.title = element_text(size = 14, face = "bold")
     )
 
+
 # Display the modified plot
 print(pca_plot)
 
 # Save the modified plot
 ggsave(
-    filename = paste0(an_fi, "/PCA_Wild_Lab_Gene_Expression_Modified.jpeg"),
+    filename = paste0(an_fi, "/PCA_Wild_Lab_Gene_Expression_Modified.pdf"),
     plot = pca_plot,
     width = 8,
     height = 6,
