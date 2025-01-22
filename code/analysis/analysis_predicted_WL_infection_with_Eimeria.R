@@ -49,7 +49,7 @@ predictions
 
 
 # Save the plot to a file
-ggsave(paste0(an_fi, "/predicted_weight_loss_species.jpeg"),
+ggsave(paste0(an_fi, "/predicted_weight_loss_species.pdf"),
        #width = 8, height = 6, 
        dpi = 1000)
 
@@ -82,7 +82,7 @@ plot_summs(modelA, plot.distributions = TRUE, robust = TRUE, scale = TRUE,
            colors = "skyblue") -> coef_A
 coef_A
 
-ggsave(filename = paste0(an_fi, "/coefficient_plot_parasites.jpeg"), 
+ggsave(filename = paste0(an_fi, "/coefficient_plot_parasites.pdf"), 
        width = 8, height = 6, dpi = 300)
 
 
@@ -96,7 +96,7 @@ gsub(pattern = "FALSE",replacement =  "Uninfected",
 
 
 
-colors <- c("Infected with Eimeria spp." = "red", "Uninfected" = "steelblue")
+colors <- c("Infected with Eimeria spp." = "#FF0028", "Uninfected" = "#4ACAFF")
 
 
 Field %>%
@@ -105,7 +105,7 @@ Field %>%
     ggdist::stat_halfeye(
         adjust = .5, 
         width = .6, 
-        alpha = 0.5,
+        alpha = 0.7,
         .width = 0, 
         justification = -.2, 
         point_colour = NA,
@@ -145,7 +145,7 @@ Field %>%
 raincloud_plots__eimeria
 
 ggsave(plot = raincloud_plots__eimeria, filename = 
-           paste0(an_fi, "/raincloud_eimeria.jpeg"), 
+           paste0(an_fi, "/raincloud_eimeria.pdf"), 
        width = 6, 
        height = 4, 
        dpi = 1000)

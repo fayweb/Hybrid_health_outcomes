@@ -381,8 +381,8 @@ Challenge %>%
 
 ## statistics primary infection - getting the N
 lab %>%
-    filter(infection == "primary") %>%
-    group_by(Parasite_primary) %>%
+   # filter(infection == "primary") %>%
+    group_by(current_infection) %>%
     summarise(
         MeanWeightLoss = mean(WL_max),
         MinWeightLoss = min(WL_max),

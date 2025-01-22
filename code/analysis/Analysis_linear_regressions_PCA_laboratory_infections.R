@@ -81,9 +81,13 @@ coef_plot_pca
 
 
 ## make a coefficient plot with just the PC1 and PC2
-coef_plot_PC1PC2 <- plot_coefs(model_3)
+coef_plot_PC1PC2 <- plot_coefs(model_3, plot.distributions = TRUE,
+                               rescale.distributions = TRUE,
+                               colors = "blue")
 coef_plot_PC1PC2
 
+ggsave(filename = paste0(an_fi, "/plot_sums_pc1_pc2_simple.pdf"),
+       plot = coef_plot_PC1PC2, width = 6, height = 4, dpi = 300)
 
 # remove gene information
 model_5 <- lm(WL_max ~  current_infection + delta_ct_cewe_MminusE +
@@ -196,6 +200,7 @@ model_6 <- lm(WL_max ~ PC1 * current_infection + PC2 *current_infection,
               data = lab)
 
 summary(model_6)
+
 ## Please cite as:
 ##  Hlavac, Marek (2018). stargazer: Well-Formatted Regression and Summary Statistics Tables.
 stargazer(model_6,

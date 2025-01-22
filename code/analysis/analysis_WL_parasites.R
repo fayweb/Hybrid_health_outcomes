@@ -29,12 +29,12 @@ plot_summs(model,
         x = "Estimate",
         y = "Predictor"
     ) +
-    scale_color_manual(values = c("blue", "red")) +
+    scale_color_manual(values = c("4ACAFF", "EBEBEB")) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "grey") -> int_MC
 
 int_MC
 
-ggsave(paste0(an_fi, "/intensity_melting_curve.jpeg"), int_MC)
+ggsave(paste0(an_fi, "/intensity_melting_curve.pdf"), int_MC)
 
 
 ############################################
@@ -77,7 +77,7 @@ predictions
 
 
 # Save the plot to a file
-ggsave(paste0(an_fi, "/predicted_weight_loss_species.jpeg"),
+ggsave(paste0(an_fi, "/predicted_weight_loss_species.pdf"),
        width = 8, height = 6, dpi = 300)
 
 
@@ -111,7 +111,7 @@ plot_summs(modelA, plot.distributions = TRUE, robust = TRUE, scale = TRUE,
            colors = "skyblue") -> coef_A
 coef_A
 
-ggsave(filename = paste0(an_fi, "/coefficient_plot_parasites.jpeg"), 
+ggsave(filename = paste0(an_fi, "/coefficient_plot_parasites.pdf"), 
        width = 8, height = 6, dpi = 300)
 
 
@@ -126,7 +126,7 @@ plot_summs(modelB, plot.distributions = TRUE, robust = TRUE, scale = TRUE,
            colors = "skyblue") -> coef_B
 coef_B
 
-ggsave(filename = paste0(an_fi, "/coefficient_plot_parasites.jpeg"), 
+ggsave(filename = paste0(an_fi, "/coefficient_plot_parasites.pdf"), 
        width = 8, height = 6, dpi = 300)
 
 

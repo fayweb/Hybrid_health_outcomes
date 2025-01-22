@@ -127,7 +127,7 @@ plot(WL_predict_gene, type = "l", main=deparse(substitute(x)))
 variable_importance <- varImpPlot(WL_predict_gene)
 
 
-ggsave(filename = paste0(an_fi, "/variable_imporance_random.jpeg"),
+ggsave(filename = paste0(an_fi, "/variable_imporance_random.pdf"),
        #width = 6, height = 5, 
        dpi = 1000)
 
@@ -188,7 +188,7 @@ ggpredict(model, terms = c("WL_max")) %>%
 
 lm_short
 
-ggsave(filename = paste0(an_fi, "/correlation_pred_obs_random.jpeg"),
+ggsave(filename = paste0(an_fi, "/correlation_pred_obs_random.pdf"),
        width = 6, height = 5, dpi = 300)
 
 #######################################
@@ -220,7 +220,7 @@ ggpredict(model, terms = c("WL_max", "current_infection")) %>%
 
 lm_weight_loss_predictions
 
-ggsave(filename = paste0(an_fi, "/obs_pred_treatment_groups_random.jpeg"),
+ggsave(filename = paste0(an_fi, "/obs_pred_treatment_groups_random.pdf"),
        width = 6, height = 5, dpi = 300)
 
 ############################
@@ -257,7 +257,7 @@ ggplot(preds, aes(x = x, y = predicted, color = x)) +
 
 lm_weight_loss_predictions_c
 
-ggsave(filename = paste0(an_fi, "/random_foreest_lab_predictions_eimeria.jpeg"),
+ggsave(filename = paste0(an_fi, "/random_foreest_lab_predictions_eimeria.pdf"),
        width = 6, height = 5, dpi = 300)
 
 
@@ -288,7 +288,7 @@ ggpredict(model, terms = c("WL_max", "delta_ct_cewe_MminusE"), interactive=TRUE)
 
 lm_short
 
-ggsave(filename = paste0(an_fi, "/deltact_random.jpeg"),
+ggsave(filename = paste0(an_fi, "/deltact_random.pdf"),
        width = 6, height = 5, dpi = 300)
 
 
@@ -319,7 +319,7 @@ ggpredict(model_d, terms = c("delta_ct_cewe_MminusE"), interactive=TRUE) %>%
 lm_short
 
 preds <- ggpredict(model_d, terms = "delta_ct_cewe_MminusE")
-ggsave(filename = paste0(an_fi, "/deltact_random.jpeg"),
+ggsave(filename = paste0(an_fi, "/deltact_random.pdf"),
        width = 6, height = 5, dpi = 300)
 #### Plotting
 ggplot(preds, aes(x = x, y = predicted, color = x)) +
@@ -342,7 +342,7 @@ ggplot(preds, aes(x = x, y = predicted, color = x)) +
         legend.text = element_markdown()
     )
 
-ggsave(filename = paste0(an_fi, "/deltact_random.jpeg"),
+ggsave(filename = paste0(an_fi, "/deltact_random.pdf"),
        width = 6, height = 5, dpi = 300)
 
 
@@ -382,7 +382,7 @@ predictions_random_for_lab
     
 
 ggsave(plot = predictions_random_for_lab, 
-       filename = paste0(an_fi, "/predictions_random_for_lab.jpeg"), 
+       filename = paste0(an_fi, "/predictions_random_for_lab.pdf"), 
        width = 6, height = 5,
        dpi = 1000)
 
@@ -406,7 +406,7 @@ print(combi_plot)
 
 
 ggsave(plot = combi_plot, 
-       filename = paste0(panels_fi, "/variableimp_rand_results_lab.jpeg"), 
+       filename = paste0(panels_fi, "/variableimp_rand_results_lab.pdf"), 
        width = 12, 
        height = 8, dpi = 1000)
 
@@ -448,7 +448,7 @@ test_lab   %>%
 
 linear_plot
 
-ggsave(filename = paste0(an_fi, "/linear_model_of_random_forest.jpeg"), plot = linear_plot, 
+ggsave(filename = paste0(an_fi, "/linear_model_of_random_forest.pdf"), plot = linear_plot, 
        width = 10, height = 6,
        dpi = 1000)
 
@@ -470,7 +470,7 @@ figure_panel_2 <- annotate_figure(figure_panel_2,
 print(figure_panel_2)
 
 
-ggsave(paste0(panels_fi, "/panel_random_forest_lab_alternative.jpeg"), 
+ggsave(paste0(panels_fi, "/panel_random_forest_lab_alternative.pdf"), 
        figure_panel_2, 
        width = 18, height = 18, dpi = 300)
 
