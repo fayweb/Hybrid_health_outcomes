@@ -89,7 +89,11 @@ ggsave(filename = paste0(an_fi, "/coefficient_plot_parasites.pdf"),
 ###### Plotting the raincloud plot to show the effect of Eimeria spp.
 # on predicted weight loss
 # Define colors
-gsub(pattern = "TRUE",replacement =  "Infected with Eimeria spp.", 
+Model_intensity <- lm(predicted_WL ~ MC.Eimeria, data = Field)
+summary(Model_intensity)
+
+
+gsub(pattern = "TRUE",replacement =  "Infected with EimeFieldgsub(pattern = "TRUE",replacement =  "Infected with Eimeria spp.", 
      x = Field$MC.Eimeria) -> Field$MC.Eimeria
 gsub(pattern = "FALSE",replacement =  "Uninfected", 
      x = Field$MC.Eimeria) -> Field$MC.Eimeria
@@ -149,5 +153,7 @@ ggsave(plot = raincloud_plots__eimeria, filename =
        width = 6, 
        height = 4, 
        dpi = 1000)
+
+
 
 

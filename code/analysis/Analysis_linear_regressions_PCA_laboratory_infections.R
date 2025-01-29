@@ -203,15 +203,45 @@ summary(model_6)
 
 ## Please cite as:
 ##  Hlavac, Marek (2018). stargazer: Well-Formatted Regression and Summary Statistics Tables.
-stargazer(model_6,
-          type = "text",
-          out = paste0(tables, "/PCinteractionsParasite.txt"), 
-          title = "Linear models - Predicting maximum weight loss",
-          align = TRUE)
 
-export_summs(model_6,
-             scale = TRUE, to.file = "docx", 
-             file.name = paste0(tables, "/PCinteractionsParasite.docx"))
+
+# Create a regression table using stargazer
+stargazer(model_6, type = "text",
+          title = "Table X: Regression Results for Weight Loss Prediction",
+          dep.var.labels = "Maximum Weight Loss (WL_max)",
+          covariate.labels = c("PC1", "E. ferrisi", "E. falciformis", "PC2", 
+                               "PC1 × E. ferrisi", "PC1 × E. falciformis", 
+                               "PC2 × E. ferrisi", "PC2 × E. falciformis"),
+          star.cutoffs = c(0.05, 0.01, 0.001),
+          notes = "Significance levels: *** p<0.001, ** p<0.01, * p<0.05"
+)
+
+
+stargazer(model_6, type = "latex", out = "table_x.tex",
+          title = "Regression Results for Weight Loss Prediction",
+          dep.var.labels = "Maximum Weight Loss (WL_max)",
+          covariate.labels = c("PC1", "E. ferrisi", "E. falciformis", "PC2", 
+                               "PC1 × E. ferrisi", "PC1 × E. falciformis", 
+                               "PC2 × E. ferrisi", "PC2 × E. falciformis"),
+          star.cutoffs = c(0.05, 0.01, 0.001),
+          notes = "Significance levels: *** p<0.001, ** p<0.01, * p<0.05"
+)
+
+
+
+# Extract coefficients, standard errors, and p-values
+results_df <- tidy(model_6)
+
+# Add significance stars
+results_df$Significance <- ifelse(results_df$p.value < 0.001, "***",
+                                  ifelse(results_df$p.value < 0.01, "**",
+                                         ifelse(results_df$p.value < 0.05, "*", "")))
+
+# Rename columns for clarity
+colnames(results_df) <- c("Variable", "Estimate", "Std. Error", "t value", "p-value", "Significance")
+
+# Save as CSV for Google Docs
+write.csv(results_df, "output/tables/table_x.csv", row.names = FALSE)
 
 
 plot_summs(model_6) -> coefs6
