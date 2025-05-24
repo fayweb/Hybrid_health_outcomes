@@ -30,7 +30,8 @@ pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor,
                reshape2, sjPlot, stargazer, jtools,modelsummary, ggeffects, 
                pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities,
                parasiteLoad, fitdistrplus, optimx, leaflet, magick, ggdist,
-               ggbeeswarm, ggtext, kableExtra, webshot, broom)
+               ggbeeswarm, ggtext, kableExtra, webshot, broom, kableExtra, gt, 
+               flextable)
     
 ## Define within project file paths ----
         # code
@@ -175,6 +176,8 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
  # weight loss in the laboratory infection experiments
  # Experimental design of the laboratory infections
 if (0) source(file = "code/analysis/Experimental_design_laboratory_infections.R")
+ # Experimental design of the laboratory infections
+ if (1) source(file.path(cdesign, "design_tables_paper.R"))
  # Now let's analyse the gene expression value distribution
  if (0) source(file = "code/analysis/Analysis_PCA_lab_infections.R")
  # Can the PC1 and PC2 representing immune gene expression predict weight loss?
@@ -249,7 +252,9 @@ if (0) source(file = "code/analysis/Experimental_design_laboratory_infections.R"
  # Requires: hm, field
  #----------------------------------------------------------*
  if (0) source(file = "code/figure_creation/Panel_3.R")
- 
+ #----------------------------------------------------------*
+ # Tables of models for figure 3
+ #----------------------------------------------------------*
  
  
  
