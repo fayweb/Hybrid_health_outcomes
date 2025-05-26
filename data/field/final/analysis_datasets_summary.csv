@@ -1,0 +1,6 @@
+"Analysis_Dataset","Sample_Size","Infected","Available_Methods","Infection_Rate"
+"All mice",336,133,"Immune genes",39.6
+"Known infection status",305,133,"Immune + Infection status",43.6
+"Species classified",169,59,"Immune + Species ID",34.9
+"Infection intensity",92,92,"Immune + qPCR intensity",100
+"Complete data",14,14,"Immune + qPCR + Oocyst + Amplicon",100

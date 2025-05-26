@@ -52,3 +52,8 @@ field <- field %>%
 field$infection_status <- as.factor(field$infection_status)
 
 rm(amplicon, eimer_sp)
+
+
+#### create output file:
+write.csv(field, paste0(dfield_final, "/field_cleaned_data.csv"), row.names = FALSE)
+
