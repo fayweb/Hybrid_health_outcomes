@@ -5,8 +5,8 @@
 
 # filter for the field mice
 Field <- hm %>%
-    filter(origin == "Field") %>%
-    drop_na(HI) # remove any nas in the hybrid index
+    filter(origin == "Field")# %>%
+ #   drop_na(HI) # remove any nas in the hybrid index
 
 
 # select the gene columns

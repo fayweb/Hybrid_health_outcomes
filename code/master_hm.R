@@ -253,9 +253,10 @@ if (0) source(file = "code/analysis/Experimental_design_laboratory_infections.R"
  #----------------------------------------------------------*
  if (0) source(file = "code/figure_creation/Panel_3.R")
  #----------------------------------------------------------*
- # Tables of models for figure 3
  #----------------------------------------------------------*
- 
+ # 7.8: Testing if CXCL9 is indeed important in the wild
+ if (0) source(file.path(canalysis, 
+                         "analysis_CXCL9.R"))
  
  
  

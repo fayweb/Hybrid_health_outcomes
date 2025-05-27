@@ -9,7 +9,7 @@ model_1 <- lm(WL_max ~ PC1 + PC2 +
 
 summary(model_1)
 
-tab_model(model_1)
+#tab_model(model_1)
 
 stargazer(model_1,
           type = "text", out = paste0(tables, 
