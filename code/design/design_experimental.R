@@ -1,168 +1,71 @@
-# Load your data (assuming lab_clean is your laboratory data)
-library(dplyr)
+# =============================================================================
+# EXPERIMENTAL DESIGN ANALYSIS: Complete breakdown of infection experiments
 
-# Basic infection counts from Table 2 data
+# =============================================================================
+# 1. BASIC SAMPLE SIZES
+# =============================================================================
+
+# Step 1: UNGROUP the data first
+lab_clean <- lab %>% ungroup()
+
+cat("=== BASIC SAMPLE SIZES ===\n")
+cat("Total mice:", nrow(lab_clean), "\n\n")
+
+# Final infection status counts
 infection_counts <- lab_clean %>%
     count(current_infection) %>%
     arrange(current_infection)
 
-print("Basic infection counts:")
+cat("Final infection status:\n")
 print(infection_counts)
 
-# Get weight loss statistics by infection type
-weight_loss_stats <- lab_clean %>%
-    group_by(current_infection) %>%
-    summarise(
-        n = n(),
-        mean_WL = mean(WL_max, na.rm = TRUE),
-        min_WL = min(WL_max, na.rm = TRUE),
-        max_WL = max(WL_max, na.rm = TRUE),
-        sd_WL = sd(WL_max, na.rm = TRUE),
-        .groups = "drop"
-    ) %>%
-    mutate(across(where(is.numeric), ~round(.x, 1)))
+# =============================================================================
+# 2. EXPERIMENTAL STRUCTURE OVERVIEW
+# =============================================================================
 
-print("Weight loss statistics by infection:")
-print(weight_loss_stats)
-
-# Get weight loss by infection history (primary vs challenge)
-# First, let's see what infection_history values you have
-unique_infection_history <- lab_clean %>%
-    distinct(infection_history, immunization) %>%
-    arrange(infection_history)
-
-print("Unique infection histories:")
-print(unique_infection_history)
-
-# Get weight loss by primary vs challenge infections
-primary_challenge_stats <- lab_clean %>%
-    filter(!is.na(immunization)) %>%
-    group_by(current_infection, immunization) %>%
-    summarise(
-        n = n(),
-        mean_WL = mean(WL_max, na.rm = TRUE),
-        min_WL = min(WL_max, na.rm = TRUE),
-        max_WL = max(WL_max, na.rm = TRUE),
-        .groups = "drop"
-    ) %>%
-    mutate(across(where(is.numeric), ~round(.x, 1)))
-
-print("Weight loss by infection type and immunization status:")
-print(primary_challenge_stats)
-
-# Get the specific numbers you need for your text
-# Total mice infected
-total_ferrisi <- sum(lab_clean$current_infection == "E. ferrisi", na.rm = TRUE)
-total_falciformis <- sum(lab_clean$current_infection == "E. falciformis", na.rm = TRUE)
-total_uninfected <- sum(lab_clean$current_infection == "Uninfected controls", na.rm = TRUE)
-
-cat("\n=== NUMBERS FOR YOUR RESULTS TEXT ===\n")
-cat("Total E. ferrisi infected:", total_ferrisi, "\n")
-cat("Total E. falciformis infected:", total_falciformis, "\n") 
-cat("Total uninfected controls:", total_uninfected, "\n")
-
-# Get min/max for each group
-ferrisi_stats <- lab_clean %>%
-    filter(current_infection == "E. ferrisi") %>%
-    summarise(
-        mean = round(mean(WL_max, na.rm = TRUE), 1),
-        min = round(min(WL_max, na.rm = TRUE), 1),
-        max = round(max(WL_max, na.rm = TRUE), 1)
-    )
-
-falciformis_stats <- lab_clean %>%
-    filter(current_infection == "E. falciformis") %>%
-    summarise(
-        mean = round(mean(WL_max, na.rm = TRUE), 1),
-        min = round(min(WL_max, na.rm = TRUE), 1),
-        max = round(max(WL_max, na.rm = TRUE), 1)
-    )
-
-uninfected_stats <- lab_clean %>%
-    filter(current_infection == "Uninfected controls") %>%
-    summarise(
-        mean = round(mean(WL_max, na.rm = TRUE), 1),
-        min = round(min(WL_max, na.rm = TRUE), 1),
-        max = round(max(WL_max, na.rm = TRUE), 1)
-    )
-
-cat("\nE. ferrisi stats - Mean:", ferrisi_stats$mean, "%, Min:", ferrisi_stats$min, "%, Max:", ferrisi_stats$max, "%\n")
-cat("E. falciformis stats - Mean:", falciformis_stats$mean, "%, Min:", falciformis_stats$min, "%, Max:", falciformis_stats$max, "%\n")
-cat("Uninfected stats - Mean:", uninfected_stats$mean, "%, Min:", uninfected_stats$min, "%, Max:", uninfected_stats$max, "%\n")
-
-# Check if you have separate primary and challenge data
-if("Parasite_primary" %in% colnames(lab_clean)) {
-    primary_stats <- lab_clean %>%
-        filter(!is.na(Parasite_primary), Parasite_primary != "uninfected") %>%
-        group_by(Parasite_primary) %>%
-        summarise(
-            n = n(),
-            mean_WL = round(mean(WL_max, na.rm = TRUE), 1),
-            min_WL = round(min(WL_max, na.rm = TRUE), 1),
-            max_WL = round(max(WL_max, na.rm = TRUE), 1),
-            .groups = "drop"
-        )
-    
-    cat("\nPRIMARY INFECTION STATS:\n")
-    print(primary_stats)
-}
-
-if("Parasite_challenge" %in% colnames(lab_clean)) {
-    challenge_stats <- lab_clean %>%
-        filter(!is.na(Parasite_challenge), Parasite_challenge != "uninfected") %>%
-        group_by(Parasite_challenge) %>%
-        summarise(
-            n = n(),
-            mean_WL = round(mean(WL_max, na.rm = TRUE), 1),
-            min_WL = round(min(WL_max, na.rm = TRUE), 1),
-            max_WL = round(max(WL_max, na.rm = TRUE), 1),
-            .groups = "drop"
-        )
-    
-    cat("\nCHALLENGE INFECTION STATS:\n")
-    print(challenge_stats)
-}
-
-# Complete analysis to understand the experimental design
-library(dplyr)
-
-# 1. Basic overview
-cat("=== BASIC OVERVIEW ===\n")
-cat("Total mice:", nrow(lab_clean), "\n")
-table(lab_clean$current_infection)
-
-# 2. Understand the experimental structure
 cat("\n=== EXPERIMENTAL STRUCTURE ===\n")
-cat("Unique infection histories:\n")
-table(lab_clean$infection_history)
 
-cat("\nImmunization status:\n") 
-table(lab_clean$immunization)
+# Infection histories
+cat("Infection histories (primary_challenge):\n")
+infection_history_table <- table(lab_clean$infection_history)
+print(infection_history_table)
 
-# 3. Cross-tabulation to see the full picture
-cat("\n=== INFECTION HISTORY vs CURRENT INFECTION ===\n")
+# Immunization categories
+cat("\nImmunization categories:\n")
+immunization_table <- table(lab_clean$immunization)
+print(immunization_table)
+
+# Cross-tabulation: infection history vs final status
+cat("\nInfection history vs Final status:\n")
 cross_tab <- table(lab_clean$infection_history, lab_clean$current_infection)
 print(cross_tab)
 
-# 4. Primary vs Challenge breakdown
-cat("\n=== PRIMARY INFECTION BREAKDOWN ===\n")
+# =============================================================================
+# 3. PRIMARY vs CHALLENGE BREAKDOWN
+# =============================================================================
+
+cat("\n=== PRIMARY vs CHALLENGE BREAKDOWN ===\n")
+
+# Primary infection breakdown
 if("Parasite_primary" %in% colnames(lab_clean)) {
+    cat("Primary infections by final status:\n")
     primary_breakdown <- lab_clean %>%
         count(Parasite_primary, current_infection) %>%
         arrange(Parasite_primary, current_infection)
     print(primary_breakdown)
 }
 
-cat("\n=== CHALLENGE INFECTION BREAKDOWN ===\n")
+# Challenge infection breakdown  
 if("Parasite_challenge" %in% colnames(lab_clean)) {
+    cat("\nChallenge infections by final status:\n")
     challenge_breakdown <- lab_clean %>%
         count(Parasite_challenge, current_infection) %>%
         arrange(Parasite_challenge, current_infection)
     print(challenge_breakdown)
 }
 
-# 5. Check for mice that had primary only vs primary + challenge
-cat("\n=== PRIMARY vs PRIMARY+CHALLENGE ===\n")
+# Experimental design verification
+cat("\nExperimental design verification:\n")
 primary_challenge_status <- lab_clean %>%
     mutate(
         had_primary = !is.na(Parasite_primary) & Parasite_primary != "uninfected",
@@ -171,16 +74,50 @@ primary_challenge_status <- lab_clean %>%
             had_primary & had_challenge ~ "Primary + Challenge",
             had_primary & !had_challenge ~ "Primary only",
             !had_primary & had_challenge ~ "Challenge only", 
-            TRUE ~ "Neither"
+            TRUE ~ "Control/Neither"
         )
     ) %>%
     count(experiment_type)
 
 print(primary_challenge_status)
 
-# 6. Weight loss by the ACTUAL experimental groups
-cat("\n=== WEIGHT LOSS BY ACTUAL EXPERIMENTAL DESIGN ===\n")
-weight_by_design <- lab_clean %>%
+# =============================================================================
+# 4. WEIGHT LOSS STATISTICS
+# =============================================================================
+
+cat("\n=== WEIGHT LOSS STATISTICS ===\n")
+
+# By final infection status
+cat("Weight loss by FINAL infection status:\n")
+final_weight_stats <- lab_clean %>%
+    group_by(current_infection) %>%
+    summarise(
+        n = n(),
+        mean_WL = round(mean(WL_max, na.rm = TRUE), 1),
+        min_WL = round(min(WL_max, na.rm = TRUE), 1),
+        max_WL = round(max(WL_max, na.rm = TRUE), 1),
+        sd_WL = round(sd(WL_max, na.rm = TRUE), 1),
+        .groups = "drop"
+    )
+print(final_weight_stats)
+
+# By immunization status
+cat("\nWeight loss by immunization category:\n")
+immunization_weight_stats <- lab_clean %>%
+    group_by(current_infection, immunization) %>%
+    summarise(
+        n = n(),
+        mean_WL = round(mean(WL_max, na.rm = TRUE), 1),
+        min_WL = round(min(WL_max, na.rm = TRUE), 1),
+        max_WL = round(max(WL_max, na.rm = TRUE), 1),
+        .groups = "drop"
+    ) %>%
+    arrange(current_infection, immunization)
+print(immunization_weight_stats)
+
+# By detailed infection history
+cat("\nWeight loss by detailed infection history:\n")
+detailed_weight_stats <- lab_clean %>%
     group_by(infection_history, current_infection) %>%
     summarise(
         n = n(),
@@ -190,8 +127,85 @@ weight_by_design <- lab_clean %>%
         .groups = "drop"
     ) %>%
     arrange(current_infection, infection_history)
+print(detailed_weight_stats)
 
-print(weight_by_design)
+# =============================================================================
+# 5. SUMMARY FOR RESULTS WRITING
+# =============================================================================
+
+cat("\n=== SUMMARY FOR RESULTS TEXT ===\n")
+cat("Total mice: 136\n")
+cat("E. ferrisi final status:", sum(lab_clean$current_infection == "E. ferrisi"), "\n")
+cat("E. falciformis final status:", sum(lab_clean$current_infection == "E. falciformis"), "\n")
+cat("Uninfected controls:", sum(lab_clean$current_infection == "Uninfected controls"), "\n")
+
+# Key weight loss numbers
+ferrisi_summary <- lab_clean %>% 
+    filter(current_infection == "E. ferrisi") %>%
+    summarise(mean = round(mean(WL_max, na.rm = TRUE), 1),
+              min = round(min(WL_max, na.rm = TRUE), 1),
+              max = round(max(WL_max, na.rm = TRUE), 1))
+
+falciformis_summary <- lab_clean %>% 
+    filter(current_infection == "E. falciformis") %>%
+    summarise(mean = round(mean(WL_max, na.rm = TRUE), 1),
+              min = round(min(WL_max, na.rm = TRUE), 1),
+              max = round(max(WL_max, na.rm = TRUE), 1))
+
+controls_summary <- lab_clean %>% 
+    filter(current_infection == "Uninfected controls") %>%
+    summarise(mean = round(mean(WL_max, na.rm = TRUE), 1),
+              min = round(min(WL_max, na.rm = TRUE), 1),
+              max = round(max(WL_max, na.rm = TRUE), 1))
+
+cat("\nWeight loss summaries:\n")
+cat("E. ferrisi: mean =", ferrisi_summary$mean, "%, range =", ferrisi_summary$min, "-", ferrisi_summary$max, "%\n")
+cat("E. falciformis: mean =", falciformis_summary$mean, "%, range =", falciformis_summary$min, "-", falciformis_summary$max, "%\n")
+cat("Controls: mean =", controls_summary$mean, "%, range =", controls_summary$min, "-", controls_summary$max, "%\n")
+
+
+# Check for mice that died/were sacrificed during primary infections
+cat("=== UNDERSTANDING SACRIFICED MICE ===\n")
+
+# Check if there's a 'death' or 'sacrifice' column
+if("death" %in% colnames(lab_clean)) {
+    cat("Death/sacrifice information:\n")
+    table(lab_clean$death, useNA = "always")
+}
+
+# Check experiment column for any patterns
+if("experiment" %in% colnames(lab_clean)) {
+    cat("Mice by experiment:\n")
+    table(lab_clean$experiment, useNA = "always")
+}
+
+# Look at mice that might have had primary only
+cat("\nDetailed breakdown of ALL 136 mice:\n")
+detailed_breakdown <- lab_clean %>%
+    count(Parasite_primary, Parasite_challenge, current_infection) %>%
+    arrange(Parasite_primary, Parasite_challenge, current_infection)
+
+print(detailed_breakdown)
+
+# Check for any mice with missing challenge data
+cat("\nMice with missing challenge infection data:\n")
+missing_challenge <- lab_clean %>%
+    filter(is.na(Parasite_challenge)) %>%
+    count(Parasite_primary, current_infection)
+
+if(nrow(missing_challenge) > 0) {
+    print(missing_challenge)
+} else {
+    cat("No mice with missing challenge data found.\n")
+}
+
+# Total verification
+cat("\nTotal mice verification:\n")
+cat("Total mice in dataset:", nrow(lab_clean), "\n")
+cat("Mice with primary infection data:", sum(!is.na(lab_clean$Parasite_primary)), "\n")
+cat("Mice with challenge infection data:", sum(!is.na(lab_clean$Parasite_challenge)), "\n")
+
+cat("\n=== ANALYSIS COMPLETE ===\n")
 
 
 # Select laboratory data 

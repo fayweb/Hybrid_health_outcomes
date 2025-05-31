@@ -1,3 +1,7 @@
+
+# ***********************************************************
+# lab_visualize.R: Plot correlation matrix of lab genes
+# ***********************************************************
 #select the genes and lab mice
 lab <- lab %>%
     dplyr::filter(Position == "mLN") %>%

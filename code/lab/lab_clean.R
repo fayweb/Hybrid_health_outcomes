@@ -1,5 +1,10 @@
+# ***********************************************************
+# lab_clean.R: Clean and harmonize lab data
+# ***********************************************************
+
 ## lab
 ## Change the strains of the parasite to the parasite strain names
+lab <- read.csv(paste0(dlab_raw, "/Laboratory_data.csv"))
 
 lab <- lab %>%
     dplyr::mutate(Parasite_primary = case_when(
@@ -143,6 +148,7 @@ lab <- lab %>%
 Challenge <- lab
 
 
-#### create output file:
-write.csv(Challenge, paste0(dlab_final, "/lab_cleaned_data.csv"), row.names = FALSE)
+# Save cleaned lab data for reuse in other scripts
+write.csv(lab, file = paste0(dlab_inter, "/lab_cleaned_intermediate.csv"), row.names = FALSE)
+
 

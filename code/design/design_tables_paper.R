@@ -330,3 +330,4 @@ supp_table <- detailed_crossings %>%
 
 print(supp_table)
 save_table_all_formats(supp_table, "Supplementary_table_detailed_crossings")
+

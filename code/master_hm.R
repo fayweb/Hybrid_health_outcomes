@@ -1,136 +1,155 @@
 # ***********************************************************
-# Title: Predicting the health outcomes of infections in hybrid mice
-
-# Purpose: This script defines all the settings and executes
-#         all the code (.R, .md) to reproduce the analysis
-#         of the project
+# Title: Predicting the Health Outcomes of Parasite Infections in Hybrid Mice
 #
-# Authors: Fay Webster
-# ID variables:
+# Purpose: This master script initializes the project environment,
+#          including all standard settings, package installations,
+#          data paths, and custom functions required to conduct
+#          comprehensive analyses. It sets a consistent and reproducible
+#          foundation for importing, cleaning, visualizing, normalizing,
+#          imputing, analyzing, and modeling infection health outcomes
+#          in laboratory and wild hybrid mouse populations.
+#
+# Workflow Structure:
+#   1. Standard settings: Set seeds, load libraries, define paths
+#   2. Custom function definitions: Create functions to aid visualization
+#      and statistical distribution testing.
+#   3. Prepare data paths: Dynamically define file paths for efficient
+#      and reproducible data handling.
+#
+# Author: Fay Webster
+# Date: Initiated October 13, 2023
 # ***********************************************************
-# Part 1: Set standard settings & install packages            ----
+
 # ***********************************************************
-  # Install packages/load libraries to keep R environment stable
-    # install
-        # pacman for simplified bulk pkg import
-        # renv for pkg consistency over time
-#install.packages("pacman")
-# increase maximum overlaps
+# Part 1: Set Standard Settings & Load Packages ----
+# ***********************************************************
+
+# Install packages/load libraries to maintain a stable R environment
 options(ggrepel.max.overlaps = Inf)
 
 library(pacman)
-    ## Standard settings ----
-        # seed
+
+# Seed for reproducibility
 set.seed(13102023)
 
-        # Use p_load to install (if not already) and load the packages
+# Load necessary packages using pacman
 pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor, 
                visdat, corrplot, RColorBrewer, ggplot2, VIM, limma, 
-               latticeExtra, patchwork,FactoMineR, ggrepel, factoextra, 
-               reshape2, sjPlot, stargazer, jtools,modelsummary, ggeffects, 
+               latticeExtra, patchwork, FactoMineR, ggrepel, factoextra, 
+               reshape2, sjPlot, stargazer, jtools, modelsummary, ggeffects, 
                pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities,
                parasiteLoad, fitdistrplus, optimx, leaflet, magick, ggdist,
-               ggbeeswarm, ggtext, kableExtra, webshot, broom, kableExtra, gt, 
-               flextable)
-    
-## Define within project file paths ----
-        # code
+               ggbeeswarm, ggtext, kableExtra, webshot, broom, flextable)
+
+# ***********************************************************
+# Part 2: Define Project File Paths ----
+# ***********************************************************
+
+# Code directories
 c <- "code"
-clab      <- paste0(c, "/lab/")
-cfield     <- paste0(c, "/field/")
+clab <- paste0(c, "/lab/")
+cfield <- paste0(c, "/field/")
 canalysis <- paste0(c, "/analysis/")
-cdesign <- paste0(c, "/design/") # experimental project design
-nmi   <- paste0(c, "/nmi/")
+cdesign <- paste0(c, "/design/") # Experimental project design
+nmi <- paste0(c, "/nmi/")
 cmodels <- paste0(c, "/models/")
 
-        # data
-            # building dynamic paths
-                # Get the user's profile directory on Windows
+# Data directories
 user_profile <- Sys.getenv("USERPROFILE")
-
-                # Append the specific path
-one_drive <- file.path(user_profile, "OneDrive",
-                       "Documents", "GitHub", "Hybrid_health_outcomes")
-
-                # relative_path is the desired path
+one_drive <- file.path(user_profile, "OneDrive", "Documents", "GitHub", "Hybrid_health_outcomes")
 d <- paste0(one_drive, "/data")
 
-            # labs
+# Lab data paths
 dlab <- paste0(d, "/lab")
 dlab_raw <- paste0(dlab, "/raw")
-  dlab_inter <- paste0(dlab, "/intermediate")
-  dlab_final <- paste0(dlab, "/final")
+dlab_inter <- paste0(dlab, "/intermediate")
+dlab_final <- paste0(dlab, "/final")
 
-            # field
+# Field data paths
 dfield <- paste0(d, "/field")
-  dfield_raw <- paste0(dfield, "/raw")
-  dfield_inter <- paste0(dfield, "/intermediate")
-  dfield_final <- paste0(dfield, "/final")
+dfield_raw <- paste0(dfield, "/raw")
+dfield_inter <- paste0(dfield, "/intermediate")
+dfield_final <- paste0(dfield, "/final")
 
-
-            # data product for analysis
+# Data product for analysis
 danalysis <- paste0(d, "/analysis")
-    danal_final <- paste0(danalysis, "/final") 
+danal_final <- paste0(danalysis, "/final")
 
-        # output
+# Output directories
 output <- paste0(one_drive, "/output")
-  figures <- paste0(output, "/figures")
-    fi <- paste0(figures, "/imputation")
-    an_fi <- paste0(figures, "/analysis")
-    d_fi <- paste0(figures, "/design")
-    panels_fi <- paste0(figures, "/panels")
-  tables  <- paste0(output, "/tables")
-  
-  
- #### vectors for selecting genes for analysis
- Genes_v   <- c("IFNy", "CXCR3", "IL.6", "IL.13", "IL.10",
-                 "IL1RN","CASP1", "CXCL9", "IDO1", "IRGM1", "MPO", 
-                 "MUC2", "MUC5AC", "MYD88", "NCR1", "PRF1", "RETNLB", "SOCS1", 
-                 "TICAM1", "TNF")
- 
- EqPCR.cols      <- c("delta_ct_cewe_MminusE", "MC.Eimeria", "Ct.Eimeria")
+figures <- paste0(output, "/figures")
+fi <- paste0(figures, "/imputation")
+an_fi <- paste0(figures, "/analysis")
+d_fi <- paste0(figures, "/design")
+panels_fi <- paste0(figures, "/panels")
+tables <- paste0(output, "/tables")
 
-    ## Define functions ----
+# Vectors for selecting genes for analysis
+Genes_v <- c("IFNy", "CXCR3", "IL.6", "IL.13", "IL.10",
+             "IL1RN", "CASP1", "CXCL9", "IDO1", "IRGM1", "MPO", 
+             "MUC2", "MUC5AC", "MYD88", "NCR1", "PRF1", "RETNLB", "SOCS1", 
+             "TICAM1", "TNF")
+
+EqPCR.cols <- c("delta_ct_cewe_MminusE", "MC.Eimeria", "Ct.Eimeria")
+
+# ***********************************************************
+# Part 3: Define Custom Functions ----
+# ***********************************************************
 if (1) source(file.path(c, "functions.R"))
+# ***********************************************************
 
+# Part 2: Run Data Cleaning - Laboratory Data               ----
 # ***********************************************************
-# Part 2: Run Data cleaning - lab                        ----
-# ***********************************************************
+
 #----------------------------------------------------------*
-# 2.1: Import raw data & save as intermediate/processed
+# 2.1: Import raw laboratory data 
+
 #----------------------------------------------------------*
-if (1) source(file.path(clab, "lab_import.R"))
-#----------------------------------------------------------*
-# 2.2: Conduct cleaning (formatting) 
+# 2.2: Clean and format lab data
 # Creates: Challenge
 #----------------------------------------------------------*
-if (1) source(file.path(clab, "lab_clean.R"))
+if (1) source(file.path(clab, "lab_clean.R"))  # Harmonizes parasite naming, infection histories, etc.
+
 #----------------------------------------------------------*
-# 2.3: Visualize data
- #----------------------------------------------------------*
-if (1) source(file.path(clab, "lab_visualize.R"))
-# Creates: Correlation matrix between laboratory gene expression values
+# 2.3: Visualize gene correlations
+#----------------------------------------------------------*
+if (1) source(file.path(clab, "lab_visualize.R"))  # Generates gene-gene correlation matrix (mLN only)
+
 # ***********************************************************
-# Part 3: Run field infection data cleaning                      ----
-# **********************************************************
+# Part 3: Field infection data cleaning and integration      ----
+# ***********************************************************
+# Purpose: Clean field metadata and enrich it with qPCR 
+#          infection intensities and amplicon-based species
+#          identifications. Save intermediate and final versions
+#          to ensure modular execution.
+#
+# Requires: Field_infection_data.csv, CEWE_FECES_infection_intensities.txt,
+#           Sample_selection_Metabarcoding_Complete.csv
+# Creates: field_imported_raw.csv (intermediate)
+#          field_cleaned_intermediate.csv (intermediate)
+#          field_cleaned_data.csv (final)
+#          cor_genes_field.jpeg (figure)
+# ***********************************************************
+
 #----------------------------------------------------------*
-# 3.1: Import raw data & save as intermediate/processed
-# Requires:
-# Creates: field_cleaned_data.csv
+# 3.1: Import raw data & save as intermediate
 #----------------------------------------------------------*
 if (1) source(file.path(cfield, "field_import.R"))
+
 #----------------------------------------------------------*
-# 3.2: Conduct cleaning (formatting) w/o changing data
+# 3.2: Conduct basic cleaning and formatting
 #----------------------------------------------------------*
 if (1) source(file.path(cfield, "field_clean.R"))
- #----------------------------------------------------------*
-# 3.3: Visualize data
+
 #----------------------------------------------------------*
- if (1) source(file.path(cfield, "field_visualize.R"))
- #----------------------------------------------------------*
- # 3.4: Import amplicon infection intensities and join with field
- #----------------------------------------------------------*
- if (1) source(file.path(cfield, "field_import_amplicon_intensities.R"))
+# 3.3: Visualize field gene expression correlations
+#----------------------------------------------------------*
+if (1) source(file.path(cfield, "field_visualize.R"))
+
+#----------------------------------------------------------*
+# 3.4: Integrate infection intensities and amplicon species calls
+#----------------------------------------------------------*
+if (1) source(file.path(cfield, "field_import_amplicon_intensities.R"))
 
  
 # ***********************************************************
@@ -162,10 +181,6 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
  # Add custom colours for parasites throughout the scripts
  # Creates factor levels for parasite strains
  #----------------------------------------------------------*
- 
- 
- 
- 
 
  # ***********************************************************
  # Part 5: Can we use immune gene expression data to predict weight loss in 

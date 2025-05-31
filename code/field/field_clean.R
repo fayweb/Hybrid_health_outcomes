@@ -1,15 +1,20 @@
-field <- field %>%
-    dplyr::mutate(origin = "Field")
+# Load intermediate
+field <- read.csv(paste0(dfield_inter, "/field_imported_raw.csv"))
 
-# Adjust the parasite names to fit the lab
+# Add origin flag
 field <- field %>%
-    dplyr::mutate(eimeriaSpecies = case_when(
+    mutate(origin = "Field")
+
+# Adjust parasite names
+field <- field %>%
+    mutate(eimeriaSpecies = case_when(
         eimeriaSpecies == "Negative" ~ "uninfected",
         eimeriaSpecies == "" ~ "NA",
-        TRUE ~ eimeriaSpecies))
+        TRUE ~ eimeriaSpecies
+    ))
 
+# Clean Mouse_ID formatting
 field$Mouse_ID <- gsub("_", "", field$Mouse_ID)
 
-#### create output file:
-write.csv(field, paste0(dfield_final, "/field_cleaned_data.csv"), row.names = FALSE)
-
+# Save cleaned intermediate
+write.csv(field, paste0(dfield_inter, "/field_cleaned_intermediate.csv"), row.names = FALSE)
