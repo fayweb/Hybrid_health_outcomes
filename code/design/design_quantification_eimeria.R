@@ -3,248 +3,370 @@
 # =============================================================================
 # All your data is perfect! Let's create the full visualization suite.
 
-library(ggplot2)
-library(dplyr)
-library(patchwork)
+# =============================================
+# SUPPLEMENTARY TABLE: EIMERIA DETECTION METHODS (CORRECTED)
+# =============================================
 
-# =============================================================================
-# 1. DETAILED SAMPLE FLOWCHART
-# =============================================================================
+hm <- read.csv("data/analysis/final/hm_ready_for_analysis.csv")
+field <- hm %>%
+    filter(origin == "Field")
 
-create_detailed_flowchart <- function(field) {
-    flowchart_data <- data.frame(
-        step = factor(c("Total Field\nMice", "With Immune\nData", "Known Infection\nStatus", 
-                        "Species\nClassified", "Intensity\nData", "Complete\nData"),
-                      levels = c("Total Field\nMice", "With Immune\nData", "Known Infection\nStatus", 
-                                 "Species\nClassified", "Intensity\nData", "Complete\nData")),
-        n = c(336, 336, 305, 169, 92, 14)  # Your exact numbers
+# Create methods summary table with CORRECT numbers
+methods_table_data <- tibble(
+    Method = c(
+        "Caecal qPCR + melting curve", 
+        "Caecal qPCR + melting curve", 
+        "Amplicon sequencing"
+    ),
+    Variable = c("MC.Eimeria", "eimeriaSpecies", "amplicon_species"),
+    Purpose = c(
+        "Infection detection (presence/absence)",
+        "Species identification", 
+        "Backup species identification"
+    ),
+    Priority = c("Primary", "Primary", "Backup"),
+    Mice_with_Data = c(185, 49, 134),
+    Total_Mice = c(336, 336, 336),
+    Success_Rate = paste0(round((c(185, 49, 134) / 336) * 100, 1), "%"),
+    Notes = c(
+        "Direct infection status from melting curve",
+        "Species ID from melting curve patterns",
+        "Used when qPCR species ID unavailable"
     )
-    
-    p <- ggplot(flowchart_data, aes(x = step, y = n)) +
-        geom_col(fill = "steelblue", alpha = 0.8, width = 0.7) +
-        geom_text(aes(label = n), vjust = -0.5, size = 4, fontface = "bold") +
-        labs(title = "Sample Size Progression Through Analysis Pipeline",
-             subtitle = "From field collection to analysis-ready datasets",
-             x = "Analysis Stage", y = "Number of Mice") +
-        theme_minimal() +
-        theme(
-            axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-            plot.title = element_text(size = 14, face = "bold"),
-            panel.grid.major.x = element_blank()
-        ) +
-        ylim(0, 350)
-    
-    return(p)
-}
+)
 
-# =============================================================================
-# 2. METHOD AVAILABILITY BAR CHART
-# =============================================================================
-
-create_method_availability <- function(field) {
-    method_data <- data.frame(
-        Method = c("Immune Genes", "Tissue qPCR", "Feces qPCR", "Oocyst Count", "Amplicon Seq", "Species ID"),
-        Count = c(336, 185, 156, 179, 134, 169),  # Your exact numbers
-        Percentage = round(c(336, 185, 156, 179, 134, 169) / 336 * 100, 1)
+supp_table_methods <- methods_table_data %>%
+    gt() %>%
+    tab_header(
+        title = "Eimeria detection methods in field mice",
+        subtitle = "Summary of hierarchical approach for infection status and species assignment"
     ) %>%
-        mutate(Method = factor(Method, levels = rev(Method)))  # Reverse for nice display
-    
-    p <- ggplot(method_data, aes(x = Method, y = Count)) +
-        geom_col(fill = "forestgreen", alpha = 0.8) +
-        geom_text(aes(label = paste0(Count, "\n(", Percentage, "%)")), 
-                  hjust = -0.1, size = 3.5) +
-        coord_flip() +
-        labs(title = "Data Availability by Quantification Method",
-             subtitle = "Number and percentage of mice with each data type",
-             x = "Quantification Method", y = "Number of Mice") +
-        theme_minimal() +
-        theme(plot.title = element_text(size = 14, face = "bold")) +
-        ylim(0, 360)
-    
-    return(p)
-}
-
-# =============================================================================
-# 3. INFECTION STATUS PIE CHART
-# =============================================================================
-
-create_infection_pie <- function(field) {
-    status_data <- data.frame(
-        status = c("Infected", "Uninfected"),
-        n = c(133, 172),  # Your exact numbers
-        percentage = c(43.6, 56.4)
+    cols_label(
+        Method = "Detection Method",
+        Variable = "Variable Name",
+        Purpose = "Purpose",
+        Priority = "Priority",
+        Mice_with_Data = "Mice with Data",
+        Total_Mice = "Total Mice",
+        Success_Rate = "Success Rate",
+        Notes = "Notes"
     ) %>%
-        mutate(label = paste0(status, "\n", n, " mice\n(", percentage, "%)"))
-    
-    p <- ggplot(status_data, aes(x = "", y = n, fill = status)) +
-        geom_col(color = "white", size = 1) +
-        coord_polar(theta = "y") +
-        geom_text(aes(label = label), position = position_stack(vjust = 0.5), size = 4) +
-        labs(title = "Infection Status Distribution",
-             subtitle = "Based on 305 mice with known status") +
-        scale_fill_manual(values = c("Infected" = "#d73027", "Uninfected" = "#4575b4")) +
-        theme_void() +
-        theme(
-            legend.position = "none",
-            plot.title = element_text(hjust = 0.5, size = 14, face = "bold")
-        )
-    
-    return(p)
-}
-
-# =============================================================================
-# 4. SPECIES DISTRIBUTION
-# =============================================================================
-
-create_species_bar <- function(field) {
-    species_data <- data.frame(
-        species = c("Uninfected", "E. ferrisi", "E. falciformis"),
-        n = c(110, 45, 14),  # Your exact numbers
-        percentage = round(c(110, 45, 14) / 169 * 100, 1)
+    # Combine sample size columns
+    cols_merge(
+        columns = c(Mice_with_Data, Total_Mice),
+        pattern = "{1}/{2}"
     ) %>%
-        mutate(species = factor(species, levels = species))
-    
-    p <- ggplot(species_data, aes(x = species, y = n, fill = species)) +
-        geom_col(alpha = 0.8, width = 0.7) +
-        geom_text(aes(label = paste0(n, "\n(", percentage, "%)")), 
-                  vjust = -0.5, size = 4) +
-        labs(title = "Eimeria Species Distribution",
-             subtitle = "Based on 169 mice with species classification",
-             x = "Species", y = "Number of Mice") +
-        scale_fill_manual(values = c("Uninfected" = "#4575b4", "E. ferrisi" = "#fee08b", 
-                                     "E. falciformis" = "#d73027")) +
-        theme_minimal() +
-        theme(
-            legend.position = "none",
-            plot.title = element_text(size = 14, face = "bold"),
-            panel.grid.major.x = element_blank()
-        ) +
-        ylim(0, 120)
-    
-    return(p)
-}
-
-# =============================================================================
-# 5. INFECTION INTENSITY BY SPECIES
-# =============================================================================
-
-create_intensity_boxplot <- function(field) {
-    # Filter for mice with both species ID and qPCR data
-    intensity_data <- field %>%
-        filter(has_tissue_qPCR & species_clean %in% c("E. ferrisi", "E. falciformis", "Uninfected")) %>%
-        filter(!is.na(delta_ct_cewe_MminusE))
-    
-    p <- ggplot(intensity_data, aes(x = species_clean, y = delta_ct_cewe_MminusE, fill = species_clean)) +
-        geom_boxplot(alpha = 0.7, outlier.alpha = 0.5) +
-        geom_jitter(width = 0.2, alpha = 0.4, size = 1.5) +
-        labs(title = "Infection Intensity by Species (ΔCt)",
-             subtitle = "Lower ΔCt = Higher infection intensity",
-             x = "Species", y = "ΔCt (Mouse - Eimeria)") +
-        scale_fill_manual(values = c("Uninfected" = "#4575b4", "E. ferrisi" = "#fee08b", 
-                                     "E. falciformis" = "#d73027")) +
-        theme_minimal() +
-        theme(
-            legend.position = "none",
-            plot.title = element_text(size = 12, face = "bold"),
-            axis.text.x = element_text(angle = 45, hjust = 1)
-        )
-    
-    return(p)
-}
-
-# =============================================================================
-# 6. METHOD COMBINATIONS
-# =============================================================================
-
-create_method_combos <- function(field) {
-    # Your top method combinations
-    combo_data <- data.frame(
-        combo = c("TFI", "OASI", "TFOSI", "TI", "OI", "TOSI", "TFOASI", "FI"),
-        count = c(115, 113, 22, 21, 17, 13, 10, 9),
-        description = c("Tissue + Feces qPCR\n+ Immune", 
-                        "Oocyst + Amplicon + Species\n+ Immune",
-                        "All methods\nexcept Amplicon",
-                        "Tissue qPCR\n+ Immune only",
-                        "Oocyst\n+ Immune only",
-                        "Tissue + Oocyst + Species\n+ Immune",
-                        "All methods\ncomplete",
-                        "Feces qPCR\n+ Immune only")
+    cols_label(
+        Mice_with_Data = "Sample Size (n/total)"
     ) %>%
-        mutate(
-            percentage = round(count / 336 * 100, 1),
-            description = factor(description, levels = rev(description))
-        )
-    
-    p <- ggplot(combo_data, aes(x = description, y = count)) +
-        geom_col(fill = "darkorange", alpha = 0.8) +
-        geom_text(aes(label = paste0(count, "\n(", percentage, "%)")), 
-                  hjust = -0.1, size = 3) +
-        coord_flip() +
-        labs(title = "Top Method Combinations",
-             subtitle = "T=Tissue qPCR, F=Feces qPCR, O=Oocyst, A=Amplicon, S=Species, I=Immune",
-             x = "Method Combination", y = "Number of Mice") +
-        theme_minimal() +
-        theme(plot.title = element_text(size = 12, face = "bold"))
-    
-    return(p)
-}
-
-# =============================================================================
-# 7. CREATE ALL PLOTS
-# =============================================================================
-
-# Create individual plots
-p1_detailed <- create_detailed_flowchart(field)
-p2_methods <- create_method_availability(field)
-p3_infection <- create_infection_pie(field)
-p4_species <- create_species_bar(field)
-p5_intensity <- create_intensity_boxplot(field)
-p6_combos <- create_method_combos(field)
-
-# Create a comprehensive overview
-overview_layout <- "
-AABBCC
-DDEEFF
-"
-
-field_overview <- p1_detailed + p2_methods + p3_infection + 
-    p4_species + p5_intensity + p6_combos +
-    plot_layout(design = overview_layout) +
-    plot_annotation(
-        title = "Field Data Analysis Overview: Wild Mouse Eimeria Infections",
-        subtitle = "336 mice with immune gene expression data from Brandenburg, Germany (2016-2019)\nOverall infection rate: 43.6% based on multiple detection methods",
-        caption = "Data integrated from qPCR, amplicon sequencing, and oocyst counting",
-        theme = theme(plot.title = element_text(size = 16, face = "bold"))
+    tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_column_labels()
+    ) %>%
+    # Highlight primary vs backup methods
+    tab_style(
+        style = cell_fill(color = "#f3e5f5"),
+        locations = cells_body(rows = Priority == "Primary")
+    ) %>%
+    tab_style(
+        style = cell_fill(color = "#fff3e0"), 
+        locations = cells_body(rows = Priority == "Backup")
+    ) %>%
+    tab_footnote(
+        footnote = "Final species assignment: 49 from qPCR + 120 from amplicon = 169 total mice",
+        locations = cells_column_labels(columns = Method)
     )
 
-# =============================================================================
-# 8. DISPLAY AND SAVE
-# =============================================================================
+print(supp_table_methods)
 
-cat("=== PLOTS CREATED SUCCESSFULLY ===\n")
-cat("Available plots:\n")
-cat("- p1_detailed: Sample size flowchart\n")
-cat("- p2_methods: Method availability\n")
-cat("- p3_infection: Infection status pie chart\n") 
-cat("- p4_species: Species distribution\n")
-cat("- p5_intensity: Infection intensity by species\n")
-cat("- p6_combos: Method combinations\n")
-cat("- field_overview: Complete overview (all plots combined)\n\n")
+# =============================================
+# SUPPLEMENTARY TABLE: FINAL SAMPLE COMPOSITION (CORRECTED)
+# =============================================
 
-cat("To view plots:\n")
-cat("field_overview  # Complete overview\n")
-cat("p1_detailed     # Individual plots\n\n")
+# Sample composition data with CORRECT numbers
+composition_data <- tibble(
+    Category = c(
+        "Total field mice", 
+        "Usable for modeling",
+        "Excluded from modeling",
+        "",  # spacer
+        "Infected",
+        "Uninfected", 
+        "",  # spacer
+        "E. ferrisi",
+        "E. falciformis", 
+        "Uninfected"
+    ),
+    Number_of_Mice = c(336, 169, 167, NA, 65, 104, NA, 45, 14, 110),
+    Percentage = c(
+        "100%", "50.3%", "49.7%", "", 
+        "38.5%*", "61.5%*", "",
+        "26.6%*", "8.3%*", "65.1%*"
+    ),
+    Group = c(
+        "Overview", "Overview", "Overview", "",
+        "Infection Status", "Infection Status", "",
+        "Species Identity", "Species Identity", "Species Identity"
+    )
+)
 
-cat("To save plots:\n")
-cat("ggsave('field_overview_complete.png', field_overview, width = 18, height = 12, dpi = 300)\n")
-cat("ggsave('sample_flowchart.png', p1_detailed, width = 12, height = 8, dpi = 300)\n")
-cat("ggsave('infection_status.png', p3_infection, width = 8, height = 8, dpi = 300)\n")
+supp_table_composition <- composition_data %>%
+    filter(!is.na(Number_of_Mice)) %>%  # Remove spacer rows
+    gt(groupname_col = "Group") %>%
+    tab_header(
+        title = "Final sample composition for analyses",
+        subtitle = "Breakdown of 336 field mice by infection status and species"
+    ) %>%
+    cols_label(
+        Category = "Category",
+        Number_of_Mice = "Number of Mice", 
+        Percentage = "Percentage"
+    ) %>%
+    # Format species names in italics
+    text_transform(
+        locations = cells_body(columns = Category),
+        fn = function(x) {
+            case_when(
+                str_detect(x, "E\\. ") ~ paste0("<em>", x, "</em>"),
+                TRUE ~ x
+            )
+        }
+    ) %>%
+    tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_column_labels()
+    ) %>%
+    tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_row_groups()
+    ) %>%
+    tab_footnote(
+        footnote = "* Percentages calculated from usable mice (n=169)",
+        locations = cells_body(columns = Percentage, rows = str_detect(Percentage, "\\*"))
+    ) %>%
+    fmt_markdown(columns = Category)
 
-# Summary statistics for your thesis
-cat("\n=== SUMMARY FOR THESIS ===\n")
-cat("Field validation dataset: 336 mice with immune gene expression\n")
-cat("Infection rate: 43.6% (133/305 mice with known status)\n")
-cat("Species breakdown: E. ferrisi (45), E. falciformis (14), Uninfected (110)\n")
-cat("Quantification methods: Tissue qPCR (185), Amplicon (134), Oocyst (179)\n")
-cat("Analysis-ready subsets: Intensity data (92), Complete data (14)\n")
+print(supp_table_composition)
 
+# =============================================
+# SUPPLEMENTARY TABLE: DATA SOURCE BREAKDOWN (CORRECTED)
+# =============================================
+
+source_data <- tibble(
+    Assignment_Method = c("qPCR (tissue)", "Species call (qPCR/amplicon)"),
+    Number_of_Mice = c(49, 120),
+    Percentage = c("29.0%", "71.0%"),
+    Description = c(
+        "Direct infection status from MC.Eimeria",
+        "Infection status inferred from species identification"
+    )
+)
+
+supp_table_sources <- source_data %>%
+    gt() %>%
+    tab_header(
+        title = "Data source for final infection assignments",
+        subtitle = "Method used to determine infection status in usable mice (n=169)"
+    ) %>%
+    cols_label(
+        Assignment_Method = "Assignment Method",
+        Number_of_Mice = "Number of Mice",
+        Percentage = "Percentage",
+        Description = "Description"
+    ) %>%
+    tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_column_labels()
+    ) %>%
+    tab_footnote(
+        footnote = "120 mice: 49 from qPCR species ID + 120 from amplicon backup when qPCR unavailable",
+        locations = cells_body(columns = Assignment_Method, rows = 2)
+    )
+
+print(supp_table_sources)
+
+# =============================================
+# SUPPLEMENTARY TABLE: DETAILED METHOD BREAKDOWN (NEW)
+# =============================================
+
+# Create detailed breakdown table
+detailed_breakdown <- tibble(
+    Step = c(
+        "qPCR infection detection",
+        "qPCR species identification", 
+        "Amplicon species identification",
+        "Final species assignment",
+        "Complete data for modeling"
+    ),
+    Method = c(
+        "Melting curve analysis",
+        "Melting curve patterns",
+        "18S/28S sequencing", 
+        "Hierarchical combination",
+        "Both infection status + species ID"
+    ),
+    Mice_Success = c(185, 49, 134, 169, 169),
+    Mice_Failed = c(151, 287, 202, 167, 167),
+    Success_Rate = paste0(round(c(185, 49, 134, 169, 169)/336*100, 1), "%"),
+    Notes = c(
+        "Primary method for infection presence/absence",
+        "Limited by time constraints",
+        "Backup method when qPCR species ID unavailable",
+        "49 qPCR + 120 amplicon = 169 total",
+        "Used for downstream random forest validation"
+    )
+)
+
+supp_table_detailed <- detailed_breakdown %>%
+    gt() %>%
+    tab_header(
+        title = "Detailed method performance breakdown",
+        subtitle = "Step-by-step success rates in the hierarchical detection pipeline"
+    ) %>%
+    cols_label(
+        Step = "Pipeline Step",
+        Method = "Method Used",
+        Mice_Success = "Success (n)",
+        Mice_Failed = "Missing (n)", 
+        Success_Rate = "Success Rate",
+        Notes = "Notes"
+    ) %>%
+    tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_column_labels()
+    ) %>%
+    # Highlight final result
+    tab_style(
+        style = cell_fill(color = "#e8f5e8"),
+        locations = cells_body(rows = Step == "Complete data for modeling")
+    )
+
+print(supp_table_detailed)
+
+# =============================================
+# SAVE ALL TABLES
+# =============================================
+
+save_table_all_formats(supp_table_methods, "Supplementary_Table__Eimeria_methods")
+save_table_all_formats(supp_table_composition, "Supplementary_Table_sample_composition") 
+save_table_all_formats(supp_table_sources, "Supplementary_Table_data_sources")
+save_table_all_formats(supp_table_detailed, "Supplementary_Table_S4_detailed_breakdown")
+
+cat("✅ All corrected supplementary tables saved successfully!\n")
+
+# =============================================
+# SUPPLEMENTARY TABLE: FINAL SAMPLE COMPOSITION
+# =============================================
+
+# Sample composition data
+composition_data <- tibble(
+    Category = c(
+        "Total field mice", 
+        "Usable for modeling",
+        "Excluded from modeling",
+        "",  # spacer
+        "Infected",
+        "Uninfected", 
+        "",  # spacer
+        "E. ferrisi",
+        "E. falciformis", 
+        "Uninfected"
+    ),
+    Number_of_Mice = c(336, 169, 167, NA, 65, 104, NA, 45, 14, 110),
+    Percentage = c(
+        "100%", "50.3%", "49.7%", "", 
+        "38.5%*", "61.5%*", "",
+        "26.6%*", "8.3%*", "65.1%*"
+    ),
+    Group = c(
+        "Overview", "Overview", "Overview", "",
+        "Infection Status", "Infection Status", "",
+        "Species Identity", "Species Identity", "Species Identity"
+    )
+)
+
+supp_table_composition <- composition_data %>%
+    filter(!is.na(Number_of_Mice)) %>%  # Remove spacer rows
+    gt(groupname_col = "Group") %>%
+    tab_header(
+        title = "Supplementary Table S2. Final sample composition for analyses",
+        subtitle = "Breakdown of 336 field mice by infection status and species"
+    ) %>%
+    cols_label(
+        Category = "Category",
+        Number_of_Mice = "Number of Mice", 
+        Percentage = "Percentage"
+    ) %>%
+    # Format species names in italics
+    text_transform(
+        locations = cells_body(columns = Category),
+        fn = function(x) {
+            case_when(
+                str_detect(x, "E\\. ") ~ paste0("<em>", x, "</em>"),
+                TRUE ~ x
+            )
+        }
+    ) %>%
+    tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_column_labels()
+    ) %>%
+    tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_row_groups()
+    ) %>%
+    tab_footnote(
+        footnote = "* Percentages calculated from usable mice (n=169)",
+        locations = cells_body(columns = Percentage, rows = str_detect(Percentage, "\\*"))
+    ) %>%
+    fmt_markdown(columns = Category)
+
+print(supp_table_composition)
+
+# =============================================
+# SUPPLEMENTARY TABLE: DATA SOURCE BREAKDOWN
+# =============================================
+
+source_data <- tibble(
+    Assignment_Method = c("qPCR (tissue)", "Species call (qPCR/amplicon)"),
+    Number_of_Mice = c(49, 120),
+    Percentage = c("29.0%", "71.0%"),
+    Description = c(
+        "Direct infection status from MC.Eimeria",
+        "Infection status inferred from species identification"
+    )
+)
+
+supp_table_sources <- source_data %>%
+    gt() %>%
+    tab_header(
+        title = "Supplementary Table S3. Data source for final infection assignments",
+        subtitle = "Method used to determine infection status in usable mice (n=169)"
+    ) %>%
+    cols_label(
+        Assignment_Method = "Assignment Method",
+        Number_of_Mice = "Number of Mice",
+        Percentage = "Percentage",
+        Description = "Description"
+    ) %>%
+    tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_column_labels()
+    ) %>%
+    tab_footnote(
+        footnote = "Species identification prioritized qPCR melting curves, with amplicon sequencing as backup",
+        locations = cells_body(columns = Assignment_Method, rows = 2)
+    )
+
+print(supp_table_sources)
+
+# =============================================
+# SAVE ALL TABLES
+# =============================================
+
+# Save using your existing function
+save_table_all_formats(supp_table_methods, "Supplementary_Table_S1_Eimeria_methods")
+save_table_all_formats(supp_table_composition, "Supplementary_Table_S2_sample_composition") 
+save_table_all_formats(supp_table_sources, "Supplementary_Table_S3_data_sources")
+
+cat("✅ All supplementary tables saved successfully!\n")

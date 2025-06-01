@@ -1,0 +1,16 @@
+\begin{longtable}{llrrrl}
+\caption*{
+{\large Detailed method performance breakdown} \\ 
+{\small Step-by-step success rates in the hierarchical detection pipeline}
+} \\ 
+\toprule
+Pipeline Step & Method Used & Success (n) & Missing (n) & Success Rate & Notes \\ 
+\midrule\addlinespace[2.5pt]
+qPCR infection detection & Melting curve analysis & 185 & 151 & 55.1\% & Primary method for infection presence/absence \\ 
+qPCR species identification & Melting curve patterns & 49 & 287 & 14.6\% & Limited by time constraints \\ 
+Amplicon species identification & 18S/28S sequencing & 134 & 202 & 39.9\% & Backup method when qPCR species ID unavailable \\ 
+Final species assignment & Hierarchical combination & 169 & 167 & 50.3\% & 49 qPCR + 120 amplicon = 169 total \\ 
+\cellcolor[HTML]{E8F5E8}{Complete data for modeling} & \cellcolor[HTML]{E8F5E8}{Both infection status + species ID} & \cellcolor[HTML]{E8F5E8}{169} & \cellcolor[HTML]{E8F5E8}{167} & \cellcolor[HTML]{E8F5E8}{50.3\%} & \cellcolor[HTML]{E8F5E8}{Used for downstream random forest validation} \\ 
+\bottomrule
+\end{longtable}
+
