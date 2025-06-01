@@ -10,11 +10,15 @@ Challenge <- read.csv("data/analysis/final/Challenge_ready_for_analysis.csv")
 hm <- read.csv("data/analysis/final/hm_ready_for_analysis.csv")
 
 
-# Function to save gt tables in multiple formats
-save_table_all_formats <- function(table_object, table_name, output_dir = tables) {
+# Modified function to save each table in its own folder
+save_table_all_formats <- function(table_object, table_name, output_dir = paste0(tables)) {
     
-    # Create base filename
-    base_path <- file.path(output_dir, table_name)
+    # Create table-specific folder
+    table_folder <- file.path(output_dir, table_name)
+    dir.create(table_folder, recursive = TRUE, showWarnings = FALSE)
+    
+    # Create base filename (now inside the table folder)
+    base_path <- file.path(table_folder, table_name)
     
     # Save in all formats
     tryCatch({
@@ -28,7 +32,7 @@ save_table_all_formats <- function(table_object, table_name, output_dir = tables
         
         # PNG (high quality image)
         gtsave(table_object, paste0(base_path, ".png"), 
-               vwidth = 1000, vheight = 800)
+               vwidth = 1200, vheight = 800)
         cat("✓ Saved", table_name, "as PNG\n")
         
         # PDF (best for LaTeX)
@@ -41,13 +45,12 @@ save_table_all_formats <- function(table_object, table_name, output_dir = tables
             writeLines(paste0(base_path, ".tex"))
         cat("✓ Saved", table_name, "as TEX\n")
         
-        cat("✅ All formats saved successfully for", table_name, "\n\n")
+        cat("✅ All formats saved in folder:", table_folder, "\n\n")
         
     }, error = function(e) {
         cat("❌ Error saving", table_name, ":", e$message, "\n")
     })
 }
-
 
 
 
@@ -94,7 +97,7 @@ print(table1_data)
 table1 <- table1_data %>%
     gt() %>%
     tab_header(
-        title = "Table 1. Mouse strain composition and genetic background",
+        title = "Mouse strain composition and genetic background",
         subtitle = "Distribution of 136 mice across subspecies and strain types"
     ) %>%
     cols_label(
@@ -152,7 +155,7 @@ table2 <- lab_clean %>%
     ) %>%
     gt() %>%
     tab_header(
-        title = "Table 2. Experimental design and infection protocols",
+        title = "Experimental design and infection protocols",
         subtitle = "Sample distribution across experiments and final infection status"
     ) %>%
     cols_label(
@@ -228,7 +231,7 @@ table3 <- infection_breakdown %>%
     .[, c("primary_infection", "challenge_infection", "immunization", "current_infection", "n")] %>%
     gt() %>%
     tab_header(
-        title = "Table 3. Infection history and immunization status",
+        title = "Infection history and immunization status",
         subtitle = "Primary and challenge infection combinations"
     ) %>%
     cols_label(
@@ -342,4 +345,116 @@ supp_table <- detailed_crossings %>%
 
 print(supp_table)
 save_table_all_formats(supp_table, "Supplementary_table_detailed_crossings")
+
+# =============================================
+# SUPPLEMENTARY TABLE: COMPLETE INFECTION HISTORY
+# =============================================
+
+# Create infection history table for all 136 mice
+infection_history_table <- lab_clean %>%
+    mutate(
+        # For mice that died during primary (infection == "primary")
+        # Only show primary infection
+        infection_sequence = case_when(
+            infection == "primary" ~ paste0("Primary: ", Parasite_primary),
+            # For mice that completed both phases (infection == "challenge") 
+            # Show both primary and challenge
+            infection == "challenge" ~ paste0("Primary: ", Parasite_primary, 
+                                              " → Challenge: ", Parasite_challenge),
+            TRUE ~ "Unknown"
+        ),
+        # Clean up the parasite names for display
+        infection_sequence = str_replace_all(infection_sequence, 
+                                             c("E\\. ferrisi" = "*E. ferrisi*",
+                                               "E\\. falciformis" = "*E. falciformis*",
+                                               "Uninfected controls" = "Uninfected"))
+    ) %>%
+    # Count by infection sequence and final outcome
+    count(infection, infection_sequence, current_infection) %>%
+    arrange(infection, infection_sequence)
+
+# Create the gt table
+supp_infection_history <- infection_history_table %>%
+    gt() %>%
+    tab_header(
+        title = "Complete infection history for all experimental mice",
+        subtitle = "Infection sequences for mice that died during primary (n=20) vs. completed both phases (n=116)"
+    ) %>%
+    cols_label(
+        infection = "Experimental Phase Completed",
+        infection_sequence = "Infection History",
+        current_infection = "Final Infection Status",
+        n = "n"
+    ) %>%
+    # Group by experimental phase
+    tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_column_labels()
+    ) %>%
+    # Style the phase groupings
+    tab_style(
+        style = cell_fill(color = "#f0f0f0"),
+        locations = cells_body(rows = infection == "primary")
+    ) %>%
+    # Enable markdown rendering for italics
+    fmt_markdown(columns = c(infection_sequence)) %>%
+    tab_footnote(
+        footnote = "Mice in 'primary' phase died/were euthanized before challenge infection",
+        locations = cells_column_labels(columns = infection)
+    ) %>%
+    tab_footnote(
+        footnote = "Arrow (→) indicates progression from primary to challenge infection",
+        locations = cells_column_labels(columns = infection_sequence)
+    )
+
+print(supp_infection_history)
+
+# Save the table
+save_table_all_formats(supp_infection_history, "Supplementary_table_complete_infection_history")
+
+# Also create a summary version showing totals by infection type
+infection_summary <- lab_clean %>%
+    mutate(
+        infection_type = case_when(
+            infection == "primary" ~ "Died during primary infection",
+            infection == "challenge" ~ "Completed both infection phases"
+        )
+    ) %>%
+    count(infection_type, Parasite_primary, Parasite_challenge) %>%
+    # For primary deaths, set challenge to NA for cleaner display
+    mutate(
+        Parasite_challenge = case_when(
+            infection_type == "Died during primary infection" ~ "—",
+            TRUE ~ as.character(Parasite_challenge)
+        )
+    ) %>%
+    arrange(infection_type, Parasite_primary)
+
+# Create summary table
+supp_infection_summary <- infection_summary %>%
+    gt() %>%
+    tab_header(
+        title = "Infection history summary",
+        subtitle = "Primary and challenge infections by experimental outcome"
+    ) %>%
+    cols_label(
+        infection_type = "Experimental Outcome",
+        Parasite_primary = "Primary Infection",
+        Parasite_challenge = "Challenge Infection", 
+        n = "n"
+    ) %>%
+    tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_column_labels()
+    ) %>%
+    # Add total rows by group
+    summary_rows(
+        groups = TRUE,
+        columns = n,
+        fns = list(Subtotal = ~sum(.))
+    )
+
+print(supp_infection_summary)
+save_table_all_formats(supp_infection_summary, "Supplementary_table_infection_summary")
+
 

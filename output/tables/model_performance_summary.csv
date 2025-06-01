@@ -1,7 +1,0 @@
-"Model","Name","R2","Variables","AIC_approx"
-"Model 1","Complete",0.631,22,NA
-"Model 2","Host factors",0.611,20,NA
-"Model 3","Immune signature",0.106,2,NA
-"Model 4","Core predictors",0.55,6,NA
-"Model 5","Parsimonious",0.547,4,NA
-"Model 6","Interactive",0.426,8,NA

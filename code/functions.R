@@ -94,11 +94,15 @@ italics_x <- function(ggplot_object, labels) {
         )
 }
 
-# Function to save gt tables in multiple formats
-save_table_all_formats <- function(table_object, table_name, output_dir = tables) {
+# Modified function to save each table in its own folder
+save_table_all_formats <- function(table_object, table_name, output_dir = paste0(tables)) {
     
-    # Create base filename
-    base_path <- file.path(output_dir, table_name)
+    # Create table-specific folder
+    table_folder <- file.path(output_dir, table_name)
+    dir.create(table_folder, recursive = TRUE, showWarnings = FALSE)
+    
+    # Create base filename (now inside the table folder)
+    base_path <- file.path(table_folder, table_name)
     
     # Save in all formats
     tryCatch({
@@ -112,7 +116,7 @@ save_table_all_formats <- function(table_object, table_name, output_dir = tables
         
         # PNG (high quality image)
         gtsave(table_object, paste0(base_path, ".png"), 
-               vwidth = 1000, vheight = 800)
+               vwidth = 1200, vheight = 800)
         cat("✓ Saved", table_name, "as PNG\n")
         
         # PDF (best for LaTeX)
@@ -125,10 +129,11 @@ save_table_all_formats <- function(table_object, table_name, output_dir = tables
             writeLines(paste0(base_path, ".tex"))
         cat("✓ Saved", table_name, "as TEX\n")
         
-        cat("✅ All formats saved successfully for", table_name, "\n\n")
+        cat("✅ All formats saved in folder:", table_folder, "\n\n")
         
     }, error = function(e) {
         cat("❌ Error saving", table_name, ":", e$message, "\n")
     })
 }
+
 

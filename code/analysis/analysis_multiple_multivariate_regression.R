@@ -161,22 +161,24 @@ regression_table <- tidy_models_no_intercept %>%
             `P-value` = p.value,
             `Significance` = significance
         )
-    
-# Create the formatted table with kableExtra
+
 publication_table <- regression_table %>%
-        kbl(
-            caption = "Table 1: Regression results for immune gene expression in E. ferrisi and E. falciformis-infected mice in controlled experiments",
-            format = "html",  # Or "latex" for LaTeX output
-            digits = 3  # Control the number of decimal places
-        ) %>%
-        kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
-                      full_width = F) %>%
-        column_spec(1, bold = TRUE) %>%  # Bold gene names for emphasis
-        add_header_above(c(" " = 2, "Regression Estimates" = 5, " " = 1)) %>%  # Custom header, include space for "Significance"
-        footnote(
-            general = "Significance codes: '***' 0.001 '**' 0.01 '*' 0.05",
-            footnote_as_chunk = TRUE
-        )
+    kbl(
+        caption = "Table 1: Regression results for immune gene expression in E. ferrisi and E. falciformis-infected mice in controlled experiments",
+        format = "html",  # Change to "latex" if needed
+        digits = 3
+    ) %>%
+    kable_styling(
+        bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+        full_width = FALSE
+    ) %>%
+    column_spec(1, bold = TRUE) %>%
+    add_header_above(c(" " = 2, "Regression Estimates" = 5, " " = 1)) %>%
+    footnote(
+        general = "Significance codes: '***' 0.001 '**' 0.01 '*' 0.05",
+        escape = FALSE
+    )
+
     
 # Print the table
 print(publication_table)

@@ -190,6 +190,7 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
 
 # 5.1: Summarize experimental groups and setup
 if (0) source(file.path(cdesign, "design_tables_paper.R"))
+if (0) source(file.path(cdesign, "design_experimental.R"))
 # 5.2 Measurement Methods: Weight, OPG, qPCR
 if (0) source(file.path(cdesign, "design_field_quantification_methods.R"))
 # This script explains how weight, oocysts, and parasite burden were quantified
@@ -213,10 +214,38 @@ if (0) source(file.path(cdesign, "design_models.R"))
 
 
 
+# ***********************************************************
+# Part 6: Laboratory Infection Analysis ----
+# ***********************************************************
+# Purpose: Analyze immune gene expression and health outcomes in lab infections
+# This corresponds to Results section "Immune gene expression profiles correlate with infection-induced health impacts"
+
+# 6.1: Individual Gene Responses to Infection
+if (0) source(file.path(canalysis, "gene_responses_individual.R"))
+# Regression analysis for each gene vs infection status
+# Outputs: Table 1, effect sizes, significance levels
+# Corresponds to paragraph: "Species-specific immune gene responses to Eimeria infection"
+
+# 6.2: Principal Component Analysis  
+if (0) source(file.path(canalysis, "pca_immune_genes.R"))
+# PCA on immune gene expression, variance explained, gene loadings
+# Outputs: Figure 1B, PC scores, gene contribution tables
+# Corresponds to paragraph: "Principal component analysis reveals coordinated immune response patterns"
+
+# 6.3: Linear Models - Immune Signatures Predict Weight Loss
+if (0) source(file.path(canalysis, "linear_models_pc_weightloss.R"))
+# PC1, PC2 as predictors of weight loss
+# Multiple nested models, interaction effects
+# Corresponds to paragraph: "Immune signatures predict weight loss in infected mice"
+
+# 6.4: Infection-Specific Interactions
+if (0) source(file.path(canalysis, "interaction_models_species.R"))
+# PC × infection group interactions, species-specific effects
+# Corresponds to paragraph: "Infection-specific interactions between immune responses and health outcomes"
 
 
- # Experimental design of the laboratory infections
- if (1) source(file.path(cdesign, "design_tables_paper.R"))
+
+
  # Now let's analyse the gene expression value distribution
  if (0) source(file = "code/analysis/Analysis_PCA_lab_infections.R")
  # Can the PC1 and PC2 representing immune gene expression predict weight loss?

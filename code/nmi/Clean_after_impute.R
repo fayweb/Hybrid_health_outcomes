@@ -161,4 +161,4 @@ write.csv(hm, file = paste0(danal_final, "/hm_ready_for_analysis.csv"), row.name
 # Save long lab dataset (Challenge)
 write.csv(Challenge, file = paste0(danal_final, "/Challenge_ready_for_analysis.csv"), row.names = FALSE)
 
-rm(Challenge, hm)
+

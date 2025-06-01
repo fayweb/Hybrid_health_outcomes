@@ -6,11 +6,8 @@
     # the weight loss during infection
 # Authors: Fay Webster
 
-
-# WOrking with fieldoratory data only
-# Select genes
-field  <- hm %>%
-    dplyr::filter(origin == "Field")
+field <- hm %>%
+    filter(origin == "Field")
 
 # List of dependent variables
 dependent_vars <- c("IFNy", "CXCR3", "IL.6", "IL.13",# "IL.10",
