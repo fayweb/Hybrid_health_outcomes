@@ -182,15 +182,39 @@ if (1) source(file.path(nmi, "nmi_impute.R"))
  # Creates factor levels for parasite strains
  #----------------------------------------------------------*
 
- # ***********************************************************
- # Part 5: Can we use immune gene expression data to predict weight loss in 
- # laboratory experiments? An explorative analysis----
- # ***********************************************************
- #----------------------------------------------------*
- # Here we test to see if we can use gene expression values to predict 
- # weight loss in the laboratory infection experiments
- # Experimental design of the laboratory infections
-if (0) source(file = "code/analysis/Experimental_design_laboratory_infections.R")
+# ***********************************************************
+# Part 5: Experimental Design of Laboratory Infections ----
+# ***********************************************************
+# Purpose: Summarize the experimental setup in the lab infections.
+# Outputs: Clean design tables, plots of experimental groups, timepoints
+
+# 5.1: Summarize experimental groups and setup
+if (0) source(file.path(cdesign, "design_tables_paper.R"))
+# 5.2 Measurement Methods: Weight, OPG, qPCR
+if (0) source(file.path(cdesign, "design_field_quantification_methods.R"))
+# This script explains how weight, oocysts, and parasite burden were quantified
+# It can generate a supplementary table or explanatory paragraph
+
+# 5.3 Immune Gene Panel: Target selection and references
+if (0) source(file.path(cdesign, "design_immune_genes.R"))
+# Details which genes were selected and why
+# Can generate a table of target genes, reference genes, primer source, etc.
+
+# 5.4 Eimeria Quantification Pipeline
+if (0) source(file.path(cdesign, "design_quantification_eimeria.R"))
+# Explains how qPCR or microscopy counts were processed
+# Outputs: summary stats, method explanation (can go in methods/supp)
+
+# 5.5 Modeling Strategy: Outcome, predictors, covariates
+if (0) source(file.path(cdesign, "design_models.R"))
+# Describes the rationale for using weight loss as outcome, infection as predictor
+# Sets up linear model structures for downstream analysis (Part 6)
+
+
+
+
+
+
  # Experimental design of the laboratory infections
  if (1) source(file.path(cdesign, "design_tables_paper.R"))
  # Now let's analyse the gene expression value distribution
@@ -231,12 +255,12 @@ if (0) source(file = "code/analysis/Experimental_design_laboratory_infections.R"
  #----------------------------------------------------------*
  # Creates random forest model: WL_predict_gene.RData
  #----------------------------------------------------------*
- if (0) source(file.path(canalysis, "analysis_random_forest_training.R"))
+ if (1) source(file.path(canalysis, "analysis_random_forest_training.R"))
  #7.2: Aplication of random forest on field samples
  # requires hm and random forest model
  # Creates Field with updated new variable of predicted weight loss for each mouse
  # removed one mouse due to missing genotyping
- if (0) source(file.path(canalysis, "analysis_apply_random_forest.R"))
+ if (1) source(file.path(canalysis, "analysis_apply_random_forest.R"))
  # 7.3: We want to analyze the distribution of the predicted outcome variable
  # "WL_max" (predicted weight loss dependent on the immune gene expression values)
  # the distribution type is required for the downstream analysis

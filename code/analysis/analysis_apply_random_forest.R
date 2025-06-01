@@ -3,6 +3,8 @@
 # Creates Field with updated new variable of predicted weight loss for each mouse
 # removed one mouse due to missing genotyping
 
+# ---- Import cleaned data ----
+hm <- read.csv("data/analysis/final/hm_ready_for_analysis.csv")
 # filter for the field mice
 Field <- hm %>%
     filter(origin == "Field")# %>%

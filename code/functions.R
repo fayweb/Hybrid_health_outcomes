@@ -93,3 +93,42 @@ italics_x <- function(ggplot_object, labels) {
             legend.text = element_markdown()   # Apply markdown to legend text
         )
 }
+
+# Function to save gt tables in multiple formats
+save_table_all_formats <- function(table_object, table_name, output_dir = tables) {
+    
+    # Create base filename
+    base_path <- file.path(output_dir, table_name)
+    
+    # Save in all formats
+    tryCatch({
+        # HTML (best for Google Docs)
+        gtsave(table_object, paste0(base_path, ".html"))
+        cat("✓ Saved", table_name, "as HTML\n")
+        
+        # Word document
+        gtsave(table_object, paste0(base_path, ".docx"))
+        cat("✓ Saved", table_name, "as DOCX\n")
+        
+        # PNG (high quality image)
+        gtsave(table_object, paste0(base_path, ".png"), 
+               vwidth = 1000, vheight = 800)
+        cat("✓ Saved", table_name, "as PNG\n")
+        
+        # PDF (best for LaTeX)
+        gtsave(table_object, paste0(base_path, ".pdf"))
+        cat("✓ Saved", table_name, "as PDF\n")
+        
+        # LaTeX code
+        table_object %>%
+            as_latex() %>%
+            writeLines(paste0(base_path, ".tex"))
+        cat("✓ Saved", table_name, "as TEX\n")
+        
+        cat("✅ All formats saved successfully for", table_name, "\n\n")
+        
+    }, error = function(e) {
+        cat("❌ Error saving", table_name, ":", e$message, "\n")
+    })
+}
+

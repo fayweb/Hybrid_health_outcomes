@@ -1,0 +1,38 @@
+flowchart TD
+    A[Wild Field Mice Collected<br/>n = 336] --> B[Caecal Tissue Extraction<br/>All mice]
+    
+    B --> C[Primary Method:<br/>Caecal qPCR + Melting Curve Analysis]
+    
+    C --> D[Infection Detection<br/>MC.Eimeria<br/>SUCCESS: n = 185<br/>FAILED: n = 151]
+    
+    C --> E[Species Identification<br/>eimeriaSpecies<br/>SUCCESS: n = 169<br/>FAILED: n = 167]
+    
+    E --> F[Backup Method:<br/>Amplicon Sequencing<br/>For failed species ID<br/>n = 134 attempted]
+    
+    F --> G[Final Species Assignment<br/>species_Eimeria<br/>n = 169 total success]
+    
+    D --> H[Final Infection Status<br/>infection_status]
+    G --> H
+    
+    H --> I{Quality Control<br/>Complete data?}
+    
+    I -->|YES| J[Usable for Analysis<br/>n = 169<br/>• Infected: 65<br/>• Uninfected: 104]
+    I -->|NO| K[Excluded<br/>n = 167<br/>Incomplete data]
+    
+    J --> L[Species Breakdown<br/>• E. ferrisi: 45<br/>• E. falciformis: 14<br/>• Uninfected: 110]
+    
+    style A fill:#e1f5fe
+    style C fill:#f3e5f5
+    style F fill:#fff3e0
+    style J fill:#e8f5e8
+    style K fill:#ffebee
+    
+    classDef primary fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+    classDef backup fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    classDef success fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    classDef excluded fill:#ffebee,stroke:#f44336,stroke-width:2px
+    
+    class C primary
+    class F backup
+    class J success
+    class K excluded

@@ -1,11 +1,20 @@
 # =============================================================================
-# EXPERIMENTAL DESIGN ANALYSIS: Complete breakdown of infection experiments
-
+# SCRIPT PURPOSE: In-depth exploration of experimental design for lab infections
 # =============================================================================
-# 1. BASIC SAMPLE SIZES
+# This script performs:
+# 1. Summary statistics on infection groups
+# 2. Tabulations of infection history, immunization, and challenge status
+# 3. Weight loss statistics across groups
+# 4. Generation of summary figures (PCA, weight loss, HI maps)
+# 5. Model fitting for weight loss predictors
 # =============================================================================
+# === Load cleaned datasets ===
+Challenge <- read.csv("data/analysis/final/Challenge_ready_for_analysis.csv")
+hm <- read.csv("data/analysis/final/hm_ready_for_analysis.csv")
 
-# Step 1: UNGROUP the data first
+
+lab <- hm %>%
+    dplyr::filter(origin == "Lab")
 lab_clean <- lab %>% ungroup()
 
 cat("=== BASIC SAMPLE SIZES ===\n")
@@ -287,80 +296,9 @@ ggsave(filename = paste0(d_fi,"/map_HI.jpeg"),
 
 ###################################################
 ####################################################
-###################################################
+##################################################
 
 
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-# Combine the plots
-#(ooc_primary | ooc_challenge) / # oocysts
-panel_figure <- 
-    (Rwp | Rwc) /
-    (strains_weight_challenge ) / 
-    (eimeria_weight) +
- #   plot_layout(guides = 'collect') + # Collect all legends into a single legend
-    plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
-
-# Add a figure title
-panel_figure <- panel_figure + 
-    plot_annotation(title = 'Fig. 1', 
-                    theme = theme(plot.title = element_text(size = 20,
-                                                            hjust = 0)))
-
-# Control sizes of each plot within the panel
-# This is a generic example. You'll need to adjust the widths,
-#heights, and layout design based on your specific needs.
-#panel_figure <- panel_figure + 
- #   plot_layout(heights = c(1, 1, 1), 
-  #              widths = c(1, 1, 1)) # Adjust according to your layout needs
-
-# Display the panel figure
-print(panel_figure)
-
-# Save the panel figure
-ggsave(paste0(panels_fi, "/experimental_design_simple.jpeg"), 
-       panel_figure, width = 10, height = 12, dpi = 300)
-
-############################
-#Hybrids
-
-
-# Combine the plots
-panel_hybr <- 
-    (h_w | map_hybrids) +
-    plot_layout(guides = 'collect') + # Collect all legends into a single legend
-    plot_annotation(tag_levels = 'A') # Add labels (A, B, C, etc.)
-
-# Add a figure title
-panel_hybr <- panel_hybr + 
-    plot_annotation(title = 'Fig. 7', 
-                    theme = theme(plot.title = 
-                                      element_text(size = 13, hjust = 0)))
-
-# Display the panel figure
-print(panel_hybr)
-
-# Save the panel figure
-ggsave(paste0(panels_fi, "/hyb_plot_design.jpeg"), 
-       panel_hybr, width = 6, height = 3, dpi = 300)
 
 
 

@@ -1,3 +1,15 @@
+# ----------------------------------------------------------
+# Script: generate_experimental_design_tables.R
+# Purpose: Create and export all experiment design tables (main + supplementary)
+# Input: `hm` and `lab` dataframes (pre-cleaned and saved in final folder)
+# Output: Tables 1-4 + supplementary tables in multiple formats
+# ----------------------------------------------------------
+
+# === Load cleaned datasets ===
+Challenge <- read.csv("data/analysis/final/Challenge_ready_for_analysis.csv")
+hm <- read.csv("data/analysis/final/hm_ready_for_analysis.csv")
+
+
 # Function to save gt tables in multiple formats
 save_table_all_formats <- function(table_object, table_name, output_dir = tables) {
     
