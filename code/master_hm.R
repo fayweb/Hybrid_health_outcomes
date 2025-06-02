@@ -212,8 +212,6 @@ if (0) source(file.path(cdesign, "design_models.R"))
 # Sets up linear model structures for downstream analysis (Part 6)
 
 
-
-
 # ***********************************************************
 # Part 6: Laboratory Infection Analysis ----
 # ***********************************************************
@@ -221,19 +219,19 @@ if (0) source(file.path(cdesign, "design_models.R"))
 # This corresponds to Results section "Immune gene expression profiles correlate with infection-induced health impacts"
 
 # 6.1: Individual Gene Responses to Infection
-if (0) source(file.path(canalysis, "gene_responses_individual.R"))
+if (0) source(file.path("code/analysis/lab_infections/gene_responses_individual.R"))
 # Regression analysis for each gene vs infection status
 # Outputs: Table 1, effect sizes, significance levels
 # Corresponds to paragraph: "Species-specific immune gene responses to Eimeria infection"
 
 # 6.2: Principal Component Analysis  
-if (0) source(file.path(canalysis, "pca_immune_genes.R"))
+if (0) source(file.path("code/analysis/lab_infections/pca_immune_genes.R"))
 # PCA on immune gene expression, variance explained, gene loadings
 # Outputs: Figure 1B, PC scores, gene contribution tables
 # Corresponds to paragraph: "Principal component analysis reveals coordinated immune response patterns"
 
 # 6.3: Linear Models - Immune Signatures Predict Weight Loss
-if (0) source(file.path(canalysis, "linear_models_pc_weightloss.R"))
+if (0) source(file.path("canalysis, ""code/analysis/lab_infections/linear_models_pc_weightloss.R"))
 # PC1, PC2 as predictors of weight loss
 # Multiple nested models, interaction effects
 # Corresponds to paragraph: "Immune signatures predict weight loss in infected mice"

@@ -1,0 +1,43 @@
+\setlength{\LTpost}{0mm}
+\begin{longtable}{lccc}
+\caption*{
+{\large Linear regression models: Immune signatures predict weight loss} \\ 
+{\small Comparison of three modeling approaches}
+} \\ 
+\toprule
+  & Immune Only & Full Model & Interaction \\ 
+\midrule\addlinespace[2.5pt]
+Intercept & 9.662*** & -1.495 & 4.713*** \\ 
+ & (0.645) & (5.622) & (0.918) \\ 
+PC1 (Inflammatory) & 0.514* & 0.122 & -0.077 \\ 
+ & (0.253) & (0.236) & (0.395) \\ 
+PC2 (Regulatory) & -1.274*** & -0.707* & 0.347 \\ 
+ & (0.372) & (0.302) & (0.542) \\ 
+<i>E. ferrisi</i> infection &  & -1.399 & 5.258*** \\ 
+ &  & (1.737) & (1.342) \\ 
+<i>E. falciformis</i> infection &  & 1.378 & 10.025*** \\ 
+ &  & (1.603) & (1.314) \\ 
+Infection intensity &  & 0.631*** &  \\ 
+ &  & (0.129) &  \\ 
+Initial body weight &  & 0.304* &  \\ 
+ &  & (0.132) &  \\ 
+PC1 × <i>E. ferrisi</i> &  &  & 0.157 \\ 
+ &  &  & (0.590) \\ 
+PC1 × <i>E. falciformis</i> &  &  & 1.194* \\ 
+ &  &  & (0.505) \\ 
+PC2 × <i>E. ferrisi</i> &  &  & -2.618*** \\ 
+ &  &  & (0.774) \\ 
+PC2 × <i>E. falciformis</i> &  &  & -1.185 \\ 
+ &  &  & (0.755) \\ 
+Num.Obs. & 136 & 128 & 136 \\ 
+R2 & 0.106 & 0.631 & 0.426 \\ 
+R2 Adj. & 0.093 & 0.554 & 0.390 \\ 
+\bottomrule
+\end{longtable}
+\begin{minipage}{\linewidth}
+PC1: inflammatory genes; PC2: regulatory genes\\
+* p < 0.05, ** p < 0.01, *** p < 0.001\\
+Reference: Uninfected controls\\
+Mouse strain effects omitted for clarity\\
+\end{minipage}
+
