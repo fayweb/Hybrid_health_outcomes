@@ -250,8 +250,7 @@ if (0) source(file.path("code/analysis/lab_infections/linear_models_pc_weightlos
 # Requires: Challenge dataset with complete immune gene data and weight loss outcomes
 # Creates: Trained random forest model, performance metrics, variable importance
 #----------------------------------------------------------*
-if (0) source(file.path("code/analysis/lab_infections/random_forest_training.R"))
-
+if (1) source(file.path("code/analysis/lab_infections/random_forest_training.R"))
 #----------------------------------------------------------*
 # 6.4.1: Random Forest Model Diagnostics
 # Generate diagnostic plots and performance validation for RF model
@@ -260,15 +259,77 @@ if (0) source(file.path("code/analysis/lab_infections/random_forest_training.R")
 # Creates: Diagnostic plots (residuals, Q-Q, CV performance), correlation matrix, model comparison table
 #----------------------------------------------------------*
 if (0) source(file.path("code/analysis/lab_infections/random_forest_diagnostics.R"))
-
 #----------------------------------------------------------*
-# 8.5: Random Forest Model Validation in Laboratory Data
+# 6.5 Random Forest Model Validation in Laboratory Data
 # Validate RF predictions against known infection parameters in lab data
 # Purpose: Test if RF predictions correlate with infection status, species, and intensity
 # Requires: Trained RF model, Challenge dataset
 # Creates: Validation plots, correlation statistics, species comparison
 #----------------------------------------------------------*
 if (0) source(file.path(clab_inf, "random_forest_validation.R"))
+
+
+# ***********************************************************
+# Part 7: Random Forest Application to Wild Mice ----
+# ***********************************************************
+# Purpose: Apply laboratory-trained RF model to wild mice and validate predictions
+# This corresponds to Results section "Random forest predictions in wild-caught mice"
+#----------------------------------------------------------*
+# 7.1: Apply Random Forest Model to Wild Mice
+# Apply lab-trained RF model to predict weight loss in wild mice
+# Purpose: Generate weight loss predictions for all wild mice based on immune gene expression
+# Requires: Trained RF model (from 6.4), hm dataset (wild mice with immune gene data)
+# Creates: hm dataset with predicted weight loss values, application summary stats
+#----------------------------------------------------------*
+if (1) source(file.path("code/analysis/wild_mice/random_forest_apply_field.R"))
+#----------------------------------------------------------*
+# 7.2: Validate Predictions with Infection Intensity
+# Test correlation between predicted weight loss and infection intensity measures
+# Purpose: Validate that RF predictions correlate with qPCR intensity and oocyst counts
+# Requires: hm dataset with RF predictions, infection intensity data (qPCR ΔCt, OPG)
+# Creates: Correlation plots, statistics for intensity validation
+# Corresponds to: "Predicted weight loss correlates with infection intensity in wild mice"
+#----------------------------------------------------------*
+if (1) source(file.path("code/analysis/wild_mice/validate_infection_intensity.R"))
+#----------------------------------------------------------*
+# 7.3: Validate Predictions with Infection Status
+# Test whether Eimeria-positive mice have higher predicted weight loss
+# Purpose: Confirm that RF model detects infection effects in wild mice
+# Requires: hm dataset with RF predictions, infection status classification
+# Creates: Linear models, effect size estimates, status comparison plots
+# Corresponds to: "Eimeria infection status predicts increased weight loss in wild mice"
+#----------------------------------------------------------*
+if (1) source(file.path("code/analysis/field_application/validate_infection_status.R"))
+
+#----------------------------------------------------------*
+# 7.4: Validate Species-Specific Effects
+# Test whether RF predictions preserve E. falciformis > E. ferrisi virulence hierarchy
+# Purpose: Confirm species-specific virulence patterns are maintained in field predictions
+# Requires: hm dataset with RF predictions, species identification data
+# Creates: Species comparison models, virulence hierarchy validation
+# Corresponds to: "Species-specific virulence patterns are preserved in field predictions"
+#----------------------------------------------------------*
+if (1) source(file.path("code/analysis/field_application/validate_species_effects.R"))
+
+#----------------------------------------------------------*
+# 7.5: Test Parasite Community Effects
+# Analyze whether other gastrointestinal parasites affect RF predictions
+# Purpose: Determine if RF predictions are Eimeria-specific or influenced by other parasites
+# Requires: hm dataset with RF predictions, complete parasite community data
+# Creates: Multi-parasite models, Eimeria-specificity analysis
+# Corresponds to: "Eimeria-specific effects in the context of parasite communities"
+#----------------------------------------------------------*
+if (1) source(file.path("code/analysis/field_application/validate_parasite_specificity.R"))
+
+#----------------------------------------------------------*
+# 7.6: Single Gene Validation - CXCL9 Cross-Population Test
+# Test whether CXCL9 alone can predict infection costs across populations
+# Purpose: Validate the most important RF predictor as a standalone biomarker
+# Requires: Challenge dataset (lab), hm dataset (field), CXCL9 expression data
+# Creates: Cross-population CXCL9 model, validation statistics, biomarker assessment
+# Corresponds to: "CXCL9 as a conserved predictor across populations"
+#----------------------------------------------------------*
+if (1) source(file.path("code/analysis/field_application/validate_cxcl9_biomarker.R"))
 
 
 

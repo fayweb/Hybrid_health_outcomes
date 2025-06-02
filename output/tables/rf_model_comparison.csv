@@ -1,0 +1,3 @@
+"Model","Dataset","n_samples","n_trees","Variance_Explained","MSE","RMSE","Test_Correlation","Purpose"
+"Test Set Model","Training subset (70%)",96,26,43.55,43.23,6.5749524713111,"0.79","Validation & performance assessment"
+"Final Model","Complete dataset",136,308,47.6,32.47,5.69824534396335,"Applied to wild mice","Wild mouse prediction"

@@ -1,0 +1,24 @@
+\setlength{\LTpost}{0mm}
+\begin{longtable}{llrrrlrl}
+\caption*{
+{\large Random Forest Field validation: model results\textsuperscript{\textit{1}}} \\ 
+{\small Linear model effects of Eimeria infection variables on predicted weight loss}
+} \\ 
+\toprule
+Model/Effect & Comparison & n & Effect Size\textsuperscript{\textit{2}} & SE & p-value & Model R² & F-test p \\ 
+\midrule\addlinespace[2.5pt]
+\multicolumn{8}{l}{Species-Specific Effects} \\ 
+\midrule\addlinespace[2.5pt]
+\cellcolor[HTML]{E8F5E8}{Species Model: \emph{E. ferrisi}} & \cellcolor[HTML]{E8F5E8}{vs Uninfected} & \cellcolor[HTML]{E8F5E8}{169} & \cellcolor[HTML]{E8F5E8}{+1.25\%} & \cellcolor[HTML]{E8F5E8}{0.428} & \cellcolor[HTML]{E8F5E8}{0.004} & \cellcolor[HTML]{E8F5E8}{0.082} & \cellcolor[HTML]{E8F5E8}{<0.001} \\ 
+\cellcolor[HTML]{E8F5E8}{Species Model: \emph{E. falciformis}} & \cellcolor[HTML]{E8F5E8}{vs Uninfected} & \cellcolor[HTML]{E8F5E8}{169} & \cellcolor[HTML]{E8F5E8}{+2.06\%} & \cellcolor[HTML]{E8F5E8}{0.686} & \cellcolor[HTML]{E8F5E8}{0.003} & \cellcolor[HTML]{E8F5E8}{0.082} & \cellcolor[HTML]{E8F5E8}{<0.001} \\ 
+\midrule\addlinespace[2.5pt]
+\multicolumn{8}{l}{Infection Detection} \\ 
+\midrule\addlinespace[2.5pt]
+\cellcolor[HTML]{E8F5E8}{Infection Status Effect} & \cellcolor[HTML]{E8F5E8}{Infected vs Uninfected} & \cellcolor[HTML]{E8F5E8}{305} & \cellcolor[HTML]{E8F5E8}{+1.15\%} & \cellcolor[HTML]{E8F5E8}{0.279} & \cellcolor[HTML]{E8F5E8}{<0.001} & \cellcolor[HTML]{E8F5E8}{0.053} & \cellcolor[HTML]{E8F5E8}{<0.001} \\ 
+\bottomrule
+\end{longtable}
+\begin{minipage}{\linewidth}
+\textsuperscript{\textit{1}}All models: predicted\_weight\_loss \textasciitilde{} infection\_variable. Positive values indicate infected mice have higher predicted weight loss\\
+\textsuperscript{\textit{2}}Effect size represents increase in predicted weight loss for infected mice compared to uninfected controls\\
+\end{minipage}
+
