@@ -15,6 +15,11 @@
 #      and statistical distribution testing.
 #   3. Prepare data paths: Dynamically define file paths for efficient
 #      and reproducible data handling.
+#   4. Data cleaning and preparation (lab and field)
+#   5. Merge, normalize, and impute data
+#   6. Laboratory infection analysis (PCA, linear models)
+#   7. Random forest model development and validation
+#   8. Wild mouse analysis and cross-population validation
 #
 # Author: Fay Webster
 # Date: Initiated October 13, 2023
@@ -39,7 +44,8 @@ pacman::p_load(mice, stringr, gridExtra, dplyr, tidyverse, tidyr, janitor,
                reshape2, sjPlot, stargazer, jtools, modelsummary, ggeffects, 
                pheatmap, ggpubr, ggridges, gt, caret, randomForest, rfUtilities,
                parasiteLoad, fitdistrplus, optimx, leaflet, magick, ggdist,
-               ggbeeswarm, ggtext, kableExtra, webshot, broom, flextable)
+               ggbeeswarm, ggtext, kableExtra, webshot, broom, flextable,
+               viridis)
 
 # ***********************************************************
 # Part 2: Define Project File Paths ----
@@ -231,15 +237,54 @@ if (0) source(file.path("code/analysis/lab_infections/pca_immune_genes.R"))
 # Corresponds to paragraph: "Principal component analysis reveals coordinated immune response patterns"
 
 # 6.3: Linear Models - Immune Signatures Predict Weight Loss
-if (0) source(file.path("canalysis, ""code/analysis/lab_infections/linear_models_pc_weightloss.R"))
+if (0) source(file.path("code/analysis/lab_infections/linear_models_pc_weightloss.R"))
 # PC1, PC2 as predictors of weight loss
 # Multiple nested models, interaction effects
 # Corresponds to paragraph: "Immune signatures predict weight loss in infected mice"
+#----------------------------------------------------------*
 
-# 6.4: Infection-Specific Interactions
-if (0) source(file.path(canalysis, "interaction_models_species.R"))
-# PC × infection group interactions, species-specific effects
-# Corresponds to paragraph: "Infection-specific interactions between immune responses and health outcomes"
+#----------------------------------------------------------*
+# 6.4: Random Forest Model Development
+# Train and validate random forest model on laboratory data
+# Purpose: Build predictive model for weight loss based on immune gene expression
+# Requires: Challenge dataset with complete immune gene data and weight loss outcomes
+# Creates: Trained random forest model, performance metrics, variable importance
+#----------------------------------------------------------*
+if (0) source(file.path("code/analysis/lab_infections/random_forest_training.R"))
+
+#----------------------------------------------------------*
+# 6.4.1: Random Forest Model Diagnostics
+# Generate diagnostic plots and performance validation for RF model
+# Purpose: Validate model assumptions and create supplementary figures
+# Requires: Trained RF model, test set predictions, cross-validation results
+# Creates: Diagnostic plots (residuals, Q-Q, CV performance), correlation matrix, model comparison table
+#----------------------------------------------------------*
+if (0) source(file.path("code/analysis/lab_infections/random_forest_diagnostics.R"))
+
+#----------------------------------------------------------*
+# 8.5: Random Forest Model Validation in Laboratory Data
+# Validate RF predictions against known infection parameters in lab data
+# Purpose: Test if RF predictions correlate with infection status, species, and intensity
+# Requires: Trained RF model, Challenge dataset
+# Creates: Validation plots, correlation statistics, species comparison
+#----------------------------------------------------------*
+if (0) source(file.path(clab_inf, "random_forest_validation.R"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

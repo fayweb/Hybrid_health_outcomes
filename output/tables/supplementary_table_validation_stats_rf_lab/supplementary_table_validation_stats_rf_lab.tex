@@ -1,0 +1,22 @@
+\setlength{\LTpost}{0mm}
+\begin{longtable}{lrrr}
+\caption*{
+{\large } \\ 
+{\small Random Forest laboratory validation statistics}
+} \\ 
+\toprule
+ & \multicolumn{2}{c}{Statistical Results} &  \\ 
+\cmidrule(lr){2-3}
+Validation Analysis & Estimate/Correlation & P-value & Sample Size \\ 
+\midrule\addlinespace[2.5pt]
+Test Set Correlation & $0.787$ & \cellcolor[HTML]{D3D3D3}{$0.00$} & 40 \\ 
+E. ferrisi Effect & $3.514$ & \cellcolor[HTML]{D3D3D3}{$2.58 \times 10^{-2}$} & 40 \\ 
+E. falciformis Effect & $6.366$ & \cellcolor[HTML]{D3D3D3}{$5.00 \times 10^{-4}$} & 40 \\ 
+Infection Intensity & $0.544$ & \cellcolor[HTML]{D3D3D3}{$3.00 \times 10^{-4}$} & 28 \\ 
+Overall Model R² & $0.283$ & NA & 40 \\ 
+\bottomrule
+\end{longtable}
+\begin{minipage}{\linewidth}
+Test set validation results for random forest model predictions against infection parameters\\
+\end{minipage}
+
