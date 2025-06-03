@@ -288,8 +288,6 @@ if (1) source(file.path("code/analysis/wild_mice/random_forest_apply_field.R"))
 # - Infection status
 #----------------------------------------------------------*
 if (0) source(file.path("code/analysis/wild_mice/validate_infection_intensity.R"))
-
-
 #----------------------------------------------------------*
 # 7.5: Test Parasite Community Effects
 # Analyze whether other gastrointestinal parasites affect RF predictions
@@ -310,6 +308,10 @@ if (1) source(file.path("code/analysis/field_application/validate_parasite_speci
 #----------------------------------------------------------*
 if (1) source(file.path("code/analysis/field_application/validate_cxcl9_biomarker.R"))
 
+
+#############
+#######                 CAN PROBABLY REMOVE THE NEXT SCRIPTS
+###                    Keeping them here until we are close to submission.. 
 
 
 
@@ -412,7 +414,7 @@ if (1) source(file.path("code/analysis/field_application/validate_cxcl9_biomarke
  
  
  
- 
+
  
  
  # ***********************************************************
