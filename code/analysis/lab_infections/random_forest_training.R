@@ -129,7 +129,11 @@ variable_importance <- varImpPlot(WL_predict_gene)
 
 ggsave(filename = paste0(an_fi, "/variable_imporance_random.pdf"),
        #width = 6, height = 5, 
-       dpi = 1000)
+       dpi = 300)
+
+ggsave(filename = paste0(an_fi, "/variable_imporance_random.jpeg"),
+       #width = 6, height = 5, 
+       dpi = 300)
 
 
 # Get variable importance from the WL_predict_gene fit
@@ -401,6 +405,52 @@ cor_heatmap <- ggplot(cor_data, aes(x = Gene1, y = Gene2, fill = Correlation)) +
 
 ggsave(filename = paste0(an_fi, "/top_predictors_correlation_ggplot.jpeg"),
        plot = cor_heatmap, width = 8, height = 6, dpi = 300)
+
+
+### prdiction by group
+### plotting
+test_lab %>%
+    ggplot(aes(x = predictions, y = WL_max, color = current_infection)) +
+    geom_point(aes(size = 5),#delta_ct_cewe_MminusE), 
+               alpha = 0.7) +
+    labs(
+        x = "Predictions: Maximum weight loss", 
+        y = "Observed: Maximum weight loss",
+        #  title = "Relationship between Predicted and Observed Weight Loss",
+        #subtitle = "Grouped by Current Infection and Sized by Delta CT Value",
+        color = "Parasite strain",
+        # size = "Caecal infection intensities, Delta Ct value",
+        #shape = "Delta Ct treshold"
+    ) +
+    theme_minimal() +
+    theme(
+        legend.position = "right",
+        legend.title = element_text(face = "bold"),
+        axis.title = element_text(size = 14, face = "bold"),
+        axis.text = element_text(size = 12),
+        plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 14, hjust = 0.5),
+        panel.grid.major = element_line(color = "gray90"),
+        panel.grid.minor = element_blank()
+    ) +
+    scale_color_manual(values = color_mapping, labels = labels) +
+    scale_size_continuous(range = c(2, 10)) +
+    guides(size = "none") +
+    theme(legend.position = c(0.8, 0.2),
+          legend.text = element_markdown())-> predictions_random_for_lab
+
+predictions_random_for_lab
+
+
+ggsave(plot = predictions_random_for_lab, 
+       filename = paste0(an_fi, "/predictions_random_for_lab.pdf"), 
+       width = 6, height = 5,
+       dpi = 300)
+
+ggsave(plot = predictions_random_for_lab, 
+       filename = paste0(an_fi, "/predictions_random_for_lab.jpeg"), 
+       width = 6, height = 5,
+       dpi = 300)
 # ***********************************************************
 # Part 4: Summary Statistics
 # ***********************************************************

@@ -283,33 +283,12 @@ if (0) source(file.path(clab_inf, "random_forest_validation.R"))
 #----------------------------------------------------------*
 if (1) source(file.path("code/analysis/wild_mice/random_forest_apply_field.R"))
 #----------------------------------------------------------*
-# 7.2: Validate Predictions with Infection Intensity
-# Test correlation between predicted weight loss and infection intensity measures
-# Purpose: Validate that RF predictions correlate with qPCR intensity and oocyst counts
-# Requires: hm dataset with RF predictions, infection intensity data (qPCR ΔCt, OPG)
-# Creates: Correlation plots, statistics for intensity validation
-# Corresponds to: "Predicted weight loss correlates with infection intensity in wild mice"
+# 7.2: Validate Predictions with 
+# - Infection Intensity
+# - Infection status
 #----------------------------------------------------------*
-if (1) source(file.path("code/analysis/wild_mice/validate_infection_intensity.R"))
-#----------------------------------------------------------*
-# 7.3: Validate Predictions with Infection Status
-# Test whether Eimeria-positive mice have higher predicted weight loss
-# Purpose: Confirm that RF model detects infection effects in wild mice
-# Requires: hm dataset with RF predictions, infection status classification
-# Creates: Linear models, effect size estimates, status comparison plots
-# Corresponds to: "Eimeria infection status predicts increased weight loss in wild mice"
-#----------------------------------------------------------*
-if (1) source(file.path("code/analysis/field_application/validate_infection_status.R"))
+if (0) source(file.path("code/analysis/wild_mice/validate_infection_intensity.R"))
 
-#----------------------------------------------------------*
-# 7.4: Validate Species-Specific Effects
-# Test whether RF predictions preserve E. falciformis > E. ferrisi virulence hierarchy
-# Purpose: Confirm species-specific virulence patterns are maintained in field predictions
-# Requires: hm dataset with RF predictions, species identification data
-# Creates: Species comparison models, virulence hierarchy validation
-# Corresponds to: "Species-specific virulence patterns are preserved in field predictions"
-#----------------------------------------------------------*
-if (1) source(file.path("code/analysis/field_application/validate_species_effects.R"))
 
 #----------------------------------------------------------*
 # 7.5: Test Parasite Community Effects
