@@ -320,3 +320,4 @@ cat("🎨 Panels:", file.path(panels_fi), "\n")
 
 # Clean up intermediate objects (optional)
 # rm(qq_plot, residuals_plot, pc_only_stats, complete_stats, interaction_stats)
+
