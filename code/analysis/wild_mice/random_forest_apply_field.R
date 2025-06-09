@@ -99,3 +99,16 @@ cat("\n", strrep("=", 60), "\n")
 cat("STARTING FIELD VALIDATION ANALYSES\n")
 cat(strrep("=", 60), "\n")
 
+# Check if the data is still there
+head(hm$predicted_weight_loss, 10)
+summary(hm$predicted_weight_loss)
+head(Field$predicted_weight_loss, 10)
+
+# Save the datasets with predictions
+write.csv(hm, "data/analysis/final/hm_with_predictions.csv", row.names = FALSE)
+write.csv(Field, "data/analysis/final/field_with_predictions.csv", row.names = FALSE)
+
+# Confirm the save
+cat("✓ Saved hm dataset with predictions:", nrow(hm), "rows\n")
+cat("✓ Saved field dataset with predictions:", nrow(Field), "rows\n")
+

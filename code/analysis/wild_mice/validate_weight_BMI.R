@@ -167,6 +167,19 @@ ggsave(filename = paste0(an_fi, "/body_weight_vs_predicted_WL.jpeg"),
 ggsave(filename = paste0(an_fi, "/predicted_WL_vs_body_weight.jpeg"),
        plot = reverse_weight_plot, width = 6, height = 4, dpi = 300)
 
+# Save all plots
+ggsave(filename = paste0(an_fi, "/BMI_vs_predicted_WL.pdf"),
+       plot = bmi_plot, width = 6, height = 4, dpi = 300)
+
+ggsave(filename = paste0(an_fi, "/BMI_predictions.pdf"),
+       plot = bmi_pred_plot, width = 6, height = 4, dpi = 300)
+
+ggsave(filename = paste0(an_fi, "/body_weight_vs_predicted_WL.pdf"),
+       plot = weight_plot, width = 6, height = 4, dpi = 300)
+
+ggsave(filename = paste0(an_fi, "/predicted_WL_vs_body_weight.pdf"),
+       plot = reverse_weight_plot, width = 6, height = 4, dpi = 300)
+
 # =============================================================================
 # 7. MODEL DIAGNOSTICS (OPTIONAL)
 # =============================================================================
@@ -186,3 +199,6 @@ plot(reverse_weight_model, main = "Reverse Weight Model Diagnostics")
 par(mfrow = c(1, 1))  # Reset plotting parameters
 
 cat("Analysis complete. Check plots and model summaries for validation results.\n")
+
+ggsave(filename = paste0(an_fi, "/enhanced_weight_validation_v2.jpeg"),
+       plot = enhanced_weight_plot_v2, width = 8, height = 6, dpi = 300)
