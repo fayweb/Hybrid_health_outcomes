@@ -118,3 +118,4 @@ hm <- hm_imp
 
 rm(complete_genes, gmf, gf, gl, gml, hm_imp, init, igf, result, 
    genes_matrix, genes, field, lab)
+
