@@ -393,6 +393,8 @@ mean(s$dpi)
 
 model <- lm(WL_max ~ mouse_strain, data = lab)
 summary(model)
+# Get confidence intervals for PWD PWD
+confint(model)["mouse_strainPWD PWD", ]
 
 # create a new combined variable 
 Challenge_p <- Challenge %>%
