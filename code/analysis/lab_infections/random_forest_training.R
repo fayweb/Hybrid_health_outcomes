@@ -139,6 +139,80 @@ ggsave(filename = paste0(an_fi, "/variable_imporance_random.jpeg"),
 # Get variable importance from the WL_predict_gene fit
 ImpData <- as.data.frame(randomForest::importance(WL_predict_gene))
 
+
+
+# ***********************************************************
+# PARTIAL DEPENDENCE PLOTS - INSERT AFTER VARIABLE IMPORTANCE SAVING
+# ***********************************************************
+
+# Install and load pdp package if needed
+if (!require(pdp)) {
+    install.packages("pdp")
+    library(pdp)
+}
+
+cat("Creating partial dependence plots for top 3 predictors...\n")
+
+# Get top 3 predictors based on importance
+top_3_genes <- var_imp %>% 
+    arrange(desc(Importance)) %>%
+    head(3) %>% 
+    pull(Genes)
+
+cat("Top 3 predictors:", paste(top_3_genes, collapse = ", "), "\n")
+
+# Generate partial dependence plots
+pdp_plots <- list()
+for(gene in top_3_genes) {
+    cat("Processing", gene, "...\n")
+    
+    # Calculate partial dependence
+    pd_data <- partial(WL_predict_gene, pred.var = gene, train = train.data)
+    
+    # Create individual plot
+    pdp_plots[[gene]] <- pd_data %>%
+        autoplot() + 
+        labs(title = gene,  # Shorter title for better fit
+             x = paste(gene, "Expression"), 
+             y = "Predicted Weight Loss (%)") +
+        theme_minimal() +
+        theme(plot.title = element_text(size = 12, hjust = 0.5, face = "bold"),
+              axis.title = element_text(size = 10),
+              axis.text = element_text(size = 9))
+}
+
+# Combine partial dependence plots
+pdp_combined <- wrap_plots(pdp_plots, ncol = 3)
+
+# Add overall title
+pdp_final <- pdp_combined + 
+    plot_annotation(
+        title = "",
+        theme = theme(plot.title = element_text(size = 14, hjust = 0.5, face = "bold"))
+    )
+
+# Save partial dependence plots
+ggsave(filename = paste0(an_fi, "/partial_dependence_plots.pdf"), 
+       plot = pdp_final, width = 15, height = 5, dpi = 300)
+
+ggsave(filename = paste0(an_fi, "/partial_dependence_plots.jpeg"), 
+       plot = pdp_final, width = 15, height = 5, dpi = 300)
+
+cat("✅ Partial dependence plots saved!\n")
+
+# Create individual PDP plots for supplementary material
+for(i in 1:length(top_3_genes)) {
+    gene <- top_3_genes[i]
+    ggsave(filename = paste0(an_fi, "/pdp_individual_", gene, ".pdf"), 
+           plot = pdp_plots[[gene]], width = 5, height = 4, dpi = 300)
+}
+
+cat("✅ Individual PDP plots saved for supplementary material!\n")
+cat("=====================================\n")
+
+
+
+
 #The predict() function in R is used to predict the values based on the 
 # input data.
 predictions <- predict(WL_predict_gene, test.data)
