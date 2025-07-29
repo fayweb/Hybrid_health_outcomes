@@ -8,6 +8,11 @@
 # Requires: hm
 # Creates random forest model: WL_predict_gene.RData
 #----------------------------------------------------------*
+# Vectors for selecting genes for analysis
+Genes_v <- c("IFNy", "CXCR3", "IL.6", "IL.13", 
+             "IL1RN", "CASP1", "CXCL9", "IDO1", "IRGM1", "MPO", 
+             "MUC2", "MUC5AC", "MYD88", "NCR1", "PRF1", "RETNLB", "SOCS1", 
+             "TICAM1", "TNF")
 
 lab <- hm %>%
     filter(origin == "Lab")

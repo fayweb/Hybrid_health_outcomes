@@ -229,9 +229,8 @@ if (0) source(file.path("code/analysis/lab_infections/gene_responses_individual.
 # Regression analysis for each gene vs infection status
 # Outputs: Table 1, effect sizes, significance levels
 # Corresponds to paragraph: "Species-specific immune gene responses to Eimeria infection"
-# 6.1.1 
-PCA_translation_lab_field
-
+# 6.1.1 Translation to field
+if (0) source(file.path("code/analysis/lab_infections/PCA_translation_lab_field.R"))
 # 6.2: Principal Component Analysis  
 if (0) source(file.path("code/analysis/lab_infections/pca_immune_genes.R"))
 # PCA on immune gene expression, variance explained, gene loadings
