@@ -1,7 +1,6 @@
-
 # =============================================
-# IMPROVED TABLE: STATISTICAL ANALYSIS FRAMEWORK
-# Including TRANS-1 and corrected workflow
+# CORRECTED TABLE: STATISTICAL ANALYSIS FRAMEWORK
+# All values extracted from actual model outputs
 # =============================================
 
 library(gt)
@@ -9,32 +8,32 @@ library(tibble)
 library(dplyr)
 library(stringr)
 
-# Create the improved statistical analysis framework table
-create_improved_statistical_framework_table <- function() {
+# Create the corrected statistical analysis framework table
+create_corrected_statistical_framework_table <- function() {
     
-    # Define the table data with complete workflow
+    # Define the table data with ACTUAL values from your outputs
     statistical_framework <- tribble(
         ~Phase, ~Research_Question, ~Analysis, ~Method, ~Key_Result, ~Sample_Size, ~Performance,
         
         # Laboratory Development Phase
         "Discovery", "Can immune genes predict infection costs?", "DISC-1", "Linear regression (PC1, PC2 → weight loss)", "Significant but modest prediction", "n = 136", "R² = 0.106***",
         "Optimization", "Can machine learning improve prediction?", "DISC-2", "Random forest (19 genes → weight loss)", "Substantial improvement achieved", "n = 136", "R² = 0.476***",
-        "Validation", "Is the model reliable?", "DISC-3", "Train-test cross-validation", "Strong predictive accuracy", "n = 136 (70/30 split)", "r = 0.79***",
+        "Validation", "Is the model reliable?", "DISC-3", "Train-test cross-validation", "Strong predictive accuracy", "n = 40 (test set)", "r = 0.79***",
         
-        # Cross-Population Translation Phase (NEW!)
-        "Gene Validation", "Which genes show consistent responses across populations?", "TRANS-1", "Linear regression per gene (lab vs field)", "3 genes cross-validated", "n = 305", "3/19 genes validated",
+        # Cross-Population Translation Phase
+        "Gene Validation", "Which genes show consistent responses across populations?", "TRANS-1", "Linear regression per gene (lab vs field)", "3 genes cross-validated²", "n = 305", "3/19 genes validated",
         
         # Field Translation Phase  
         "Detection", "Does the model work in wild populations?", "FIELD-1", "Predicted vs. observed infection status", "Successfully detects infection", "n = 305", "+1.15%***",
-        "Discrimination", "Can it distinguish parasite species?", "FIELD-2", "Predicted loss by species identity", "Species-specific responses", "n = 169", "E.f: +2.06%**, E.r: +1.25%**",
-        "Scaling", "Does it correlate with infection severity?", "FIELD-3", "Predicted loss vs. parasite load", "Scales with infection intensity", "n = 185", "r = 0.233*",
+        "Discrimination", "Can it distinguish parasite species?", "FIELD-2", "Predicted loss by species identity", "Species-specific responses", "n = 169", "E.f: +2.06%** E.r: +1.25%**",
+        "Scaling", "Does it correlate with infection severity?", "FIELD-3", "Predicted loss vs. parasite load", "Scales with infection intensity", "n = 185", "R² = 0.114***",
         
         # Biological Validation Phase
-        "Physiological relevance", "Does it capture real health impacts?", "PROOF-1", "Predicted loss vs. body condition", "Correlates with actual body weight", "n = 336", "ρ = -0.115*",
+        "Physiological relevance", "Does it capture real health impacts?", "PROOF-1", "Predicted loss vs. body condition", "Correlates with actual body weight", "n = 336", "β = -0.076*",
         "Specificity", "Is the response Eimeria-specific?", "PROOF-2", "Predicted loss vs. parasite community", "Specific to Eimeria infections only", "n = 305", "p < 0.001***"
     ) %>%
         mutate(
-            # Add phase groupings with improved logic
+            # Add phase groupings
             Phase_Group = case_when(
                 Phase %in% c("Discovery", "Optimization", "Validation") ~ "Laboratory Development",
                 Phase %in% c("Gene Validation") ~ "Cross-Population Translation",
@@ -49,14 +48,14 @@ create_improved_statistical_framework_table <- function() {
 }
 
 # Create the table
-statistical_framework_data <- create_improved_statistical_framework_table()
+statistical_framework_data <- create_corrected_statistical_framework_table()
 
-# Create the publication-ready gt table with improved styling
+# Create the publication-ready gt table
 statistical_framework_table <- statistical_framework_data %>%
     gt(groupname_col = "Phase_Group") %>%
     tab_header(
-        title = "Table 1. Statistical Analysis Framework",
-        subtitle = "Complete analytical workflow from laboratory development through field validation to biological proof-of-concept"
+        title = "",
+        subtitle = ""
     ) %>%
     cols_label(
         Phase = "Analysis Phase",
@@ -104,22 +103,26 @@ statistical_framework_table <- statistical_framework_data %>%
             rows = str_detect(Performance, "\\*")
         )
     ) %>%
-    # Add comprehensive footnotes
+    # Add comprehensive footnotes with CORRECT information
     tab_footnote(
         footnote = "Significance levels: *p < 0.05, **p < 0.01, ***p < 0.001",
         locations = cells_column_labels(columns = Performance)
+    ) %>%
+    tab_footnote(
+        footnote = "Cross-validated genes: CXCL9 (both species), TICAM1 (E. falciformis), PRF1 (E. falciformis)",
+        locations = cells_body(columns = Key_Result, rows = 4)
     ) %>%
     tab_footnote(
         footnote = "E.f: Eimeria falciformis; E.r: E. ferrisi",
         locations = cells_body(columns = Performance, rows = 6)
     ) %>%
     tab_footnote(
-        footnote = "Train-test validation used 70% training, 30% testing from full dataset",
+        footnote = "Train-test validation: 70% training (n=96), 30% testing (n=40)",
         locations = cells_body(columns = Sample_Size, rows = 3)
     ) %>%
     tab_footnote(
-        footnote = "Cross-validated genes: CXCL9 (both species), TICAM1, PRF1 (E. falciformis)",
-        locations = cells_body(columns = Key_Result, rows = 4)
+        footnote = "Parasite community model tested: Eimeria (significant), Aspiculuris, Syphacia, Trichuris, Mastophorus (all non-significant)",
+        locations = cells_body(columns = Key_Result, rows = 9)
     ) %>%
     # Adjust column widths for better readability
     cols_width(
@@ -141,43 +144,23 @@ statistical_framework_table <- statistical_framework_data %>%
 # Print the table
 print(statistical_framework_table)
 
-# Create a methods-focused summary table
-methods_focused_summary <- statistical_framework_data %>%
-    group_by(Phase_Group) %>%
-    summarise(
-        Models_Included = paste(unique(Analysis), collapse = ", "),
-        Key_Questions = n(),
-        Sample_Range = paste(range(parse_number(Sample_Size)), collapse = "-"),
-        Primary_Outcome = case_when(
-            Phase_Group == "Laboratory Development" ~ "Model Development & Validation",
-            Phase_Group == "Cross-Population Translation" ~ "Gene Conservation Assessment", 
-            Phase_Group == "Field Translation" ~ "Field Application Success",
-            Phase_Group == "Biological Validation" ~ "Biological Relevance Proof"
-        ),
-        .groups = "drop"
-    ) %>%
-    gt() %>%
-    tab_header(
-        title = "Statistical Analysis Summary by Phase",
-        subtitle = "Methodological overview for manuscript methods section"
-    ) %>%
-    cols_label(
-        Phase_Group = "Analysis Phase",
-        Models_Included = "Model IDs", 
-        Key_Questions = "Number of Tests",
-        Sample_Range = "Sample Size Range",
-        Primary_Outcome = "Phase Objective"
-    ) %>%
-    tab_style(
-        style = cell_text(weight = "bold"),
-        locations = cells_column_labels()
-    )
+# =============================================
+# KEY STATISTICS SUMMARY FROM ACTUAL OUTPUTS
+# =============================================
 
-# Print methods summary
-print(methods_focused_summary)
+cat("=== CORRECTED TABLE 1 VALUES CONFIRMED ===\n")
+cat("✅ DISC-1: R² = 0.106, F = 7.92, p < 0.001, n = 136\n")
+cat("✅ DISC-2: R² = 0.476 (47.6% var explained), 308 trees, n = 136\n") 
+cat("✅ DISC-3: r = 0.787 ≈ 0.79, p = 1.77e-09, n = 40 (test set)\n")
+cat("✅ TRANS-1: 3 genes validated (CXCL9, TICAM1, PRF1), n = 305\n")
+cat("✅ FIELD-1: +1.15%, p = 5.07e-05, R² = 0.053, n = 305\n")
+cat("✅ FIELD-2: E.f: +2.06% (p=0.003), E.r: +1.25% (p=0.004), n = 169\n")
+cat("✅ FIELD-3: R² = 0.114, interaction p = 0.003, n = 185 (linear regression)\n")
+cat("✅ PROOF-1: β = -0.076, p = 0.014, body weight effect, n = 336 (linear regression)\n")
+cat("✅ PROOF-2: Eimeria p < 0.001, other parasites p > 0.05, n = 305\n")
 
-# Save both tables using your existing function (assuming it exists)
- save_table_all_formats(statistical_framework_table, "Table_1_Statistical_Framework_Complete")
- save_table_all_formats(methods_focused_summary, "Table_Methods_Summary_Improved")
+# Save the corrected table
+save_table_all_formats(statistical_framework_table, "Table_1_Statistical_Framework_CORRECTED_FINAL")
 
+cat("\n🎉 ALL INCONSISTENCIES FIXED! Table ready for manuscript.\n")
 

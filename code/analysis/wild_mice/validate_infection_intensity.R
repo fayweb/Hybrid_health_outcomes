@@ -705,3 +705,113 @@ cat("  OPG correlation: r = ", round(cor_opg$estimate, 3), ", p = ", format(cor_
 
 cat(strrep("=", 60), "\n")
 
+
+# EXTRACT CONFIDENCE INTERVALS FROM YOUR EXISTING MODELS
+# Add this code after your existing script runs
+
+cat("EXTRACTING 95% CONFIDENCE INTERVALS FOR MANUSCRIPT\n")
+cat(strrep("=", 50), "\n")
+
+# Function to calculate 95% CI from estimate and SE
+calculate_ci <- function(estimate, se, df = Inf) {
+    t_value <- qt(0.975, df)  # 97.5th percentile for 95% CI
+    margin <- t_value * se
+    return(c(lower = estimate - margin, upper = estimate + margin))
+}
+
+# ---- INFECTION STATUS MODEL CIs ----
+cat("1. INFECTION STATUS MODEL:\n")
+
+# Get model degrees of freedom
+status_df <- status_model$df.residual
+
+# Calculate CI for infection effect
+status_ci <- calculate_ci(status_effect, status_se, status_df)
+cat("   Eimeria-positive vs uninfected:\n")
+cat("   estimate = +", round(status_effect, 2), "%, ", 
+    "95% CI: [", round(status_ci[1], 2), "%, ", round(status_ci[2], 2), "%], ",
+    "p ", ifelse(status_p < 0.001, "< 0.001", paste("=", round(status_p, 3))), "\n")
+
+# ---- SPECIES MODEL CIs ----
+cat("\n2. SPECIES-SPECIFIC MODEL:\n")
+
+# Get model degrees of freedom
+species_df <- species_model$df.residual
+
+# Calculate CIs for both species
+ferrisi_ci <- calculate_ci(ferrisi_effect, ferrisi_se, species_df)
+falciformis_ci <- calculate_ci(falciformis_effect, falciformis_se, species_df)
+
+cat("   E. ferrisi vs uninfected:\n")
+cat("   estimate = +", round(ferrisi_effect, 2), "%, ", 
+    "95% CI: [", round(ferrisi_ci[1], 2), "%, ", round(ferrisi_ci[2], 2), "%], ",
+    "p ", ifelse(ferrisi_p < 0.001, "< 0.001", paste("=", round(ferrisi_p, 3))), "\n")
+
+cat("   E. falciformis vs uninfected:\n")
+cat("   estimate = +", round(falciformis_effect, 2), "%, ", 
+    "95% CI: [", round(falciformis_ci[1], 2), "%, ", round(falciformis_ci[2], 2), "%], ",
+    "p ", ifelse(falciformis_p < 0.001, "< 0.001", paste("=", round(falciformis_p, 3))), "\n")
+
+# ---- INTERACTION MODEL CIs ----
+cat("\n3. INTERACTION MODEL:\n")
+
+# Get model degrees of freedom
+interaction_df <- interaction_model$df.residual
+
+# Calculate CIs for main effect and interaction
+main_ci <- calculate_ci(infection_main_effect, infection_main_se, interaction_df)
+interaction_ci <- calculate_ci(interaction_effect, interaction_se, interaction_df)
+
+cat("   Main effect (infection status):\n")
+cat("   estimate = +", round(infection_main_effect, 2), "%, ", 
+    "95% CI: [", round(main_ci[1], 2), "%, ", round(main_ci[2], 2), "%], ",
+    "p ", ifelse(infection_main_p < 0.001, "< 0.001", paste("=", round(infection_main_p, 3))), "\n")
+
+cat("   Interaction term:\n")
+cat("   estimate = ", round(interaction_effect, 3), ", ", 
+    "95% CI: [", round(interaction_ci[1], 3), ", ", round(interaction_ci[2], 3), "], ",
+    "p ", ifelse(interaction_p < 0.001, "< 0.001", paste("=", round(interaction_p, 3))), "\n")
+
+# ---- ALTERNATIVE: Use confint() for exact CIs ----
+cat("\n4. EXACT CONFIDENCE INTERVALS (using confint()):\n")
+
+# Status model CIs
+status_confint <- confint(status_model)
+cat("   Status model 95% CIs:\n")
+print(status_confint)
+
+# Species model CIs  
+species_confint <- confint(species_model)
+cat("\n   Species model 95% CIs:\n")
+print(species_confint)
+
+# Interaction model CIs
+interaction_confint <- confint(interaction_model)
+cat("\n   Interaction model 95% CIs:\n")
+print(interaction_confint)
+
+# ---- FORMAT FOR MANUSCRIPT ----
+cat("\n", strrep("=", 50), "\n")
+cat("FORMATTED FOR MANUSCRIPT:\n")
+cat(strrep("=", 50), "\n")
+
+cat("Results section text with CIs:\n\n")
+
+cat("Linear regression analysis showed that Eimeria-positive mice had significantly higher\n")
+cat("predicted weight loss compared to uninfected mice (estimate = +", round(status_effect, 2), "%, ")
+cat("95% CI: [", round(status_confint[2,1], 2), "%, ", round(status_confint[2,2], 2), "%], ")
+cat("p ", ifelse(status_p < 0.001, "< 0.001", paste("=", round(status_p, 3))), ", ")
+cat("adjusted R² = ", round(status_summary$adj.r.squared, 3), ", n = ", nrow(Field_status), ").\n\n")
+
+cat("When comparing specific Eimeria species, E. falciformis infections produced the highest\n")
+cat("predicted weight loss (estimate = +", round(falciformis_effect, 2), "%, ")
+cat("95% CI: [", round(species_confint[3,1], 2), "%, ", round(species_confint[3,2], 2), "%], ")
+cat("p ", ifelse(falciformis_p < 0.001, "< 0.001", paste("=", round(falciformis_p, 3))), "), ")
+cat("followed by E. ferrisi (estimate = +", round(ferrisi_effect, 2), "%, ")
+cat("95% CI: [", round(species_confint[2,1], 2), "%, ", round(species_confint[2,2], 2), "%], ")
+cat("p ", ifelse(ferrisi_p < 0.001, "< 0.001", paste("=", round(ferrisi_p, 3))), "), ")
+cat("both significantly greater than uninfected mice (model R² = ", round(species_summary$r.squared, 3), ", ")
+cat("p < 0.001, n = ", nrow(Field_species), ").\n")
+
+cat("\n✅ All confidence intervals calculated and formatted!\n")
+
