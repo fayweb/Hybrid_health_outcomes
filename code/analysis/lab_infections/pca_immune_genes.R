@@ -220,3 +220,32 @@ biplot
 ggsave(filename = paste0(an_fi, "/biplot.jpeg"), plot = biplot, 
        width = 12, height = 6, dpi = 600)
 
+
+###############################################
+##################
+############### biplot
+# PCA colored by strain
+pca_by_strain <- ggplot(lab, aes(x = PC1, y = PC2)) +
+    geom_point(size = 3, aes(color = mouse_strain)) +  
+    geom_hline(yintercept = 0, linetype = "dashed") + 
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    labs(x = "PC1 (34.37%)", y = "PC2 (16.03%)", color = "Host Strain") +
+    theme_minimal()
+
+# Faceted plot to see both
+pca_faceted <- ggplot(lab, aes(x = PC1, y = PC2)) +
+    geom_point(size = 3, aes(color = current_infection)) +
+    facet_wrap(~mouse_strain) +  # separate panel for each strain
+    theme_minimal()
+
+pca_faceted
+
+library(vegan)
+
+# Create distance matrix from PC scores
+pc_dist <- dist(pc_scores, method = "euclidean")
+
+# Run PERMANOVA on distance matrix
+adonis_results <- adonis2(pc_dist ~ current_infection + mouse_strain, 
+                          data = lab, permutations = 999)
+print(adonis_results)

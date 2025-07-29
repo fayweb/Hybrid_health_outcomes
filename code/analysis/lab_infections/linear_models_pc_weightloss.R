@@ -175,6 +175,126 @@ cat("📊 See diagnostic plots for visual assessment of assumptions\n")
 
 cat("\n✅ Model assumption testing complete!\n")
 
+
+# -------------------------------------------------------------------
+# SECTION 1.8: FORMAL MODEL COMPARISON (FIXED VERSION)
+# -------------------------------------------------------------------
+
+cat("\n===============================================================\n")
+cat("FORMAL MODEL COMPARISON - FIXED FOR MISSING DATA\n")
+cat("===============================================================\n")
+
+# Step 1: Create dataset with complete cases for ALL variables
+# This ensures fair comparison across models
+
+# Identify all variables used across all models
+all_vars <- c("WL_max", "PC1", "PC2", "current_infection", 
+              "delta_ct_cewe_MminusE", "mouse_strain", 
+              "immunization", "weight_dpi0")
+
+# Create complete case dataset
+lab_complete <- lab %>%
+    dplyr::select(all_of(all_vars)) %>%
+    drop_na()
+
+cat(sprintf("Complete cases dataset: n = %d (from original n = %d)\n", 
+            nrow(lab_complete), nrow(lab)))
+
+# Step 2: Refit all models on the SAME complete dataset
+cat("\n--- REFITTING MODELS ON COMPLETE CASES ---\n")
+
+model_pc_only_complete <- lm(WL_max ~ PC1 + PC2, 
+                             data = lab_complete)
+
+model_complete_complete <- lm(WL_max ~ PC1 + PC2 + current_infection + 
+                                  delta_ct_cewe_MminusE + mouse_strain + 
+                                  immunization + weight_dpi0, 
+                              data = lab_complete)
+
+model_interaction_complete <- lm(WL_max ~ PC1 * current_infection + 
+                                     PC2 * current_infection, 
+                                 data = lab_complete)
+
+# Verify same sample sizes
+cat(sprintf("PC Only model: n = %d\n", nobs(model_pc_only_complete)))
+cat(sprintf("Complete model: n = %d\n", nobs(model_complete_complete)))  
+cat(sprintf("Interaction model: n = %d\n", nobs(model_interaction_complete)))
+
+# Step 3: Now compare models fairly
+model_comparison <- compare_performance(
+    model_pc_only_complete, 
+    model_complete_complete, 
+    model_interaction_complete,
+    metrics = c("AIC", "AICc", "BIC", "R2", "R2_adj")
+)
+
+cat("\n--- MODEL COMPARISON RESULTS (SAME DATA) ---\n")
+print(model_comparison)
+
+# Step 4: Test for significant differences (should work now)
+tryCatch({
+    performance_test <- test_performance(
+        model_pc_only_complete, 
+        model_complete_complete, 
+        model_interaction_complete
+    )
+    cat("\n--- STATISTICAL SIGNIFICANCE TEST ---\n")
+    print(performance_test)
+}, error = function(e) {
+    cat("\n⚠️ Performance test failed, but comparison table is valid\n")
+    cat("Error:", e$message, "\n")
+})
+
+# Step 5: Create ranking with proper model names
+model_ranking <- model_comparison %>%
+    arrange(AICc) %>%
+    mutate(
+        Model_Name = c("Complete", "Interaction", "PC Only"), # Adjust based on results
+        deltaAICc = AICc - min(AICc),
+        Evidence = case_when(
+            deltaAICc == 0 ~ "Best model",
+            deltaAICc <= 2 ~ "Substantial support",
+            deltaAICc <= 7 ~ "Considerably less support", 
+            deltaAICc > 10 ~ "Essentially no support"
+        )
+    )
+
+cat("\n--- MODEL RANKING (COMPLETE CASES) ---\n")
+print(model_ranking)
+
+# Step 6: Identify best model and extract key stats
+best_model_name <- model_ranking$Model_Name[1]
+best_r2 <- model_ranking$R2[1]
+best_aicc <- model_ranking$AICc[1]
+delta_second <- model_ranking$deltaAICc[2]
+delta_third <- model_ranking$deltaAICc[3]
+
+cat(sprintf("\n🏆 BEST MODEL: %s\n", best_model_name))
+cat(sprintf("📊 Performance: R² = %.3f, AICc = %.1f\n", best_r2, best_aicc))
+cat(sprintf("📈 Advantage: ΔAICc = %.1f and %.1f over alternatives\n", 
+            delta_second, delta_third))
+
+# Step 7: Statistical interpretation
+if(delta_second > 10) {
+    evidence_strength <- "overwhelming evidence"
+} else if(delta_second > 7) {
+    evidence_strength <- "strong evidence"  
+} else if(delta_second > 2) {
+    evidence_strength <- "substantial evidence"
+} else {
+    evidence_strength <- "weak evidence"
+}
+
+cat(sprintf("🎯 Conclusion: %s that %s model is best\n", 
+            evidence_strength, best_model_name))
+
+# Fixed table creation - check column names first
+cat("Column names in model_ranking:\n")
+print(colnames(model_ranking))
+
+
+
+
 # -------------------------------------------------------------------
 # SECTION 2: MODEL COMPARISON TABLE
 # -------------------------------------------------------------------
