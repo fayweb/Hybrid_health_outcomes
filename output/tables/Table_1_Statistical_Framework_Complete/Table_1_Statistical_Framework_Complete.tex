@@ -1,0 +1,39 @@
+\setlength{\LTpost}{0mm}
+\begin{longtable}{>{\raggedright\arraybackslash}p{140px}>{\raggedright\arraybackslash}p{220px}>{\raggedright\arraybackslash}p{90px}>{\raggedright\arraybackslash}p{280px}>{\raggedright\arraybackslash}p{220px}>{\raggedright\arraybackslash}p{100px}>{\raggedright\arraybackslash}p{140px}}
+\caption*{
+{\large Table 1. Statistical Analysis Framework} \\ 
+{\small Complete analytical workflow from laboratory development through field validation to biological proof-of-concept}
+} \\ 
+\toprule
+Analysis Phase & Research Question & Model ID & Statistical Method & Key Finding & Sample Size & Performance Metric¹\textsuperscript{\textit{1}} \\ 
+\midrule\addlinespace[2.5pt]
+\multicolumn{7}{l}{Laboratory Development} \\ 
+\midrule\addlinespace[2.5pt]
+Discovery & Can immune genes predict infection costs? & \cellcolor[HTML]{FAFAFA}{\textcolor[HTML]{1976D2}{\textbf{DISC-1}}} & Linear regression (PC1, PC2 → weight loss) & Significant but modest prediction & n = 136 & \textcolor[HTML]{D32F2F}{\textbf{R² = 0.106***}} \\ 
+Optimization & Can machine learning improve prediction? & \cellcolor[HTML]{FAFAFA}{\textcolor[HTML]{1976D2}{\textbf{DISC-2}}} & Random forest (19 genes → weight loss) & Substantial improvement achieved & n = 136 & \textcolor[HTML]{D32F2F}{\textbf{R² = 0.476***}} \\ 
+Validation & Is the model reliable? & \cellcolor[HTML]{FAFAFA}{\textcolor[HTML]{1976D2}{\textbf{DISC-3}}} & Train-test cross-validation & Strong predictive accuracy & n = 136 (70/30 split)\textsuperscript{\textit{2}} & \textcolor[HTML]{D32F2F}{\textbf{r = 0.79***}} \\ 
+\midrule\addlinespace[2.5pt]
+\multicolumn{7}{l}{Cross-Population Translation} \\ 
+\midrule\addlinespace[2.5pt]
+Gene Validation & Which genes show consistent responses across populations? & \cellcolor[HTML]{FAFAFA}{\textcolor[HTML]{1976D2}{\textbf{TRANS-1}}} & Linear regression per gene (lab vs field) & 3 genes cross-validated\textsuperscript{\textit{3}} & n = 305 & \textbf{3/19 genes validated} \\ 
+\midrule\addlinespace[2.5pt]
+\multicolumn{7}{l}{Field Translation} \\ 
+\midrule\addlinespace[2.5pt]
+Detection & Does the model work in wild populations? & \cellcolor[HTML]{FAFAFA}{\textcolor[HTML]{1976D2}{\textbf{FIELD-1}}} & Predicted vs. observed infection status & Successfully detects infection & n = 305 & \textcolor[HTML]{D32F2F}{\textbf{+1.15\%***}} \\ 
+Discrimination & Can it distinguish parasite species? & \cellcolor[HTML]{FAFAFA}{\textcolor[HTML]{1976D2}{\textbf{FIELD-2}}} & Predicted loss by species identity & Species-specific responses & n = 169 & \textcolor[HTML]{D32F2F}{\textbf{E.f: +2.06\%**, E.r: +1.25\%**\textsuperscript{\textit{4}}}} \\ 
+Scaling & Does it correlate with infection severity? & \cellcolor[HTML]{FAFAFA}{\textcolor[HTML]{1976D2}{\textbf{FIELD-3}}} & Predicted loss vs. parasite load & Scales with infection intensity & n = 185 & \textcolor[HTML]{D32F2F}{\textbf{r = 0.233*}} \\ 
+\midrule\addlinespace[2.5pt]
+\multicolumn{7}{l}{Biological Validation} \\ 
+\midrule\addlinespace[2.5pt]
+Physiological relevance & Does it capture real health impacts? & \cellcolor[HTML]{FAFAFA}{\textcolor[HTML]{1976D2}{\textbf{PROOF-1}}} & Predicted loss vs. body condition & Correlates with actual body weight & n = 336 & \textcolor[HTML]{D32F2F}{\textbf{ρ = -0.115*}} \\ 
+Specificity & Is the response Eimeria-specific? & \cellcolor[HTML]{FAFAFA}{\textcolor[HTML]{1976D2}{\textbf{PROOF-2}}} & Predicted loss vs. parasite community & Specific to Eimeria infections only & n = 305 & \textcolor[HTML]{D32F2F}{\textbf{p < 0.001***}} \\ 
+\bottomrule
+\end{longtable}
+\begin{minipage}{\linewidth}
+\textsuperscript{\textit{1}}Significance levels: *p < 0.05, **p < 0.01, ***p < 0.001\\
+\textsuperscript{\textit{2}}Train-test validation used 70\% training, 30\% testing from full dataset\\
+\textsuperscript{\textit{3}}Cross-validated genes: CXCL9 (both species), TICAM1, PRF1 (E. falciformis)\\
+\textsuperscript{\textit{4}}E.f: Eimeria falciformis; E.r: E. ferrisi\\
+Framework demonstrates progression from basic linear prediction (R² = 0.106) through machine learning optimization (R² = 0.476) to comprehensive field validation with biological relevance. Cross-population translation validates 3/19 genes as conserved biomarkers.\\
+\end{minipage}
+

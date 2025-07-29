@@ -1,18 +1,28 @@
+
 # =============================================
-# TABLE: STATISTICAL ANALYSIS FRAMEWORK
+# IMPROVED TABLE: STATISTICAL ANALYSIS FRAMEWORK
+# Including TRANS-1 and corrected workflow
 # =============================================
 
-# Create the statistical analysis framework table
-create_statistical_framework_table <- function() {
+library(gt)
+library(tibble)
+library(dplyr)
+library(stringr)
+
+# Create the improved statistical analysis framework table
+create_improved_statistical_framework_table <- function() {
     
-    # Define the table data
+    # Define the table data with complete workflow
     statistical_framework <- tribble(
         ~Phase, ~Research_Question, ~Analysis, ~Method, ~Key_Result, ~Sample_Size, ~Performance,
         
         # Laboratory Development Phase
         "Discovery", "Can immune genes predict infection costs?", "DISC-1", "Linear regression (PC1, PC2 → weight loss)", "Significant but modest prediction", "n = 136", "R² = 0.106***",
         "Optimization", "Can machine learning improve prediction?", "DISC-2", "Random forest (19 genes → weight loss)", "Substantial improvement achieved", "n = 136", "R² = 0.476***",
-        "Validation", "Is the model reliable?", "DISC-3", "Train-test cross-validation", "Strong predictive accuracy", "n = 95→41", "r = 0.79***",
+        "Validation", "Is the model reliable?", "DISC-3", "Train-test cross-validation", "Strong predictive accuracy", "n = 136 (70/30 split)", "r = 0.79***",
+        
+        # Cross-Population Translation Phase (NEW!)
+        "Gene Validation", "Which genes show consistent responses across populations?", "TRANS-1", "Linear regression per gene (lab vs field)", "3 genes cross-validated", "n = 305", "3/19 genes validated",
         
         # Field Translation Phase  
         "Detection", "Does the model work in wild populations?", "FIELD-1", "Predicted vs. observed infection status", "Successfully detects infection", "n = 305", "+1.15%***",
@@ -24,9 +34,10 @@ create_statistical_framework_table <- function() {
         "Specificity", "Is the response Eimeria-specific?", "PROOF-2", "Predicted loss vs. parasite community", "Specific to Eimeria infections only", "n = 305", "p < 0.001***"
     ) %>%
         mutate(
-            # Add phase groupings
+            # Add phase groupings with improved logic
             Phase_Group = case_when(
                 Phase %in% c("Discovery", "Optimization", "Validation") ~ "Laboratory Development",
+                Phase %in% c("Gene Validation") ~ "Cross-Population Translation",
                 Phase %in% c("Detection", "Discrimination", "Scaling") ~ "Field Translation", 
                 Phase %in% c("Physiological relevance", "Specificity") ~ "Biological Validation"
             )
@@ -38,14 +49,14 @@ create_statistical_framework_table <- function() {
 }
 
 # Create the table
-statistical_framework_data <- create_statistical_framework_table()
+statistical_framework_data <- create_improved_statistical_framework_table()
 
-# Create the publication-ready gt table
+# Create the publication-ready gt table with improved styling
 statistical_framework_table <- statistical_framework_data %>%
     gt(groupname_col = "Phase_Group") %>%
     tab_header(
-        title = "",
-        subtitle = ""
+        title = "Table 1. Statistical Analysis Framework",
+        subtitle = "Complete analytical workflow from laboratory development through field validation to biological proof-of-concept"
     ) %>%
     cols_label(
         Phase = "Analysis Phase",
@@ -54,26 +65,29 @@ statistical_framework_table <- statistical_framework_data %>%
         Method = "Statistical Method",
         Key_Result = "Key Finding",
         Sample_Size = "Sample Size",
-        Performance = "Performance Metric"
+        Performance = "Performance Metric¹"
     ) %>%
-    # Style the group headers (phase groups)
+    # Enhanced styling for group headers
     tab_style(
         style = list(
-            cell_fill(color = "#E8F4FD"),
-            cell_text(weight = "bold", size = px(14))
+            cell_fill(color = "#E3F2FD"),
+            cell_text(weight = "bold", size = px(13), color = "#1565C0")
         ),
         locations = cells_row_groups()
     ) %>%
     # Style column headers
     tab_style(
-        style = cell_text(weight = "bold"),
+        style = list(
+            cell_text(weight = "bold", size = px(12)),
+            cell_fill(color = "#F5F5F5")
+        ),
         locations = cells_column_labels()
     ) %>%
-    # Style the Model ID column
+    # Highlight Model ID column
     tab_style(
         style = list(
-            cell_text(weight = "bold", color = "#1f77b4"),
-            cell_fill(color = "#f8f9fa")
+            cell_text(weight = "bold", color = "#1976D2"),
+            cell_fill(color = "#FAFAFA")
         ),
         locations = cells_body(columns = Analysis)
     ) %>%
@@ -82,109 +96,88 @@ statistical_framework_table <- statistical_framework_data %>%
         style = cell_text(weight = "bold"),
         locations = cells_body(columns = Performance)
     ) %>%
-    # Add footnotes
+    # Highlight significant results
+    tab_style(
+        style = cell_text(color = "#D32F2F", weight = "bold"),
+        locations = cells_body(
+            columns = Performance,
+            rows = str_detect(Performance, "\\*")
+        )
+    ) %>%
+    # Add comprehensive footnotes
     tab_footnote(
         footnote = "Significance levels: *p < 0.05, **p < 0.01, ***p < 0.001",
         locations = cells_column_labels(columns = Performance)
     ) %>%
     tab_footnote(
         footnote = "E.f: Eimeria falciformis; E.r: E. ferrisi",
-        locations = cells_body(columns = Performance, rows = 5)
+        locations = cells_body(columns = Performance, rows = 6)
     ) %>%
     tab_footnote(
-        footnote = "Progressive sample sizes reflect train→test validation approach",
+        footnote = "Train-test validation used 70% training, 30% testing from full dataset",
         locations = cells_body(columns = Sample_Size, rows = 3)
     ) %>%
-    # Adjust column widths
+    tab_footnote(
+        footnote = "Cross-validated genes: CXCL9 (both species), TICAM1, PRF1 (E. falciformis)",
+        locations = cells_body(columns = Key_Result, rows = 4)
+    ) %>%
+    # Adjust column widths for better readability
     cols_width(
-        Phase ~ px(120),
-        Research_Question ~ px(200),
-        Analysis ~ px(80),
-        Method ~ px(250),
-        Key_Result ~ px(200),
-        Sample_Size ~ px(80),
-        Performance ~ px(120)
+        Phase ~ px(140),
+        Research_Question ~ px(220),
+        Analysis ~ px(90),
+        Method ~ px(280),
+        Key_Result ~ px(220),
+        Sample_Size ~ px(100),
+        Performance ~ px(140)
     ) %>%
-    # Style significance asterisks
-    tab_style(
-        style = cell_text(color = "#d62728", weight = "bold"),
-        locations = cells_body(
-            columns = Performance,
-            rows = str_detect(Performance, "\\*")
-        )
-    ) %>%
-    # Add source note
+    # Add comprehensive source note
     tab_source_note(
-        source_note = "Framework progresses from basic linear prediction (R² = 0.106) through machine learning optimization (R² = 0.476) to comprehensive field validation with biological relevance."
-    )
+        source_note = "Framework demonstrates progression from basic linear prediction (R² = 0.106) through machine learning optimization (R² = 0.476) to comprehensive field validation with biological relevance. Cross-population translation validates 3/19 genes as conserved biomarkers."
+    ) %>%
+    # Format text properly
+    fmt_markdown(columns = c(Method, Key_Result))
 
 # Print the table
 print(statistical_framework_table)
 
-# Save the table using your existing function
-save_table_all_formats(statistical_framework_table, "Table_Statistical_Analysis_Framework")
-
-# Alternative version with simpler formatting for supplementary material
-statistical_framework_simple <- statistical_framework_data %>%
-    gt() %>%
-    tab_header(
-        title = "Table 1. Statistical Analysis Framework",
-        subtitle = "Complete analytical approach from laboratory development to field validation"
-    ) %>%
-    cols_label(
-        Phase_Group = "Phase",
-        Phase = "Step",
-        Research_Question = "Research Question",
-        Analysis = "Model",
-        Method = "Method", 
-        Key_Result = "Result",
-        Sample_Size = "n",
-        Performance = "Performance"
-    ) %>%
-    tab_style(
-        style = cell_text(weight = "bold"),
-        locations = cells_column_labels()
-    ) %>%
-    fmt_markdown(columns = c(Method, Key_Result)) %>%
-    tab_footnote(
-        footnote = "*p < 0.05, **p < 0.01, ***p < 0.001",
-        locations = cells_column_labels(columns = Performance)
-    )
-
-print(statistical_framework_simple)
-
-# Save simple version too
-save_table_all_formats(statistical_framework_simple, "Table_Statistical_Framework_Simple")
-
-# Create a summary version for methods section
-methods_summary <- statistical_framework_data %>%
+# Create a methods-focused summary table
+methods_focused_summary <- statistical_framework_data %>%
     group_by(Phase_Group) %>%
     summarise(
-        Models = paste(unique(Analysis), collapse = ", "),
-        Primary_Questions = n(),
-        Total_Sample_Sizes = paste(unique(Sample_Size), collapse = "; "),
+        Models_Included = paste(unique(Analysis), collapse = ", "),
+        Key_Questions = n(),
+        Sample_Range = paste(range(parse_number(Sample_Size)), collapse = "-"),
+        Primary_Outcome = case_when(
+            Phase_Group == "Laboratory Development" ~ "Model Development & Validation",
+            Phase_Group == "Cross-Population Translation" ~ "Gene Conservation Assessment", 
+            Phase_Group == "Field Translation" ~ "Field Application Success",
+            Phase_Group == "Biological Validation" ~ "Biological Relevance Proof"
+        ),
         .groups = "drop"
     ) %>%
     gt() %>%
     tab_header(
         title = "Statistical Analysis Summary by Phase",
-        subtitle = "Overview of analytical framework for methods section reference"
+        subtitle = "Methodological overview for manuscript methods section"
     ) %>%
     cols_label(
         Phase_Group = "Analysis Phase",
-        Models = "Model IDs", 
-        Primary_Questions = "Number of Tests",
-        Total_Sample_Sizes = "Sample Sizes"
+        Models_Included = "Model IDs", 
+        Key_Questions = "Number of Tests",
+        Sample_Range = "Sample Size Range",
+        Primary_Outcome = "Phase Objective"
+    ) %>%
+    tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_column_labels()
     )
 
-print(methods_summary)
+# Print methods summary
+print(methods_focused_summary)
 
-save_table_all_formats(methods_summary, "Table_Methods_Summary")
+# Save both tables using your existing function (assuming it exists)
+ save_table_all_formats(statistical_framework_table, "Table_1_Statistical_Framework_Complete")
+ save_table_all_formats(methods_focused_summary, "Table_Methods_Summary_Improved")
 
-# Print confirmation
-cat("✅ Statistical Analysis Framework tables created and saved!\n")
-cat("   - Main table: Table_Statistical_Analysis_Framework\n") 
-cat("   - Simple version: Table_Statistical_Framework_Simple\n")
-cat("   - Methods summary: Table_Methods_Summary\n")
-cat("   - All saved in multiple formats (HTML, DOCX, PNG, PDF, TEX)\n")
 
