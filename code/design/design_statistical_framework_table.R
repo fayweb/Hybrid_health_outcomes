@@ -117,7 +117,7 @@ statistical_framework_table <- statistical_framework_data %>%
         locations = cells_body(columns = Performance, rows = 6)
     ) %>%
     tab_footnote(
-        footnote = "Train-test validation: 70% training (n=96), 30% testing (n=40)",
+        footnote = "Train-test validation: 70% training (n=96), 30% testing (n=41)",
         locations = cells_body(columns = Sample_Size, rows = 3)
     ) %>%
     tab_footnote(
