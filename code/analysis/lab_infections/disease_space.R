@@ -7,6 +7,9 @@ library(dplyr)
 color_mapping <- c("Uninfected" = "#4ACAFF",
                    "E. ferrisi" = "#7A0092",
                    "E. falciformis" = "#FF0000")
+glimpse(lab)
+
+data <- lab
 
 # Panel A: Your actual PCA data (unchanged)
 create_actual_pca <- function(data) {
@@ -158,48 +161,48 @@ create_infection_cycle <- function() {
 }
 
 # Panel D: Clean weight loss landscape
-# Panel D: Using actual model predictions
+# Using actual WL_max data with red = high cost, green = low cost
 create_weight_loss_landscape <- function(data) {
-    data_clean <- data %>%
-        filter(!is.na(PC1) & !is.na(PC2) & !is.na(WL_max))
     
-    # Create prediction grid
-    x <- seq(-6, 5, length.out = 50)
-    y <- seq(-6, 5, length.out = 50)
-    grid <- expand.grid(PC1 = x, PC2 = y)
+    d <- data %>% filter(!is.na(PC1), !is.na(PC2), !is.na(WL_max))
     
-    # Use Model 1 coefficients (PC only model)
-    grid$WeightLoss <- 9.66 +        # intercept
-        0.51 * grid$PC1 -   # PC1 effect
-        1.27 * grid$PC2     # PC2 effect
+    # Fit smooth surface of WL_max over PC1, PC2
+    gam_fit <- mgcv::gam(WL_max ~ s(PC1, PC2, k = 30), data = d, method = "REML")
     
-    # Bound predictions to reasonable range
+    # Prediction grid
+    grid <- expand.grid(
+        PC1 = seq(min(d$PC1), max(d$PC1), length.out = 200),
+        PC2 = seq(min(d$PC2), max(d$PC2), length.out = 200)
+    )
+    grid$WeightLoss <- predict(gam_fit, newdata = grid)
+    
+    # Clip to reasonable limits for legend clarity
     grid$WeightLoss <- pmax(0, pmin(25, grid$WeightLoss))
     
-    p4 <- ggplot(grid, aes(x = PC1, y = PC2)) +
+    ggplot(grid, aes(x = PC1, y = PC2)) +
         geom_contour_filled(aes(z = WeightLoss), bins = 10) +
-        geom_contour(aes(z = WeightLoss), color = "gray50", alpha = 0.5, size = 0.3) +
-        scale_fill_manual(values = rev(RColorBrewer::brewer.pal(10, "RdYlGn")),
-                          name = "Predicted\nWeight Loss (%)") +
-        
-        # Add text annotations in corners
-       # annotate("text", x = 4, y = -5, 
-        #         label = "High inflammation\nLow regulation\n= Maximum damage",
-           #      size = 2.5, color = "darkred", fontface = "italic") +
-        #annotate("text", x = -5, y = 4.5,
-         #        label = "Low inflammation\nHigh regulation\n= Minimal damage",
-          #       size = 2.5, color = "darkblue", fontface = "italic") +
-        
-        labs(x = "PC1 (Inflammatory axis)",
-             y = "PC2 (Regulatory axis)",
-             title = "D.") +
+        geom_contour(aes(z = WeightLoss), color = "gray40", alpha = 0.6, size = 0.3) +
+        scale_fill_distiller(
+            palette = "RdYlGn",      # Red–Yellow–Green palette
+            direction = -1,          # Reverse so red = high values
+            limits = c(0, 25),
+            name = "Weight Loss (%)"
+        ) +
+        labs(
+            x = "PC1 (Inflammatory axis)",
+            y = "PC2 (Regulatory axis)",
+            title = "D."
+        ) +
         theme_minimal() +
-        theme(panel.grid = element_blank(),
-              panel.border = element_rect(fill = NA, color = "black"),
-              plot.title = element_text(face = "bold", size = 12))
-    
-    return(p4)
+        theme(
+            panel.grid = element_blank(),
+            panel.border = element_rect(fill = NA, color = "black"),
+            plot.title = element_text(face = "bold", size = 12),
+            legend.position = "right"
+        )
 }
+
+
 
 # Create all panels
 p1 <- create_actual_pca(lab)
