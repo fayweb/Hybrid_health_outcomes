@@ -182,24 +182,17 @@ create_weight_loss_landscape <- function(data) {
     ggplot(grid, aes(x = PC1, y = PC2)) +
         geom_contour_filled(aes(z = WeightLoss), bins = 10) +
         geom_contour(aes(z = WeightLoss), color = "gray40", alpha = 0.6, size = 0.3) +
-        scale_fill_distiller(
-            palette = "RdYlGn",      # Red–Yellow–Green palette
-            direction = -1,          # Reverse so red = high values
-            limits = c(0, 25),
-            name = "Weight Loss (%)"
+        scale_fill_brewer(
+            palette   = "RdYlGn",
+            direction = -1,                # red = high, green = low
+            name      = "Weight Loss (%)"
         ) +
-        labs(
-            x = "PC1 (Inflammatory axis)",
-            y = "PC2 (Regulatory axis)",
-            title = "D."
-        ) +
+        labs(x = "PC1 (Inflammatory axis)", y = "PC2 (Regulatory axis)", title = "D.") +
         theme_minimal() +
-        theme(
-            panel.grid = element_blank(),
-            panel.border = element_rect(fill = NA, color = "black"),
-            plot.title = element_text(face = "bold", size = 12),
-            legend.position = "right"
-        )
+        theme(panel.grid = element_blank(),
+              panel.border = element_rect(fill = NA, color = "black"),
+              plot.title = element_text(face = "bold", size = 12))
+    
 }
 
 
@@ -226,6 +219,7 @@ final_figure <- (p1 + p2) / (p3 + p4) +
 final_figure
 
 # Save outputs
-ggsave("immune_trajectory_figure.png", final_figure, width = 12, height = 10, dpi = 300)
-ggsave("immune_trajectory_figure.pdf", final_figure, width = 12, height = 10)
+ggsave("output/figures/panels/immune_trajectory_figure.png", final_figure, width = 12, height = 10, dpi = 300)
+ggsave("output/figures/panels/immune_trajectory_figure.pdf", final_figure, width = 12, height = 10)
 
+ggsave("output/figures/panels/weightloss_landscape.pdf", p4, width = 12, height = 10)
